@@ -1,0 +1,12 @@
+# Copy to `.dev.vars` for local Wrangler / OpenNext preview (gitignored).
+# Same variables as `.env.example`.
+
+ANTHROPIC_API_KEY=
+ANTHROPIC_MODEL=claude-sonnet-4-20250514
+LINEAR_API_KEY=
+LINEAR_TEAM_ID=
+LINEAR_PROJECT_ID=
+LINEAR_LEAD_LABEL_ID=
+TURNSTILE_SECRET_KEY=
+NEXT_PUBLIC_TURNSTILE_SITE_KEY=
+NEXTJS_ENV=development
