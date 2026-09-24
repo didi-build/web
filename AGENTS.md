@@ -69,6 +69,7 @@ The site doubles as a portfolio piece ("I automate my own business with AI"), so
   ```
 
   If `format:check` fails, run `npm run format` (or `npx prettier --write <file>`) and commit the formatted files.
+
 - CI must pass **without** production API secrets.
 - `preview` and `deploy` scripts use `@opennextjs/cloudflare`; Cloudflare deploys from `main` (configured in the Cloudflare dashboard).
 
