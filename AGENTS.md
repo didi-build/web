@@ -53,10 +53,22 @@ The site doubles as a portfolio piece ("I automate my own business with AI"), so
 - Work on a branch named for the Linear issue (e.g. `cursor/didi-401-...`).
 - Open a PR that links the Linear issue.
 - For new work on this repo, create or update `AGENTS.md` at the root when the ticket requires it.
+- A PR is **not ready for review** until the full CI pipeline passes locally (see CI/CD below).
 
 ## CI/CD
 
 - GitHub Actions on PRs and pushes to `main`: install from lockfile → format check → lint → typecheck → test → build. Cache dependencies.
+- **Before pushing or marking a PR ready:** run the same steps locally and fix failures. From a clean `npm ci`:
+
+  ```bash
+  npm run format:check
+  npm run lint
+  npm run typecheck
+  npm run test
+  npm run build
+  ```
+
+  If `format:check` fails, run `npm run format` (or `npx prettier --write <file>`) and commit the formatted files.
 - CI must pass **without** production API secrets.
 - `preview` and `deploy` scripts use `@opennextjs/cloudflare`; Cloudflare deploys from `main` (configured in the Cloudflare dashboard).
 
