@@ -1,0 +1,344 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="">
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@400;500;600;700&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<script src="./image-slot.js"></script>
+<style>
+[data-theme="light"]{
+--bg:oklch(0.985 0.006 120);--surface:oklch(0.997 0.003 120);--surface-2:oklch(0.955 0.012 135);
+--ink:oklch(0.24 0.02 155);--ink-muted:oklch(0.44 0.02 155);--line:oklch(0.89 0.012 140);--line-strong:oklch(0.6 0.015 150);
+--accent:oklch(0.44 0.09 158);--accent-hover:oklch(0.38 0.08 158);--accent-ink:oklch(0.99 0.005 120);
+--accent-soft:oklch(0.935 0.035 150);--accent-text:oklch(0.42 0.09 158);
+--error:oklch(0.5 0.18 28);--error-soft:oklch(0.955 0.03 28);color-scheme:light}
+[data-theme="dark"]{
+--bg:oklch(0.19 0.012 160);--surface:oklch(0.225 0.014 160);--surface-2:oklch(0.26 0.016 160);
+--ink:oklch(0.95 0.008 120);--ink-muted:oklch(0.77 0.015 140);--line:oklch(0.34 0.014 160);--line-strong:oklch(0.56 0.015 155);
+--accent:oklch(0.8 0.1 150);--accent-hover:oklch(0.86 0.09 148);--accent-ink:oklch(0.2 0.03 160);
+--accent-soft:oklch(0.29 0.04 158);--accent-text:oklch(0.82 0.1 150);
+--error:oklch(0.76 0.13 28);--error-soft:oklch(0.28 0.05 28);color-scheme:dark}
+html,body{margin:0}
+*{box-sizing:border-box}
+a{color:var(--accent-text);text-underline-offset:3px;text-decoration-thickness:1.5px}
+a:hover{color:var(--ink)}
+[data-theme] :focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+[data-theme] input:focus-visible,[data-theme] textarea:focus-visible{outline:none}
+[data-theme] ::placeholder{color:var(--ink-muted);opacity:.75}
+@media (prefers-reduced-motion:reduce){[data-theme] *{transition:none!important}}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s">
+
+<a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="position:absolute;left:-9999px" style-focus="left:16px;top:16px;z-index:10;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:999px">Skip to contact form</a>
+
+<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<header style="max-width:1168px;margin:0 auto;padding:20px clamp(20px,5cqi,48px);display:flex;align-items:center;justify-content:space-between;gap:12px">
+<a href="#" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);border-radius:8px">
+<span aria-hidden="true" style="width:14px;height:14px;border-radius:14px 2px 14px 2px;background:var(--accent)"></span>
+<span style="font-weight:700;font-size:19px;letter-spacing:-0.01em">Didi Build</span>
+</a>
+<div style="display:flex;align-items:center;gap:8px">
+<button type="button" onClick="{{ toggleTheme }}" aria-label="{{ themeAria }}" title="{{ themeAria }}" style="width:44px;height:44px;display:grid;place-items:center;border-radius:999px;border:1px solid var(--line);background:transparent;color:var(--ink);cursor:pointer;padding:0" style-hover="background:var(--surface-2)">
+<span aria-hidden="true" style="width:16px;height:16px;border-radius:999px;border:2px solid currentColor;background:linear-gradient(90deg,currentColor 50%,transparent 50%)"></span>
+</button>
+<a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="min-height:44px;display:flex;align-items:center;padding:0 18px;border-radius:999px;border:1.5px solid var(--ink);color:var(--ink);text-decoration:none;font-weight:600;font-size:15px;white-space:nowrap" style-hover="background:var(--ink);color:var(--bg)">Book a chat</a>
+</div>
+</header>
+
+</sc-if>
+<main>
+<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ isCalm }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="Hero A" style="max-width:1168px;margin:0 auto;padding:clamp(40px,9cqi,112px) clamp(20px,5cqi,48px) clamp(56px,8cqi,96px)">
+<p style="margin:0 0 24px;font-size:15px;font-weight:600;color:var(--accent-text);letter-spacing:0.01em">Independent AI integration · Toronto</p>
+<h1 style="margin:0;max-width:19ch;font-weight:600;font-size:clamp(2.2rem,1.1rem + 4.4cqi,4.5rem);line-height:1.07;letter-spacing:-0.03em;text-wrap:balance">I help small businesses figure out where AI can actually save them time or make them money, then I build it.</h1>
+<p style="margin:28px 0 0;max-width:42ch;font-size:clamp(1.125rem,1rem + .45cqi,1.3rem);line-height:1.55;color:var(--ink-muted);text-wrap:pretty">It starts with learning how your business runs today. Then we decide together if AI is worth it, and where.</p>
+<div style="margin-top:36px;display:flex;flex-wrap:wrap;align-items:center;gap:16px 28px">
+<a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="min-height:56px;display:inline-flex;align-items:center;gap:12px;padding:0 28px;border-radius:999px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;font-size:17px;transition:background .15s" style-hover="background:var(--accent-hover);color:var(--accent-ink)">Book a free 30-min chat <span aria-hidden="true">→</span></a>
+<a href="#{{ ids.how }}" onClick="{{ goHow }}" style="font-weight:600;font-size:16px;color:var(--ink)">See how it works</a>
+</div>
+<div style="margin-top:clamp(48px,7cqi,88px);height:clamp(220px,38cqi,480px)">
+<image-slot id="didi-hero-wide" shape="rounded" radius="28" placeholder="Photo: close-up of green leaves or a growing plant, wide crop"></image-slot>
+</div>
+</section>
+</sc-if>
+
+<sc-if value="{{ isBright }}" hint-placeholder-val="{{ false }}">
+<section data-screen-label="Hero B" style="max-width:1168px;margin:0 auto;padding:clamp(8px,2cqi,24px) clamp(12px,3cqi,32px) clamp(48px,7cqi,88px)">
+<div style="background:var(--accent-soft);border-radius:clamp(24px,3cqi,40px);padding:clamp(28px,6cqi,72px);display:flex;flex-wrap:wrap;align-items:center;gap:clamp(32px,5cqi,64px)">
+<div style="flex:1 1 440px;min-width:0">
+<p style="margin:0 0 20px;font-size:clamp(1.125rem,1rem + .4cqi,1.3rem);font-weight:600">Hi, I'm Didi. <span style="font-weight:500;color:var(--ink-muted)">A software engineer in Toronto.</span></p>
+<h1 style="margin:0;font-weight:700;font-size:clamp(2rem,1.1rem + 3.2cqi,3.6rem);line-height:1.08;letter-spacing:-0.028em;text-wrap:balance">I help small businesses figure out where AI can actually save them time or make them money, <span style="color:var(--accent-text)">then I build it.</span></h1>
+<p style="margin:24px 0 0;max-width:40ch;font-size:clamp(1.0625rem,1rem + .3cqi,1.2rem);line-height:1.55;color:var(--ink-muted);text-wrap:pretty">First I learn how your business actually runs. The tools come after that, only where they fit.</p>
+<div style="margin-top:32px;display:flex;flex-wrap:wrap;gap:12px">
+<a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="min-height:56px;display:inline-flex;align-items:center;gap:12px;padding:0 28px;border-radius:999px;background:var(--accent);color:var(--accent-ink);text-decoration:none;font-weight:600;font-size:17px;transition:background .15s" style-hover="background:var(--accent-hover);color:var(--accent-ink)">Book a free 30-min chat <span aria-hidden="true">→</span></a>
+</div>
+<ul style="margin:28px 0 0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px">
+<li style="padding:6px 14px;border-radius:999px;background:var(--bg);font-size:15px;font-weight:500">Free first chat</li>
+<li style="padding:6px 14px;border-radius:999px;background:var(--bg);font-size:15px;font-weight:500">Fixed price, fixed scope</li>
+<li style="padding:6px 14px;border-radius:999px;background:var(--bg);font-size:15px;font-weight:500">Plain English, no jargon</li>
+</ul>
+</div>
+<div style="flex:1 1 280px;max-width:440px;margin:0 auto;aspect-ratio:4/5">
+<image-slot id="didi-hero-arch" shape="rounded" mask="inset(0 round 999px 999px 28px 28px)" placeholder="Photo: a leafy plant or young tree, portrait crop"></image-slot>
+</div>
+</div>
+</section>
+</sc-if>
+
+<section data-screen-label="What I do" aria-labelledby="{{ ids.whatH }}" style="max-width:1168px;margin:0 auto;padding:clamp(56px,9cqi,112px) clamp(20px,5cqi,48px)">
+<div style="display:flex;flex-wrap:wrap;gap:16px 64px;align-items:end;justify-content:space-between">
+<div style="flex:1 1 420px;min-width:0">
+<p style="margin:0 0 12px;font-size:15px;font-weight:600;color:var(--accent-text)">What I do</p>
+<h2 id="{{ ids.whatH }}" style="margin:0;max-width:18ch;font-weight:600;font-size:clamp(1.75rem,1.2rem + 2cqi,2.75rem);line-height:1.15;letter-spacing:-0.022em;text-wrap:balance">I learn how you work first, then build what fits.</h2>
+</div>
+<p style="margin:0;flex:1 1 340px;max-width:46ch;color:var(--ink-muted);text-wrap:pretty">Every business runs a little differently, so I don't sell packages. Here are a few examples of what that has looked like.</p>
+</div>
+<ul style="margin:clamp(36px,5cqi,56px) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,250px),1fr));gap:16px">
+<sc-for list="{{ examples }}" as="ex" hint-placeholder-count="4">
+<li style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:28px;display:flex;flex-direction:column;gap:12px;min-height:240px">
+<span style="align-self:flex-start;font-size:13px;font-weight:600;padding:4px 10px;border-radius:999px;background:var(--surface-2);color:var(--ink-muted)">Example {{ ex.n }}</span>
+<h3 style="margin:8px 0 0;font-size:1.25rem;line-height:1.3;font-weight:600;letter-spacing:-0.01em">{{ ex.title }}</h3>
+<p style="margin:0;font-size:16px;line-height:1.6;color:var(--ink-muted);text-wrap:pretty">{{ ex.body }}</p>
+</li>
+</sc-for>
+</ul>
+<p style="margin:28px 0 0;color:var(--ink-muted)">Have something else in mind? <a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="font-weight:600">Tell me about it.</a></p>
+</section>
+
+<section id="{{ ids.how }}" data-screen-label="How it works" aria-labelledby="{{ ids.howH }}" style="background:var(--surface-2)">
+<div style="max-width:1168px;margin:0 auto;padding:clamp(56px,9cqi,112px) clamp(20px,5cqi,48px)">
+<p style="margin:0 0 12px;font-size:15px;font-weight:600;color:var(--accent-text)">How it works</p>
+<h2 id="{{ ids.howH }}" style="margin:0;max-width:20ch;font-weight:600;font-size:clamp(1.75rem,1.2rem + 2cqi,2.75rem);line-height:1.15;letter-spacing:-0.022em;text-wrap:balance">Three steps, and you always know what comes next.</h2>
+<ol style="margin:clamp(36px,5cqi,56px) 0 0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,280px),1fr));gap:clamp(28px,4cqi,48px)">
+<sc-for list="{{ steps }}" as="st" hint-placeholder-count="3">
+<li style="display:flex;flex-direction:column;gap:12px;border-top:2px solid var(--ink);padding-top:24px">
+<span aria-hidden="true" style="font-size:clamp(2.5rem,2rem + 2cqi,3.5rem);line-height:1;font-weight:600;color:var(--accent-text);letter-spacing:-0.03em">{{ st.n }}</span>
+<h3 style="margin:8px 0 0;font-size:1.25rem;line-height:1.3;font-weight:600">{{ st.title }}</h3>
+<p style="margin:0;font-size:16px;color:var(--ink-muted);text-wrap:pretty">{{ st.body }}</p>
+</li>
+</sc-for>
+</ol>
+</div>
+</section>
+
+</sc-if>
+<section id="{{ ids.contact }}" data-screen-label="Contact" aria-labelledby="{{ ids.contactH }}" style="max-width:1168px;margin:0 auto;padding:clamp(56px,9cqi,112px) clamp(20px,5cqi,48px);display:flex;flex-wrap:wrap;gap:clamp(40px,6cqi,80px)">
+<div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+<p style="margin:0;font-size:15px;font-weight:600;color:var(--accent-text)">Book a free 30-min chat</p>
+<h2 id="{{ ids.contactH }}" style="margin:0;font-weight:600;font-size:clamp(1.75rem,1.2rem + 2cqi,2.75rem);line-height:1.15;letter-spacing:-0.022em;text-wrap:balance">Tell me about your business.</h2>
+<p style="margin:0;max-width:40ch;color:var(--ink-muted);text-wrap:pretty">What you do, and what's taking up more time than it should. I'll reply within 2 business days to find a time to talk.</p>
+<p style="margin:0;color:var(--ink-muted)">Prefer email? <a href="mailto:hello@didi.build" style="font-weight:600">hello@didi.build</a></p>
+<div style="margin-top:12px;flex:1 1 auto;min-height:220px;max-height:420px">
+<image-slot id="didi-contact-leaves" shape="rounded" radius="24" placeholder="Photo: leaves, seedling, or a plant on a shop counter"></image-slot>
+</div>
+</div>
+
+<div style="flex:1.3 1 440px;min-width:0">
+<sc-if value="{{ isSuccess }}" hint-placeholder-val="{{ false }}">
+<div role="status" tabindex="-1" id="{{ ids.status }}" style="background:var(--accent-soft);border-radius:24px;padding:clamp(28px,5cqi,48px);display:flex;flex-direction:column;gap:16px;align-items:flex-start">
+<span aria-hidden="true" style="width:48px;height:48px;border-radius:999px;background:var(--accent);color:var(--accent-ink);display:grid;place-items:center;font-size:22px;font-weight:700">✓</span>
+<p style="margin:0;font-size:clamp(1.4rem,1.1rem + 1cqi,1.75rem);line-height:1.25;font-weight:600;letter-spacing:-0.015em">Thanks! I'll get back to you within 2 business days.</p>
+<button type="button" onClick="{{ reset }}" style="margin-top:8px;min-height:48px;padding:0 22px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 16px Figtree,sans-serif;cursor:pointer" style-hover="background:var(--ink);color:var(--bg)">Send another message</button>
+</div>
+</sc-if>
+
+<sc-if value="{{ showForm }}" hint-placeholder-val="{{ true }}">
+<form noValidate="{{ true }}" onSubmit="{{ submit }}" aria-labelledby="{{ ids.contactH }}" style="background:var(--surface);border:1px solid var(--line);border-radius:24px;padding:clamp(22px,4cqi,40px);display:flex;flex-direction:column;gap:22px">
+<sc-if value="{{ isError }}" hint-placeholder-val="{{ false }}">
+<div role="alert" tabindex="-1" id="{{ ids.status }}" style="background:var(--error-soft);border:1px solid var(--error);border-radius:14px;padding:16px 18px;display:flex;gap:12px">
+<span aria-hidden="true" style="flex:none;width:24px;height:24px;border-radius:999px;background:var(--error);color:var(--bg);display:grid;place-items:center;font-weight:700;font-size:15px">!</span>
+<div>
+<p style="margin:0;font-weight:600">Your message didn't send.</p>
+<p style="margin:4px 0 0;font-size:16px;color:var(--ink)">Something went wrong on my end, and your text is still here. Please try again, or email me at <a href="mailto:hello@didi.build" style="color:var(--ink);font-weight:600">hello@didi.build</a>.</p>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ hasInvalid }}" hint-placeholder-val="{{ false }}">
+<p role="alert" style="margin:0;font-size:16px;font-weight:600;color:var(--error)">{{ invalidSummary }}</p>
+</sc-if>
+<p style="margin:0;font-size:15px;color:var(--ink-muted)">All fields are required unless marked optional.</p>
+<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,230px),1fr));gap:20px 16px">
+<sc-for list="{{ shortFields }}" as="f" hint-placeholder-count="4">
+<div style="display:flex;flex-direction:column;gap:8px;min-width:0">
+<label htmlFor="{{ f.id }}" style="font-weight:600;font-size:16px;display:flex;gap:8px;align-items:baseline">{{ f.label }} <span style="font-weight:400;font-size:14px;color:var(--ink-muted)">{{ f.optional }}</span></label>
+<input id="{{ f.id }}" name="{{ f.key }}" type="{{ f.type }}" inputMode="{{ f.inputMode }}" autoComplete="{{ f.auto }}" placeholder="{{ f.placeholder }}" value="{{ f.value }}" onChange="{{ f.onChange }}" onBlur="{{ f.onBlur }}" aria-required="{{ f.req }}" aria-invalid="{{ f.invalid }}" aria-describedby="{{ f.errId }}" style="width:100%;min-height:52px;padding:0 16px;border-radius:12px;border:1.5px solid {{ f.border }};background:var(--bg);color:var(--ink);font:400 17px Figtree,sans-serif;transition:border-color .15s,box-shadow .15s" style-focus="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)">
+<sc-if value="{{ f.invalid }}" hint-placeholder-val="{{ false }}">
+<p id="{{ f.errId }}" style="margin:0;font-size:15px;font-weight:500;color:var(--error);display:flex;gap:6px"><span aria-hidden="true">!</span>{{ f.error }}</p>
+</sc-if>
+</div>
+</sc-for>
+</div>
+<div style="display:flex;flex-direction:column;gap:8px">
+<label htmlFor="{{ msg.id }}" style="font-weight:600;font-size:16px">What would you like help with?</label>
+<p id="{{ msg.hintId }}" style="margin:0;font-size:15px;color:var(--ink-muted)">A few sentences is plenty. What does your business do, and what feels slow or repetitive?</p>
+<textarea id="{{ msg.id }}" name="message" rows="6" value="{{ msg.value }}" onChange="{{ msg.onChange }}" onBlur="{{ msg.onBlur }}" aria-required="true" aria-invalid="{{ msg.invalid }}" aria-describedby="{{ msg.describedBy }}" placeholder="e.g. We run a small bakery and spend hours every week answering the same catering questions by email." style="width:100%;min-height:168px;padding:14px 16px;border-radius:12px;border:1.5px solid {{ msg.border }};background:var(--bg);color:var(--ink);font:400 17px/1.55 Figtree,sans-serif;resize:vertical;transition:border-color .15s,box-shadow .15s" style-focus="border-color:var(--accent);box-shadow:0 0 0 3px var(--accent)"></textarea>
+<sc-if value="{{ msg.invalid }}" hint-placeholder-val="{{ false }}">
+<p id="{{ msg.errId }}" style="margin:0;font-size:15px;font-weight:500;color:var(--error);display:flex;gap:6px"><span aria-hidden="true">!</span>{{ msg.error }}</p>
+</sc-if>
+</div>
+<div aria-label="Spam protection" style="width:300px;max-width:100%;height:65px;border:1.5px dashed var(--line-strong);border-radius:8px;display:grid;place-items:center;font:400 12px 'JetBrains Mono',monospace;color:var(--ink-muted);background:repeating-linear-gradient(135deg,transparent 0 8px,var(--surface-2) 8px 9px)">spam-protection widget · 300×65</div>
+<div style="display:flex;flex-wrap:wrap;align-items:center;gap:16px">
+<button type="submit" disabled="{{ sending }}" style="min-height:56px;display:inline-flex;align-items:center;gap:10px;padding:0 30px;border-radius:999px;border:0;background:var(--accent);color:var(--accent-ink);font:600 17px Figtree,sans-serif;cursor:pointer;opacity:{{ btnOpacity }};transition:background .15s" style-hover="background:var(--accent-hover)">{{ submitLabel }}</button>
+<p style="margin:0;font-size:15px;color:var(--ink-muted)">I reply within 2 business days.</p>
+</div>
+</form>
+</sc-if>
+</div>
+</section>
+</main>
+
+<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<footer style="border-top:1px solid var(--line)">
+<div style="max-width:1168px;margin:0 auto;padding:32px clamp(20px,5cqi,48px) 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
+<div style="display:flex;align-items:center;gap:10px">
+<span aria-hidden="true" style="width:12px;height:12px;border-radius:12px 2px 12px 2px;background:var(--accent)"></span>
+<span style="font-weight:700">Didi Build</span>
+<span style="color:var(--ink-muted);font-size:15px">© {{ year }}</span>
+</div>
+<nav aria-label="Elsewhere">
+<ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:4px 24px">
+<li><a href="https://portfolio.didi.build" style="display:inline-flex;min-height:44px;align-items:center;color:var(--ink);font-weight:500">Portfolio</a></li>
+<li><a href="https://github.com/DiademShoukralla/" style="display:inline-flex;min-height:44px;align-items:center;color:var(--ink);font-weight:500">GitHub</a></li>
+<li><a href="https://www.linkedin.com/in/diadem-shoukralla/" style="display:inline-flex;min-height:44px;align-items:center;color:var(--ink);font-weight:500">LinkedIn</a></li>
+</ul>
+</nav>
+</div>
+</footer>
+</sc-if>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;heroVariant&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;calm&quot;,&quot;bright&quot;],&quot;default&quot;:&quot;calm&quot;,&quot;tsType&quot;:&quot;'calm'|'bright'&quot;,&quot;section&quot;:&quot;Layout&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;system&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;system&quot;,&quot;tsType&quot;:&quot;'system'|'light'|'dark'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;showState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;invalid&quot;,&quot;error&quot;,&quot;success&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;'live'|'invalid'|'error'|'success'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;submitOutcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;success&quot;,&quot;error&quot;],&quot;default&quot;:&quot;success&quot;,&quot;tsType&quot;:&quot;'success'|'error'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;contactOnly&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+class Component extends DCLogic {
+  uid = 'db' + Math.random().toString(36).slice(2, 7);
+  state = {
+    sysDark: false, override: null,
+    values: { name: '', email: '', business: '', website: '', message: '' },
+    touched: {}, submitted: false, status: 'idle'
+  };
+  componentDidMount() {
+    this.mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
+    if (this.mq) {
+      this.setState({ sysDark: this.mq.matches });
+      this.onMq = e => this.setState({ sysDark: e.matches });
+      this.mq.addEventListener('change', this.onMq);
+    }
+    this.applyShowState();
+  }
+  componentWillUnmount() { this.mq && this.mq.removeEventListener('change', this.onMq); }
+  componentDidUpdate(p) {
+    if (p.showState !== this.props.showState) this.applyShowState();
+    if (p.theme !== this.props.theme) this.setState({ override: null });
+  }
+  applyShowState() {
+    const s = this.props.showState;
+    if (s === 'success') this.setState({ status: 'success', values: { ...this.state.values, email: this.state.values.email || 'you@yourbusiness.com' } });
+    else if (s === 'error') this.setState({ status: 'error', values: { name: 'Sam Rivera', email: 'sam@riverabakery.ca', business: 'Rivera Bakery', website: 'riverabakery.ca', message: 'We spend hours every week answering the same catering questions by email.' } });
+    else if (s === 'invalid') this.setState({ status: 'idle', submitted: true, values: { name: 'Sam', email: 'sam@rivera', business: '', website: '', message: '' } });
+    else if (s === 'live') this.setState({ status: 'idle', submitted: false, touched: {} });
+  }
+  validate(v) {
+    const e = {};
+    if (!v.name.trim()) e.name = 'Please enter your name.';
+    if (!v.email.trim()) e.email = 'Please enter your email so I can reply.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.email.trim())) e.email = "That email doesn't look quite right. Check for a typo?";
+    if (!v.message.trim()) e.message = "Tell me a little about what you'd like help with.";
+    return e;
+  }
+  resolvedTheme() {
+    const t = this.state.override || this.props.theme || 'system';
+    return t === 'system' ? (this.state.sysDark ? 'dark' : 'light') : t;
+  }
+  scrollTo(id, focusId) {
+    const el = document.getElementById(id);
+    if (!el) return;
+    let p = el.parentElement;
+    while (p && p !== document.body) {
+      const oy = getComputedStyle(p).overflowY;
+      if ((oy === 'auto' || oy === 'scroll') && p.scrollHeight > p.clientHeight) break;
+      p = p.parentElement;
+    }
+    const smooth = !window.matchMedia('(prefers-reduced-motion: reduce)').matches ? 'smooth' : 'auto';
+    if (p && p !== document.body) p.scrollTo({ top: el.getBoundingClientRect().top - p.getBoundingClientRect().top + p.scrollTop - 16, behavior: smooth });
+    else window.scrollTo({ top: el.getBoundingClientRect().top + window.scrollY - 16, behavior: smooth });
+    if (focusId) setTimeout(() => { const f = document.getElementById(focusId); f && f.focus({ preventScroll: true }); }, 450);
+  }
+  renderVals() {
+    const u = this.uid, st = this.state, v = st.values;
+    const ids = { contact: u + '-contact', how: u + '-how', whatH: u + '-what-h', howH: u + '-how-h', contactH: u + '-contact-h', status: u + '-status' };
+    const theme = this.resolvedTheme();
+    const errs = this.validate(v);
+    const shown = k => (st.submitted || st.touched[k]) && errs[k];
+    const set = k => e => { const val = e.target.value; this.setState(s => ({ values: { ...s.values, [k]: val } })); };
+    const blur = k => () => this.setState(s => ({ touched: { ...s.touched, [k]: true } }));
+    const border = k => shown(k) ? 'var(--error)' : 'var(--line-strong)';
+    const defs = [
+      { key: 'name', label: 'Your name', type: 'text', auto: 'name', req: true, placeholder: '' },
+      { key: 'email', label: 'Email', type: 'email', auto: 'email', inputMode: 'email', req: true, placeholder: 'you@yourbusiness.com' },
+      { key: 'business', label: 'Business name', type: 'text', auto: 'organization', req: false, placeholder: '' },
+      { key: 'website', label: 'Website', type: 'text', auto: 'url', inputMode: 'url', req: false, placeholder: 'yourbusiness.com' }
+    ];
+    const shortFields = defs.map(d => ({
+      ...d, id: u + '-' + d.key, errId: shown(d.key) ? u + '-' + d.key + '-err' : undefined,
+      optional: d.req ? '' : '(optional)', value: v[d.key], onChange: set(d.key), onBlur: blur(d.key),
+      invalid: !!shown(d.key), error: errs[d.key], border: border(d.key), inputMode: d.inputMode || 'text'
+    }));
+    const msgErr = shown('message');
+    const msg = {
+      id: u + '-message', hintId: u + '-message-hint', errId: u + '-message-err', value: v.message,
+      onChange: set('message'), onBlur: blur('message'), invalid: !!msgErr, error: errs.message, border: border('message'),
+      describedBy: msgErr ? u + '-message-err ' + u + '-message-hint' : u + '-message-hint'
+    };
+    const invalidCount = st.submitted ? Object.keys(errs).length : 0;
+    const submit = e => {
+      e.preventDefault();
+      const er = this.validate(this.state.values);
+      const firstBad = ['name', 'email', 'message'].find(k => er[k]);
+      if (firstBad) { this.setState({ submitted: true, status: 'idle' }); setTimeout(() => { const f = document.getElementById(u + '-' + firstBad); f && f.focus(); }, 0); return; }
+      this.setState({ submitted: true, status: 'sending' });
+      setTimeout(() => {
+        const ok = (this.props.submitOutcome ?? 'success') !== 'error';
+        this.setState({ status: ok ? 'success' : 'error' }, () => { const s = document.getElementById(ids.status); s && s.focus({ preventScroll: false }); });
+      }, 1100);
+    };
+    const variant = this.props.heroVariant ?? 'calm';
+    return {
+      theme, ids, full: !this.props.contactOnly, isCalm: variant === 'calm', isBright: variant === 'bright',
+      themeAria: theme === 'dark' ? 'Switch to light mode' : 'Switch to dark mode',
+      toggleTheme: () => this.setState({ override: theme === 'dark' ? 'light' : 'dark' }),
+      goContact: e => { e.preventDefault(); this.scrollTo(ids.contact, u + '-name'); },
+      goHow: e => { e.preventDefault(); this.scrollTo(ids.how); },
+      examples: [
+        { n: 1, title: 'Never lose a lead', body: 'New inquiries from your website, email, or social messages get sorted, summarized, and followed up, even on your busiest days.' },
+        { n: 2, title: 'Paperwork that reads itself', body: 'Invoices, intake forms, and applications. The key details get pulled out and put where they belong, with no retyping.' },
+        { n: 3, title: 'Answers from your own documents', body: 'A private assistant that knows your policies, pricing, and procedures, so you and your team can simply ask.' },
+        { n: 4, title: 'A calmer inbox', body: 'Customer emails get sorted by what needs you first, with replies drafted in your voice for you to check and send.' }
+      ],
+      steps: [
+        { n: '1', title: 'A free 30-minute chat', body: "We talk about how your business runs and where the time goes. No prep needed. If AI isn't a good fit, I'll tell you." },
+        { n: '2', title: 'A fixed-price, fixed-scope build', body: "Before any work starts, you get a written plan and one price. That's what you pay, so there are no surprise bills." },
+        { n: '3', title: 'Support, if you want it', body: 'Once it is running, choose a simple monthly plan or pay only when you need something. Either works.' }
+      ],
+      shortFields, msg, submit,
+      hasInvalid: invalidCount > 0 && st.status !== 'error',
+      invalidSummary: invalidCount === 1 ? 'One field needs a fix before sending.' : invalidCount + ' fields need a fix before sending.',
+      isSuccess: st.status === 'success', showForm: st.status !== 'success', isError: st.status === 'error',
+      sending: st.status === 'sending', btnOpacity: st.status === 'sending' ? 0.7 : 1,
+      submitLabel: st.status === 'sending' ? 'Sending…' : st.status === 'error' ? 'Try again' : 'Send message',
+      sentTo: v.email || 'your inbox',
+      reset: () => this.setState({ status: 'idle', submitted: false, touched: {}, values: { name: '', email: '', business: '', website: '', message: '' } }),
+      year: new Date().getFullYear()
+    };
+  }
+}
+</script>
+</body>
+</html>
