@@ -1,13 +1,22 @@
-import { writeFileSync } from "node:fs";
+import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
 import toIco from "to-ico";
 
 const root = join(import.meta.dirname, "..");
-const leafSvg = `<?xml version="1.0" encoding="UTF-8"?>
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14">
-  <path fill="#3a7559" d="M0 7A7 7 0 0 1 7 0h5a2 2 0 0 1 2 2v5a7 7 0 0 1-7 7H2a2 2 0 0 1-2-2V7Z"/>
-</svg>`;
+const iconSvgPath = join(root, "src/app/icon.svg");
+
+/** Raster-friendly SVG from icon.svg (sharp does not apply CSS classes or oklch). */
+function loadLeafSvgForRaster() {
+  const raw = readFileSync(iconSvgPath, "utf8");
+  return raw
+    .replace(/<style>[\s\S]*?<\/style>/, "")
+    .replace(/\s*role="[^"]*"/, "")
+    .replace(/\s*aria-label="[^"]*"/, "")
+    .replace(/class="mark"/, 'fill="#3a7559"');
+}
+
+const leafSvg = loadLeafSvgForRaster();
 
 async function pngFromSvg(size) {
   return sharp(Buffer.from(leafSvg)).resize(size, size).png().toBuffer();
@@ -21,4 +30,4 @@ const pngBuffers = await Promise.all(sizes.map((size) => pngFromSvg(size)));
 const ico = await toIco(pngBuffers);
 writeFileSync(join(root, "src/app/favicon.ico"), ico);
 
-console.log("Wrote src/app/icon.png and src/app/favicon.ico");
+console.log("Wrote src/app/icon.png and src/app/favicon.ico from src/app/icon.svg");

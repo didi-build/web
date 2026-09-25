@@ -44,8 +44,9 @@ export function FaqExpandControls({ listId }: Props) {
   return (
     <button
       type="button"
+      aria-controls={listId}
       onClick={onToggleAll}
-      className="mb-6 rounded-pill border border-line bg-surface px-4 py-2.5 text-[15px] font-semibold text-ink hover:bg-surface-2 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
+      className="mt-[clamp(28px,4vw,44px)] mb-6 rounded-pill border border-line bg-surface px-4 py-2.5 text-[15px] font-semibold text-ink hover:bg-surface-2 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
     >
       {label}
     </button>

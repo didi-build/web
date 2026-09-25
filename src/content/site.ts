@@ -14,8 +14,7 @@ export const siteContent = {
       "how can AI help my small business",
     ],
     ogHeadline: ["AI that actually", "fits your", "business."],
-    ogImageAlt:
-      "Didi Build open graph card with vine illustration and headline AI that actually fits your business.",
+    ogImageAlt: "Didi Build: AI that actually fits your business.",
     siteUrl: "https://didi.build",
   },
   a11y: {
