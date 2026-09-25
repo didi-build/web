@@ -13,7 +13,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
   const personId = `${siteUrl}/#founder`;
   const faqId = `${siteUrl}/#faq`;
   const ogImage = absoluteUrl("/opengraph-image");
-  const logo = absoluteUrl("/icon.svg");
+  const logo = absoluteUrl("/icon.png");
 
   const serviceItems = whatIDo.examples.map((example, index) => ({
     "@type": "Offer",

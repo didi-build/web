@@ -1,9 +1,9 @@
 export const siteContent = {
   brand: "Didi Build",
   meta: {
-    title: "Didi Build | AI integration for small businesses in Toronto",
+    title: "Custom AI for Small Businesses | Didi Build",
     description:
-      "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
+      "Curious how AI could help your business grow? I'll find where it fits, then build it.",
     businessDescription:
       "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
     keywords: [
@@ -13,10 +13,9 @@ export const siteContent = {
       "custom AI tools for my business",
       "how can AI help my small business",
     ],
-    openGraphTitle: "Didi Build",
-    openGraphDescription:
-      "AI that saves you time or makes you money. I find where it fits in your business, then I build it.",
-    ogImageAlt: "Didi Build: AI integration for small businesses in Toronto",
+    ogHeadline: ["AI that actually", "fits your", "business."],
+    ogImageAlt:
+      "Didi Build open graph card with vine illustration and headline AI that actually fits your business.",
     siteUrl: "https://didi.build",
   },
   a11y: {
@@ -92,6 +91,8 @@ export const siteContent = {
   faq: {
     eyebrow: "FAQ",
     headline: "Straight answers to common questions.",
+    expandAll: "Expand all",
+    collapseAll: "Collapse all",
     items: [
       {
         question: "How can AI help my small business grow?",

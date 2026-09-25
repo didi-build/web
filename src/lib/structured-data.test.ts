@@ -47,6 +47,13 @@ describe("buildStructuredDataGraph", () => {
     expect(byType.FAQPage).toBe(`${siteUrl}/#faq`);
   });
 
+  it("uses raster logo URL for ProfessionalService", () => {
+    const graph = buildStructuredDataGraph();
+    const nodes = graph["@graph"] as Array<{ "@type": string; logo?: string }>;
+    const business = nodes.find((n) => n["@type"] === "ProfessionalService");
+    expect(business?.logo).toBe(`${siteContent.meta.siteUrl}/icon.png`);
+  });
+
   it("uses businessDescription for WebSite and ProfessionalService", () => {
     const graph = buildStructuredDataGraph();
     const nodes = graph["@graph"] as Array<{ "@type": string; description?: string }>;
