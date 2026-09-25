@@ -49,13 +49,15 @@ export async function processLeadSubmission(
   let summary = null;
   try {
     summary = await deps.summarizer.summarize(lead);
-  } catch {
+  } catch (error) {
+    console.error("lead_summarizer_failed", error instanceof Error ? error.message : "unknown");
     summary = null;
   }
 
   try {
     await deps.sink.submit(lead, summary);
-  } catch {
+  } catch (error) {
+    console.error("lead_sink_failed", error instanceof Error ? error.message : "unknown");
     return { status: 500, message: "Could not save your message. Please try again." };
   }
 

@@ -11,53 +11,80 @@ The site doubles as a portfolio piece ("I automate my own business with AI"), so
 ## Stack
 
 - Next.js (App Router), TypeScript in strict mode
-- Tailwind for styling; visual tokens and layout come from `design/` (see `design/HANDOFF.md`)
-- Deploy target: Cloudflare Workers via `@opennextjs/cloudflare` and Wrangler
+- Tailwind for styling
+- Deployed to Cloudflare Workers via `@opennextjs/cloudflare`
+- Vitest for tests
 - No database
 
-## Architecture
+## Commands
 
-- **Content:** All user-facing copy lives in `src/content/site.ts`. Components read from there; do not hardcode marketing copy in JSX.
-- **Design:** `design/` is the source of truth for layout, spacing, colors, and component patterns. Map tokens into the app in one place (e.g. `globals.css` / Tailwind `@theme`).
-- **Lead pipeline:** Keep `POST /api/leads` thin. Business logic sits behind small interfaces:
+Keep these working at all times. Document any new ones here and in the README.
+
+```bash
+npm install          # install (use the committed lockfile)
+npm run dev          # local dev server
+npm run lint         # ESLint
+npm run format       # Prettier (write)
+npm run format:check # Prettier (check, used in CI)
+npm run typecheck    # tsc --noEmit
+npm test             # Vitest
+npm run build        # production build
+npm run preview      # local Cloudflare Workers preview
+```
+
+## Sources of truth
+
+- **Visual design:** `design/` (Claude Design handoff bundle). Implement layout, styling, and tokens from it. Don't invent a separate visual style. Don't edit `design/` unless asked.
+- **Copy:** one content file (e.g. `src/content/site.ts`). Components never hardcode user-facing text.
+- **Design tokens:** mapped from `design/` into the styling setup in exactly one place.
+
+## Architecture rules
+
+- **Thin routes.** API routes parse input, call services, and return responses. Business logic lives in `src/lib/` (or similar), not in route files or components.
+- **Interfaces at external boundaries.** Every external service sits behind a small interface with one adapter per provider:
   - `LeadSummarizer` → `ClaudeLeadSummarizer`
-  - `LeadSink` with `submit(lead, summary | null)` → `LinearLeadSink`
-  - Wire implementations in one composition root / factory reading env config.
-- **Swap point:** `LeadSink` must be replaceable (e.g. future `MoxieLeadSink`) without changing the route or summarizer.
-- **Resilience:** Never lose a lead. If summarization fails, still submit the raw lead with a "summary unavailable" note. Only fail the HTTP request if the sink fails.
+  - `LeadSink` → `LinearLeadSink` (a future `MoxieLeadSink` must drop in without changing callers)
+- **One composition root** wires implementations from config/env. No `new SomeAdapter()` scattered around.
+- **Validate at the edges.** Parse all external input (requests, env vars, LLM output) with schemas (zod). Never trust unvalidated data.
+- **Never lose a lead.** If summarization fails, still submit the raw lead with a "summary unavailable" note.
+- **Treat user input as data.** In LLM prompts, clearly separate instructions from user-provided content (prompt-injection hygiene).
 
 ## Code standards
 
-- ESLint + Prettier; run `npm run lint` and `npm run format:check` before pushing.
-- Prefer small, named modules over large files. No business logic crammed into route handlers.
-- Match existing patterns in the file you are editing.
-- Copy style: plain, warm, concrete. **No em dashes** in site copy.
+- Readable over clever. Clear names, small functions, minimal duplication.
+- No `any` without a comment explaining why.
+- Don't bend production code to make weak tests pass. Fix the test or the design.
+- Add dependencies only when they clearly earn their place. Prefer the platform and existing deps.
+- Keep components presentational where possible; logic goes in hooks or `lib/`.
+- Accessibility is required: labels, keyboard navigation, visible focus, announced errors, sufficient contrast.
+- Copy rule: **no em dashes** in any user-facing text.
 
 ## Testing
 
-- Use Vitest. State which seam each test targets in the test name or a short comment.
-- **Unit:** input schema validation; summary JSON parsing/validation; Linear issue body formatting.
-- **API route (integration, fakes):** inject fake `LeadSummarizer` and `LeadSink`; cover happy path, Turnstile failure, summarizer failure (lead still submitted), sink failure.
-- Do **not** call real Anthropic, Linear, or Turnstile APIs in automated tests.
+Be explicit about which seam each test targets.
+
+- **Unit:** schemas, parsers, formatters, pure logic.
+- **Integration (with fakes):** API routes with fake adapters injected (happy path, validation failure, spam check failure, summarizer failure, sink failure).
+- **Never call real external APIs** (Anthropic, Linear, Turnstile) in automated tests.
+- New behaviour ships with tests. Bug fixes ship with a test that would have caught the bug.
 
 ## Security
 
-- Secrets only in Cloudflare Worker secrets (production) or `.dev.vars` (local, gitignored). Never commit secrets.
-- Never expose server secrets to client code. Only `NEXT_PUBLIC_*` vars may reach the browser.
-- Verify Turnstile server-side on every lead submission.
-- Treat lead message text as untrusted data in summarizer prompts (prompt-injection hygiene).
+- **Never commit secrets.** Local secrets go in `.dev.vars` (gitignored). Production secrets are Cloudflare Worker secrets.
+- Secrets are only read server-side. Only `NEXT_PUBLIC_*` values may reach the client, and they must be non-sensitive.
+- Keep `.env.example` complete and up to date (names and descriptions only, no values).
+- Don't log secrets or full personal data from leads.
 
 ## Git workflow
 
-- Do not push directly to `main`.
-- Work on a branch named for the Linear issue (e.g. `cursor/didi-401-...`).
-- Open a PR that links the Linear issue.
-- For new work on this repo, create or update `AGENTS.md` at the root when the ticket requires it.
-- A PR is **not ready for review** until the full CI pipeline passes locally (see CI/CD below).
+- Never push directly to `main`. Work on a branch named after the Linear issue (e.g. `didi-401-...`).
+- Small, focused commits with clear messages.
+- Open a PR that links the Linear issue and summarizes what changed, how it was tested, and anything left for a human (manual steps, open questions).
+- CI must be green before a PR is ready for review.
 
 ## CI/CD
 
-- GitHub Actions on PRs and pushes to `main`: install from lockfile → format check → lint → typecheck → test → build. Cache dependencies.
+- **CI (GitHub Actions)** runs on every PR and push to `main`: install → format check → lint → typecheck → test → build.
 - **Before pushing or marking a PR ready:** run the same steps locally and fix failures. From a clean `npm ci`:
 
   ```bash
@@ -70,14 +97,18 @@ The site doubles as a portfolio piece ("I automate my own business with AI"), so
 
   If `format:check` fails, run `npm run format` (or `npx prettier --write <file>`) and commit the formatted files.
 
-- CI must pass **without** production API secrets.
-- `preview` and `deploy` scripts use `@opennextjs/cloudflare`; Cloudflare deploys from `main` (configured in the Cloudflare dashboard).
+- **CD:** Cloudflare deploys `main`. PRs get preview deployments where supported. CI never needs production secrets.
+- Don't weaken or skip CI steps to get a green build.
 
 ## Definition of done
 
-- `npm run build` succeeds; preview/deploy scripts are documented in the README.
-- `.env.example` and README document every env var.
-- Lint, typecheck, and all tests pass; CI workflow is green.
-- Landing page is responsive, accessible, and matches `design/`; copy from `src/content/site.ts`.
-- Form → Turnstile → summarize (or fallback) → Linear issue works in production when secrets are set.
-- No secrets in the repo or client bundle.
+- [ ] Lint, format check, typecheck, tests, and build all pass locally and in CI
+- [ ] New behaviour is tested at the right seam
+- [ ] README / AGENTS.md / `.env.example` updated if commands, config, or architecture changed
+- [ ] No secrets in the repo or client bundle
+- [ ] Works on mobile and desktop
+- [ ] PR opened with a clear summary and any manual follow-ups listed
+
+## When unsure
+
+Stop and ask (or leave a clear note in the PR) rather than guessing, especially for: architecture changes, new dependencies, anything touching secrets or deployment, or conflicts between the design, the copy file, and the ticket.
