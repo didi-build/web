@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Figtree } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
+import { JsonLd } from "@/components/seo/JsonLd";
 import { siteContent } from "@/content/site";
 import { THEME_STORAGE_KEY } from "@/lib/theme-storage-key";
 import "./globals.css";
@@ -17,6 +18,14 @@ export const metadata: Metadata = {
   metadataBase: new URL(meta.siteUrl),
   title: meta.title,
   description: meta.description,
+  keywords: [...meta.keywords],
+  alternates: {
+    canonical: "/",
+  },
+  robots: {
+    index: true,
+    follow: true,
+  },
   openGraph: {
     title: meta.openGraphTitle,
     description: meta.openGraphDescription,
@@ -42,6 +51,7 @@ export default function RootLayout({
   return (
     <html lang="en" suppressHydrationWarning>
       <head>
+        <JsonLd />
         <script dangerouslySetInnerHTML={{ __html: themeBootstrapScript }} />
       </head>
       <body className={`${figtree.variable}`}>
