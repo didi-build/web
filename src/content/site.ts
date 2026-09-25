@@ -90,6 +90,7 @@ export const siteContent = {
   faq: {
     eyebrow: "FAQ",
     headline: "Straight answers to common questions.",
+    questionsLabel: "questions",
     expandAll: "Expand all",
     collapseAll: "Collapse all",
     items: [
