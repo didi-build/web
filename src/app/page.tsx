@@ -1,3 +1,5 @@
+import { AboutSection } from "@/components/sections/AboutSection";
+import { FaqSection } from "@/components/sections/FaqSection";
 import { Header } from "@/components/layout/Header";
 import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/sections/Footer";
@@ -13,6 +15,8 @@ export default function Home() {
         <Hero />
         <WhatIDo />
         <HowItWorks />
+        <AboutSection />
+        <FaqSection />
         <ContactSection />
       </main>
       <Footer />

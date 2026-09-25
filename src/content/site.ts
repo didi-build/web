@@ -1,9 +1,16 @@
 export const siteContent = {
   brand: "Didi Build",
   meta: {
-    title: "Didi Build | AI integration for small businesses",
+    title: "Didi Build | AI integration for small businesses in Toronto",
     description:
-      "Independent AI integration in Toronto. I learn how your business runs, then build tools that save time or make money where they fit.",
+      "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
+    keywords: [
+      "AI integration for small business",
+      "AI consultant Toronto",
+      "AI automation small business Ontario",
+      "custom AI tools for my business",
+      "how can AI help my small business",
+    ],
     openGraphTitle: "Didi Build",
     openGraphDescription:
       "AI that saves you time or makes you money. I find where it fits in your business, then I build it.",
@@ -58,6 +65,60 @@ export const siteContent = {
     closingPrefix: "Have something else in mind?",
     closingLink: "Tell me about it.",
     exampleLabel: "Example",
+  },
+  founder: {
+    name: "Diadem (Didi) Shoukralla",
+    jobTitle: "Founder and AI integration consultant",
+  },
+  about: {
+    eyebrow: "About me",
+    headline: "Software engineer, now focused on practical AI for small business.",
+    lead: "I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.",
+    followUp:
+      "These days I help small businesses adopt AI in ways that fit how they actually work.",
+    ctaPrefix: "Browse my",
+    ctaOr: "or connect on",
+  },
+  faq: {
+    eyebrow: "FAQ",
+    headline: "Straight answers to common questions.",
+    items: [
+      {
+        question: "How can AI help my small business?",
+        answer:
+          "AI can take repetitive work off your plate: sorting leads, pulling data from forms and invoices, drafting replies, or answering questions from your own documents. I start by learning where your time goes, then build only what pays for itself in time saved or revenue.",
+      },
+      {
+        question: "Do I need technical staff to use what you build?",
+        answer:
+          "No. I design for the people who will use it every day, in plain language, on the tools you already use. I hand off simple docs and show your team how it works. If something breaks, you can reach me through support or a fix visit.",
+      },
+      {
+        question: "How much does it cost?",
+        answer:
+          "Every project is fixed price and fixed scope, quoted after the free discovery chat so you know the number before work starts. Early clients get a discount while I build my client portfolio. There are no surprise hourly bills.",
+      },
+      {
+        question: "How long does a project take?",
+        answer:
+          "It depends on scope. Small automations can ship in a few weeks; larger builds take longer. The written plan we agree on before payment includes a realistic timeline, and I keep you updated along the way.",
+      },
+      {
+        question: "Is my business data safe?",
+        answer:
+          "You keep ownership of your accounts and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I do not resell your data or train public models on it.",
+      },
+      {
+        question: "Do you only work in Toronto?",
+        answer:
+          "I'm based in Toronto and happy to meet locally. I also work with businesses across Canada remotely, which is how most projects run once we have kicked off.",
+      },
+      {
+        question: "What if AI isn't a good fit for us?",
+        answer:
+          "I'll tell you in the free chat. If the problem is better solved without AI, or the timing is not right, I'd rather say so upfront than sell you something you do not need.",
+      },
+    ],
   },
   howItWorks: {
     eyebrow: "How it works",
@@ -127,5 +188,7 @@ export const siteContent = {
     contact: "contact",
     how: "how-it-works",
     what: "what-i-do",
+    about: "about",
+    faq: "faq",
   },
 } as const;
