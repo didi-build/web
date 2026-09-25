@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "node scripts/embed-og-assets.mjs && next build",
+    "build": "tsx scripts/generate-og-image.tsx && next build",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",
@@ -37,10 +37,11 @@
     "eslint-config-prettier": "^10.1.8",
     "husky": "^9.1.7",
     "lint-staged": "^16.4.0",
+    "png-to-ico": "^3.0.2",
     "prettier": "^3.9.9",
     "sharp": "^0.35.4",
     "tailwindcss": "^4",
-    "to-ico": "^1.1.5",
+    "tsx": "^4.23.15",
     "typescript": "^5",
     "vitest": "^3.2.7",
     "wrangler": "^4.139.0"

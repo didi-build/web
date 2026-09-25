@@ -1,14 +1,16 @@
 "use client";
 
+import { FaqPlusIcon } from "@/components/sections/FaqPlusIcon";
 import { siteContent } from "@/content/site";
 import { useCallback, useEffect, useState } from "react";
 
 type Props = {
   listId: string;
+  questionCount: number;
 };
 
-export function FaqExpandControls({ listId }: Props) {
-  const { expandAll, collapseAll } = siteContent.faq;
+export function FaqExpandControls({ listId, questionCount }: Props) {
+  const { expandAll, collapseAll, questionsLabel } = siteContent.faq;
   const [allExpanded, setAllExpanded] = useState(false);
 
   const syncFromDetails = useCallback(() => {
@@ -42,13 +44,20 @@ export function FaqExpandControls({ listId }: Props) {
   const label = allExpanded ? collapseAll : expandAll;
 
   return (
-    <button
-      type="button"
-      aria-controls={listId}
-      onClick={onToggleAll}
-      className="mt-[clamp(28px,4vw,44px)] mb-6 rounded-pill border border-line bg-surface px-4 py-2.5 text-[15px] font-semibold text-ink hover:bg-surface-2 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
-    >
-      {label}
-    </button>
+    <div className="flex items-center justify-between gap-4 border-b-2 border-ink pb-5">
+      <p className="m-0 whitespace-nowrap text-[15px] font-semibold text-ink-muted">
+        {questionCount} {questionsLabel}
+      </p>
+      <button
+        type="button"
+        aria-expanded={allExpanded}
+        aria-controls={listId}
+        onClick={onToggleAll}
+        className="inline-flex min-h-11 shrink-0 items-center gap-2.5 rounded-pill border-[1.5px] border-ink bg-transparent px-[18px] text-[15px] font-semibold text-ink hover:bg-ink hover:text-bg focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
+      >
+        <FaqPlusIcon minus={allExpanded} />
+        {label}
+      </button>
+    </div>
   );
 }
