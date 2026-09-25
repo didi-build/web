@@ -36,11 +36,11 @@ a:hover{color:var(--ink)}
 @media (prefers-reduced-motion:reduce){[data-theme] *{transition:none!important}}
 </style>
 </helmet>
-<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s">
+<div data-theme="{{ theme }}" style="container-type:inline-size;background:var(--bg);color:var(--ink);font-family:Figtree,system-ui,sans-serif;font-size:17px;line-height:1.6;-webkit-font-smoothing:antialiased;transition:background .2s,color .2s;overflow-x:clip">
 
 <a href="#{{ ids.contact }}" onClick="{{ goContact }}" style="position:absolute;left:-9999px" style-focus="left:16px;top:16px;z-index:10;background:var(--accent);color:var(--accent-ink);padding:10px 16px;border-radius:999px">Skip to contact form</a>
 
-<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ true }}">
 <header style="max-width:1168px;margin:0 auto;padding:20px clamp(20px,5cqi,48px);display:flex;align-items:center;justify-content:space-between;gap:12px">
 <a href="#" style="display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--ink);border-radius:8px">
 <span aria-hidden="true" style="width:14px;height:14px;border-radius:14px 2px 14px 2px;background:var(--accent)"></span>
@@ -56,7 +56,7 @@ a:hover{color:var(--ink)}
 
 </sc-if>
 <main>
-<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showTop }}" hint-placeholder-val="{{ true }}">
 <section data-screen-label="Hero" style="position:relative;max-width:1168px;margin:0 auto;padding:clamp(40px,8cqi,104px) clamp(20px,5cqi,48px) clamp(64px,9cqi,120px)">
 <div aria-hidden="true" style="position:absolute;top:0;right:clamp(0px,2cqi,24px);width:clamp(120px,32cqi,420px);height:100%;pointer-events:none">{{ heroVine }}</div>
 <div style="position:relative;padding-right:clamp(110px,28cqi,400px)">
@@ -121,6 +121,7 @@ a:hover{color:var(--ink)}
 </section>
 
 </sc-if>
+<sc-if value="{{ showContact }}" hint-placeholder-val="{{ true }}">
 <section id="{{ ids.contact }}" data-screen-label="Contact" aria-labelledby="{{ ids.contactH }}" style="max-width:1168px;margin:0 auto;padding:clamp(56px,9cqi,112px) clamp(20px,5cqi,48px);display:flex;flex-wrap:wrap;gap:clamp(40px,6cqi,80px)">
 <div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
 <p style="margin:0;font-size:15px;font-weight:600;color:var(--accent-text)">Book a free 30-min chat</p>
@@ -179,9 +180,67 @@ a:hover{color:var(--ink)}
 </sc-if>
 </div>
 </section>
+</sc-if>
+
+<sc-if value="{{ showBottom }}" hint-placeholder-val="{{ true }}">
+<section data-screen-label="FAQ" aria-labelledby="{{ ids.faqH }}" style="position:relative;background:var(--surface-2)">
+<div style="max-width:1168px;margin:0 auto;padding:clamp(56px,9cqi,112px) clamp(20px,5cqi,48px);display:flex;flex-wrap:wrap;gap:clamp(40px,6cqi,80px)">
+<div style="flex:1 1 320px;min-width:0;display:flex;flex-direction:column;gap:20px">
+<p style="margin:0;font-size:15px;font-weight:600;color:var(--accent-text)">FAQ</p>
+<h2 id="{{ ids.faqH }}" style="margin:0;max-width:16ch;font-weight:600;font-size:clamp(1.75rem,1.2rem + 2cqi,2.75rem);line-height:1.15;letter-spacing:-0.022em;text-wrap:balance">Straight answers to common questions.</h2>
+<div aria-hidden="true" style="position:relative;flex:1 1 auto;min-height:0;max-height:clamp(0px,(100cqi - 760px) * 100,4000px);margin-top:clamp(-20px,(760px - 100cqi) * 100,0px);pointer-events:none">
+<div style="position:absolute;top:max(24px,(760px - 100cqi) * 100);right:0;bottom:calc(-1 * clamp(56px,9cqi,112px) - 28px);left:calc(-1 * clamp(20px,5cqi,48px) - clamp(0px,(100cqi - 1168px) / 2,150px))">{{ faqVine }}</div>
+</div>
+</div>
+<div style="flex:1.3 1 440px;min-width:0">
+<div style="display:flex;align-items:center;justify-content:space-between;gap:16px;padding-bottom:20px;border-bottom:2px solid var(--ink)">
+<p style="margin:0;font-size:15px;font-weight:600;color:var(--ink-muted);white-space:nowrap">{{ faqCount }} questions</p>
+<button type="button" onClick="{{ toggleAll }}" aria-expanded="{{ allOpen }}" style="min-height:44px;display:inline-flex;align-items:center;gap:10px;padding:0 18px;border-radius:999px;border:1.5px solid var(--ink);background:transparent;color:var(--ink);font:600 15px Figtree,sans-serif;cursor:pointer;white-space:nowrap" style-hover="background:var(--ink);color:var(--bg)">
+<span aria-hidden="true" style="position:relative;width:12px;height:12px"><span style="position:absolute;left:0;top:5px;width:12px;height:2px;border-radius:2px;background:currentColor"></span><span style="position:absolute;left:5px;top:0;width:2px;height:12px;border-radius:2px;background:currentColor;transition:transform .25s;transform:scaleY({{ allScale }})"></span></span>
+{{ allLabel }}
+</button>
+</div>
+<ul style="margin:0;padding:0;list-style:none">
+<sc-for list="{{ faqs }}" as="q" hint-placeholder-count="7">
+<li style="border-bottom:1px solid var(--line)">
+<h3 style="margin:0;font-size:inherit">
+<button type="button" id="{{ q.btnId }}" aria-expanded="{{ q.open }}" aria-controls="{{ q.panelId }}" onClick="{{ q.toggle }}" style="width:100%;min-height:72px;display:flex;align-items:center;justify-content:space-between;gap:24px;padding:18px 0;background:transparent;border:0;color:var(--ink);font:600 1.125rem/1.4 Figtree,sans-serif;letter-spacing:-0.005em;text-align:left;cursor:pointer" style-hover="color:var(--accent-text)">
+<span style="text-wrap:pretty">{{ q.q }}</span>
+<span aria-hidden="true" style="flex:none;position:relative;width:36px;height:36px;border-radius:999px;border:1px solid {{ q.iconBorder }};background:{{ q.iconBg }};color:{{ q.iconInk }};transition:background .2s,border-color .2s,color .2s"><span style="position:absolute;left:11px;top:16px;width:12px;height:2px;border-radius:2px;background:currentColor"></span><span style="position:absolute;left:16px;top:11px;width:2px;height:12px;border-radius:2px;background:currentColor;transition:transform .25s;transform:scaleY({{ q.vScale }})"></span></span>
+</button>
+</h3>
+<div id="{{ q.panelId }}" role="region" aria-labelledby="{{ q.btnId }}" style="display:grid;grid-template-rows:{{ q.rows }};visibility:{{ q.vis }};transition:grid-template-rows .3s ease,visibility .3s">
+<div style="overflow:hidden;min-height:0">
+<p style="margin:0;padding:0 clamp(0px,6cqi,60px) 28px 0;max-width:62ch;color:var(--ink-muted);text-wrap:pretty">{{ q.a }}</p>
+</div>
+</div>
+</li>
+</sc-for>
+</ul>
+</div>
+</div>
+</section>
+
+<section data-screen-label="About" aria-labelledby="{{ ids.aboutH }}" style="max-width:1168px;margin:0 auto;padding:clamp(72px,10cqi,128px) clamp(20px,5cqi,48px) clamp(56px,7cqi,88px)">
+<div style="position:relative;background:var(--accent-soft);border-radius:24px;padding:clamp(28px,5cqi,64px);display:flex;flex-wrap:wrap;gap:clamp(24px,5cqi,64px)">
+<div style="position:relative;flex:1 1 440px;min-width:0;display:flex;flex-direction:column;gap:24px">
+<p style="margin:0;display:flex;align-items:center;gap:10px;font-size:15px;font-weight:600;color:var(--accent-text)"><span aria-hidden="true" style="width:12px;height:12px;border-radius:12px 2px 12px 2px;background:var(--accent)"></span>About me</p>
+<h2 id="{{ ids.aboutH }}" style="margin:0;max-width:20ch;font-weight:600;font-size:clamp(1.9rem,1.2rem + 2.6cqi,3.25rem);line-height:1.1;letter-spacing:-0.025em;text-wrap:balance">A software engineer building custom AI for small businesses.</h2>
+<div style="display:flex;flex-direction:column;gap:14px;max-width:52ch;font-size:clamp(1.0625rem,1rem + .3cqi,1.1875rem);line-height:1.6;text-wrap:pretty">
+<p style="margin:0">I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.</p>
+<p style="margin:0;color:var(--ink-muted)">These days I help small businesses adopt AI in ways that fit how they actually work.</p>
+<p style="margin:0;color:var(--ink-muted)">Browse my <a href="https://portfolio.didi.build" style="font-weight:600">portfolio site</a> or connect on <a href="https://www.linkedin.com/in/diadem-shoukralla/" style="font-weight:600">LinkedIn</a>.</p>
+</div>
+</div>
+<div aria-hidden="true" style="position:relative;flex:1 1 220px;max-width:380px;min-height:clamp(170px,24cqi,300px);pointer-events:none">
+<div style="position:absolute;top:0;left:0;bottom:calc(-1 * clamp(28px,5cqi,64px) - clamp(56px,7cqi,88px) - 2px);right:calc(-1 * clamp(28px,5cqi,64px) - clamp(20px,5cqi,48px) - clamp(0px,(100cqi - 1168px) / 2,150px))">{{ aboutVine }}</div>
+</div>
+</div>
+</section>
+</sc-if>
 </main>
 
-<sc-if value="{{ full }}" hint-placeholder-val="{{ true }}">
+<sc-if value="{{ showBottom }}" hint-placeholder-val="{{ true }}">
 <footer style="border-top:1px solid var(--line)">
 <div style="max-width:1168px;margin:0 auto;padding:32px clamp(20px,5cqi,48px) 40px;display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:20px">
 <div style="display:flex;align-items:center;gap:10px">
@@ -201,7 +260,7 @@ a:hover{color:var(--ink)}
 </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;headline&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;short&quot;,&quot;question&quot;,&quot;original&quot;],&quot;default&quot;:&quot;short&quot;,&quot;tsType&quot;:&quot;'short'|'question'|'original'&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;system&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;system&quot;,&quot;tsType&quot;:&quot;'system'|'light'|'dark'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;showState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;invalid&quot;,&quot;error&quot;,&quot;success&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;'live'|'invalid'|'error'|'success'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;submitOutcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;success&quot;,&quot;error&quot;],&quot;default&quot;:&quot;success&quot;,&quot;tsType&quot;:&quot;'success'|'error'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;contactOnly&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;headline&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;short&quot;,&quot;question&quot;,&quot;original&quot;],&quot;default&quot;:&quot;short&quot;,&quot;tsType&quot;:&quot;'short'|'question'|'original'&quot;,&quot;section&quot;:&quot;Hero&quot;},&quot;theme&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;system&quot;,&quot;light&quot;,&quot;dark&quot;],&quot;default&quot;:&quot;system&quot;,&quot;tsType&quot;:&quot;'system'|'light'|'dark'&quot;,&quot;section&quot;:&quot;Theme&quot;},&quot;showState&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;live&quot;,&quot;invalid&quot;,&quot;error&quot;,&quot;success&quot;],&quot;default&quot;:&quot;live&quot;,&quot;tsType&quot;:&quot;'live'|'invalid'|'error'|'success'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;submitOutcome&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;success&quot;,&quot;error&quot;],&quot;default&quot;:&quot;success&quot;,&quot;tsType&quot;:&quot;'success'|'error'&quot;,&quot;section&quot;:&quot;Form preview&quot;},&quot;faqPreview&quot;:{&quot;editor&quot;:&quot;enum&quot;,&quot;options&quot;:[&quot;collapsed&quot;,&quot;one open&quot;,&quot;all open&quot;],&quot;default&quot;:&quot;collapsed&quot;,&quot;tsType&quot;:&quot;'collapsed'|'one open'|'all open'&quot;,&quot;section&quot;:&quot;FAQ preview&quot;},&quot;contactOnly&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;},&quot;bottomOnly&quot;:{&quot;editor&quot;:null,&quot;default&quot;:false,&quot;tsType&quot;:&quot;boolean&quot;}}">
 class Component extends DCLogic {
   Vine = ({ stem, n = 8, size = 46, vb, par = 'xMaxYMin meet', delay = 0, seed = 1, startT = 0.1 }) => {
     const ref = React.useRef(); const [on, setOn] = React.useState(false);
@@ -209,7 +268,8 @@ class Component extends DCLogic {
       const el = ref.current; if (!el) return;
       if (!('IntersectionObserver' in window)) { setOn(true); return; }
       const io = new IntersectionObserver(es => { if (es.some(e => e.isIntersecting)) { setOn(true); io.disconnect(); } }, { threshold: 0.15 });
-      io.observe(el); return () => io.disconnect();
+      io.observe(el); const fb = setTimeout(() => setOn(true), 1500);
+      return () => { io.disconnect(); clearTimeout(fb); };
     }, []);
     const [p0, p1, p2, p3] = stem;
     const B = t => { const u = 1 - t; return [0, 1].map(k => u*u*u*p0[k] + 3*u*u*t*p1[k] + 3*u*t*t*p2[k] + t*t*t*p3[k]); };
@@ -237,8 +297,24 @@ class Component extends DCLogic {
   state = {
     sysDark: false, override: null,
     values: { name: '', email: '', business: '', website: '', message: '' },
-    touched: {}, submitted: false, status: 'idle'
+    touched: {}, submitted: false, status: 'idle', faqOpen: {}
   };
+  applyFaqPreview() {
+    const p = this.props.faqPreview ?? 'collapsed', o = {};
+    if (p === 'one open') o[2] = true;
+    if (p === 'all open') this.faqData.forEach((_, i) => o[i] = true);
+    this.setState({ faqOpen: o });
+  }
+  faqData = [
+    // Placeholder answers: replace with the live answers from didi.build
+    { q: 'How can AI help my small business grow?', a: 'Mostly by giving you back time. AI can sort and answer inquiries, pull details out of paperwork, and draft replies, so you and your team spend more of the day on customers. In the first chat we find the one or two places where that would make the biggest difference.' },
+    { q: 'Do I need technical staff to use what you build?', a: 'No. I build it to fit the tools you already use and walk you and your team through it in plain English. If something needs attention later, I take care of it.' },
+    { q: 'How much does it cost?', a: 'The first 30-minute chat is free. Before any work starts, you get a written plan with one fixed price, and that is what you pay. Support afterwards is optional: a simple monthly plan, or pay only when you need something.' },
+    { q: 'How long does a project take?', a: 'It depends on the scope. You will know the timeline before we start, because it is in the written plan along with the price.' },
+    { q: 'Is my business data safe?', a: 'Your data is only used for the work you asked for, and access is limited to you and your team. Before anything is built, I explain exactly where your information goes.' },
+    { q: 'Do you only work in Toronto?', a: 'I am based in Toronto, but most of the work happens over video calls and email, so I can work with businesses anywhere.' },
+    { q: "What if AI isn't a good fit for us?", a: "Then I'll tell you. The first chat is free with no obligation, and you'll leave with a clearer picture of where your time goes." }
+  ];
   componentDidMount() {
     this.mq = window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)');
     if (this.mq) {
@@ -247,11 +323,13 @@ class Component extends DCLogic {
       this.mq.addEventListener('change', this.onMq);
     }
     this.applyShowState();
+    this.applyFaqPreview();
   }
   componentWillUnmount() { this.mq && this.mq.removeEventListener('change', this.onMq); }
   componentDidUpdate(p) {
     if (p.showState !== this.props.showState) this.applyShowState();
     if (p.theme !== this.props.theme) this.setState({ override: null });
+    if (p.faqPreview !== this.props.faqPreview) this.applyFaqPreview();
   }
   applyShowState() {
     const s = this.props.showState;
@@ -288,7 +366,15 @@ class Component extends DCLogic {
   }
   renderVals() {
     const u = this.uid, st = this.state, v = st.values;
-    const ids = { contact: u + '-contact', how: u + '-how', whatH: u + '-what-h', howH: u + '-how-h', contactH: u + '-contact-h', status: u + '-status' };
+    const ids = { contact: u + '-contact', how: u + '-how', whatH: u + '-what-h', howH: u + '-how-h', contactH: u + '-contact-h', status: u + '-status', faqH: u + '-faq-h', aboutH: u + '-about-h' };
+    const fo = st.faqOpen, allOpen = this.faqData.every((_, i) => fo[i]);
+    const faqs = this.faqData.map((f, i) => {
+      const open = !!fo[i];
+      return { ...f, open, btnId: u + '-faq-b' + i, panelId: u + '-faq-p' + i,
+        toggle: () => this.setState(s => ({ faqOpen: { ...s.faqOpen, [i]: !s.faqOpen[i] } })),
+        rows: open ? '1fr' : '0fr', vis: open ? 'visible' : 'hidden', vScale: open ? 0 : 1,
+        iconBg: open ? 'var(--accent)' : 'transparent', iconInk: open ? 'var(--accent-ink)' : 'var(--ink)', iconBorder: open ? 'var(--accent)' : 'var(--line-strong)' };
+    });
     const theme = this.resolvedTheme();
     const errs = this.validate(v);
     const shown = k => (st.submitted || st.touched[k]) && errs[k];
@@ -326,7 +412,11 @@ class Component extends DCLogic {
     };
     const hl = this.props.headline ?? 'short';
     return {
-      theme, ids, full: !this.props.contactOnly,
+      theme, ids, showTop: !this.props.contactOnly && !this.props.bottomOnly, showContact: !this.props.bottomOnly, showBottom: !this.props.contactOnly,
+      faqs, faqCount: faqs.length, allOpen, allLabel: allOpen ? 'Collapse all' : 'Expand all', allScale: allOpen ? 0 : 1,
+      toggleAll: () => { const o = {}; if (!allOpen) this.faqData.forEach((_, i) => o[i] = true); this.setState({ faqOpen: o }); },
+      faqVine: React.createElement(this.Vine, { vb: [0, 0, 360, 460], par: 'xMinYMax meet', stem: [[0, 150], [170, 80], [110, 380], [330, 470]], n: 9, size: 44, seed: 4, startT: 0.06 }),
+      aboutVine: React.createElement(this.Vine, { vb: [0, 0, 340, 420], par: 'xMaxYMax meet', stem: [[330, 424], [345, 250], [70, 300], [110, 20]], n: 10, size: 54, seed: 6 }),
       hShort: hl === 'short', hQuestion: hl === 'question', hOriginal: hl === 'original',
       heroVine: React.createElement(this.Vine, { vb: [0, 0, 300, 600], stem: [[250, 0], [330, 170], [60, 260], [150, 590]], n: 11, size: 58, seed: 2, delay: 0.2 }),
       howVine: React.createElement(this.Vine, { vb: [0, 0, 240, 150], par: 'xMaxYMax meet', stem: [[232, 152], [205, 90], [120, 40], [16, 34]], n: 6, size: 36, seed: 5 }),
