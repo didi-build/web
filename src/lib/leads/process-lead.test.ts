@@ -1,5 +1,4 @@
-import { afterEach, describe, expect, it, vi } from "vitest";
-import { __setLeadPipelineTestOverrides } from "./composition";
+import { describe, expect, it, vi } from "vitest";
 import { processLeadSubmission } from "./process-lead";
 import type { LeadRecord, LeadSummary, LeadSink, LeadSummarizer } from "./types";
 
@@ -37,10 +36,6 @@ function makeDeps(overrides: {
       } as LeadSink),
   };
 }
-
-afterEach(() => {
-  __setLeadPipelineTestOverrides(null);
-});
 
 describe("processLeadSubmission (API pipeline integration)", () => {
   it("happy path submits summarized lead", async () => {

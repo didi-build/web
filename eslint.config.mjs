@@ -10,18 +10,19 @@ const compat = new FlatCompat({
 });
 
 const eslintConfig = [
-  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
   {
     ignores: [
       "node_modules/**",
       ".next/**",
       ".open-next/**",
+      ".wrangler/**",
       "out/**",
       "build/**",
       "design/**",
       "next-env.d.ts",
     ],
   },
+  ...compat.extends("next/core-web-vitals", "next/typescript", "prettier"),
 ];
 
 export default eslintConfig;
