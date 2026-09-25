@@ -182,3 +182,21 @@ button:focus-visible {
 .rounded-pill {
   border-radius: var(--radius-pill);
 }
+
+.faq-details .faq-summary::-webkit-details-marker {
+  display: none;
+}
+
+.faq-details .faq-chevron {
+  transition: transform 0.2s ease;
+}
+
+.faq-details[open] .faq-chevron {
+  transform: rotate(180deg);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .faq-details .faq-chevron {
+    transition: none;
+  }
+}

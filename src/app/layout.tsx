@@ -27,8 +27,8 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
-    title: meta.openGraphTitle,
-    description: meta.openGraphDescription,
+    title: meta.title,
+    description: meta.description,
     url: meta.siteUrl,
     siteName: siteContent.brand,
     locale: "en_CA",
@@ -36,8 +36,8 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: meta.openGraphTitle,
-    description: meta.openGraphDescription,
+    title: meta.title,
+    description: meta.description,
   },
 };
 
