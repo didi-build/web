@@ -1,5 +1,7 @@
 "use client";
 
+import { siteContent } from "@/content/site";
+import { THEME_STORAGE_KEY } from "@/lib/theme-storage-key";
 import { createContext, useCallback, useContext, useEffect, useMemo, useState } from "react";
 
 type ThemeMode = "light" | "dark";
@@ -10,28 +12,28 @@ type ThemeContextValue = {
   themeAria: string;
 };
 
-const STORAGE_KEY = "didi-build-theme";
 const ThemeContext = createContext<ThemeContextValue | null>(null);
 
-function getSystemTheme(): ThemeMode {
-  if (typeof window === "undefined") {
-    return "light";
+function readThemeFromDocument(): ThemeMode {
+  const attr = document.documentElement.getAttribute("data-theme");
+  if (attr === "dark" || attr === "light") {
+    return attr;
   }
-  return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+  return "light";
 }
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
-  const [theme, setTheme] = useState<ThemeMode>("light");
+  const { a11y } = siteContent;
+  const [theme, setTheme] = useState<ThemeMode>(() =>
+    typeof document !== "undefined" ? readThemeFromDocument() : "light",
+  );
 
   useEffect(() => {
-    const stored = window.localStorage.getItem(STORAGE_KEY) as ThemeMode | null;
-    const initial = stored === "light" || stored === "dark" ? stored : getSystemTheme();
-    setTheme(initial);
-    document.documentElement.setAttribute("data-theme", initial);
+    setTheme(readThemeFromDocument());
 
     const mq = window.matchMedia("(prefers-color-scheme: dark)");
     const onChange = () => {
-      if (!window.localStorage.getItem(STORAGE_KEY)) {
+      if (!window.localStorage.getItem(THEME_STORAGE_KEY)) {
         const next = mq.matches ? "dark" : "light";
         setTheme(next);
         document.documentElement.setAttribute("data-theme", next);
@@ -45,7 +47,7 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     setTheme((current) => {
       const next: ThemeMode = current === "dark" ? "light" : "dark";
       document.documentElement.setAttribute("data-theme", next);
-      window.localStorage.setItem(STORAGE_KEY, next);
+      window.localStorage.setItem(THEME_STORAGE_KEY, next);
       return next;
     });
   }, []);
@@ -54,9 +56,9 @@ export function ThemeProvider({ children }: { children: React.ReactNode }) {
     () => ({
       theme,
       toggleTheme,
-      themeAria: theme === "dark" ? "Switch to light mode" : "Switch to dark mode",
+      themeAria: theme === "dark" ? a11y.themeSwitchToLight : a11y.themeSwitchToDark,
     }),
-    [theme, toggleTheme],
+    [theme, toggleTheme, a11y.themeSwitchToDark, a11y.themeSwitchToLight],
   );
 
   return (

@@ -29,7 +29,7 @@ export function WhatIDo() {
             className="flex min-h-60 flex-col gap-3 rounded-lg border border-line bg-surface p-7"
           >
             <span className="self-start rounded-pill bg-surface-2 px-2.5 py-1 text-[13px] font-semibold text-ink-muted">
-              Example {index + 1}
+              {whatIDo.exampleLabel} {index + 1}
             </span>
             <h3 className="mt-2 text-h3 font-semibold tracking-tight">{example.title}</h3>
             <p className="m-0 text-base leading-relaxed text-ink-muted">{example.body}</p>

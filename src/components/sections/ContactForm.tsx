@@ -34,7 +34,7 @@ function validate(values: FormValues, copy: typeof siteContent.contact.validatio
 }
 
 export function ContactForm() {
-  const { contact, sectionIds } = siteContent;
+  const { contact, sectionIds, a11y } = siteContent;
   const formId = useId();
   const statusRef = useRef<HTMLDivElement | null>(null);
   const [values, setValues] = useState<FormValues>({
@@ -165,12 +165,11 @@ export function ContactForm() {
           <div>
             <p className="m-0 font-semibold">{contact.errorTitle}</p>
             <p className="mb-0 mt-1 text-base text-ink">
-              Something went wrong on my end, and your text is still here. Please try again, or
-              email me at{" "}
+              {contact.errorBodyPrefix}
               <a href={`mailto:${contact.email}`} className="font-semibold text-ink underline">
                 {contact.email}
               </a>
-              .
+              {contact.errorBodySuffix}
             </p>
           </div>
         </div>
@@ -265,7 +264,12 @@ export function ContactForm() {
         )}
       </div>
 
-      <div aria-label="Spam protection" className="max-w-full">
+      <div
+        id={`${formId}-turnstile`}
+        tabIndex={-1}
+        aria-label={a11y.spamProtectionLabel}
+        className="max-w-full"
+      >
         {siteKey ? (
           <Turnstile
             siteKey={siteKey}
@@ -274,9 +278,7 @@ export function ContactForm() {
             options={{ theme: "auto", size: "flexible" }}
           />
         ) : (
-          <p id={`${formId}-turnstile`} className="m-0 text-sm text-ink-muted" tabIndex={-1}>
-            Spam protection is not configured in this environment.
-          </p>
+          <p className="m-0 text-sm text-ink-muted">{a11y.turnstileNotConfigured}</p>
         )}
         {turnstileError && (
           <p className="m-0 mt-2 text-[15px] font-medium text-error">{turnstileError}</p>

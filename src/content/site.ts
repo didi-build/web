@@ -5,6 +5,14 @@ export const siteContent = {
     description:
       "Independent AI integration in Toronto. I learn how your business runs, then build tools that save time where it matters.",
   },
+  a11y: {
+    skipToContact: "Skip to contact form",
+    spamProtectionLabel: "Spam protection",
+    turnstileNotConfigured: "Spam protection is not configured in this environment.",
+    footerNavLabel: "Elsewhere",
+    themeSwitchToLight: "Switch to light mode",
+    themeSwitchToDark: "Switch to dark mode",
+  },
   header: {
     cta: "Book a chat",
   },
@@ -45,6 +53,7 @@ export const siteContent = {
     ],
     closingPrefix: "Have something else in mind?",
     closingLink: "Tell me about it.",
+    exampleLabel: "Example",
   },
   howItWorks: {
     eyebrow: "How it works",
@@ -91,8 +100,9 @@ export const siteContent = {
     success: "Thanks! I'll get back to you within 2 business days.",
     sendAnother: "Send another message",
     errorTitle: "Your message didn't send.",
-    errorBody:
-      "Something went wrong on my end, and your text is still here. Please try again, or email me at hello@didi.build.",
+    errorBodyPrefix:
+      "Something went wrong on my end, and your text is still here. Please try again, or email me at ",
+    errorBodySuffix: ".",
     validation: {
       name: "Please enter your name.",
       emailRequired: "Please enter your email so I can reply.",

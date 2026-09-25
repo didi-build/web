@@ -1,7 +1,7 @@
 import { siteContent } from "@/content/site";
 
 export function Footer() {
-  const { brand, footer } = siteContent;
+  const { brand, footer, a11y } = siteContent;
   const year = new Date().getFullYear();
 
   return (
@@ -12,7 +12,7 @@ export function Footer() {
           <span className="font-bold">{brand}</span>
           <span className="text-[15px] text-ink-muted">© {year}</span>
         </div>
-        <nav aria-label="Elsewhere">
+        <nav aria-label={a11y.footerNavLabel}>
           <ul className="m-0 flex list-none flex-wrap gap-x-6 gap-y-1 p-0">
             {[footer.portfolio, footer.github, footer.linkedin].map((link) => (
               <li key={link.href}>
