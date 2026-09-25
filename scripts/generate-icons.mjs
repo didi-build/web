@@ -1,7 +1,7 @@
 import { readFileSync, writeFileSync } from "node:fs";
 import { join } from "node:path";
 import sharp from "sharp";
-import toIco from "to-ico";
+import pngToIco from "png-to-ico";
 
 const root = join(import.meta.dirname, "..");
 const iconSvgPath = join(root, "src/app/icon.svg");
@@ -27,7 +27,7 @@ writeFileSync(join(root, "src/app/icon.png"), icon192);
 
 const sizes = [16, 32, 48];
 const pngBuffers = await Promise.all(sizes.map((size) => pngFromSvg(size)));
-const ico = await toIco(pngBuffers);
+const ico = await pngToIco(pngBuffers);
 writeFileSync(join(root, "src/app/favicon.ico"), ico);
 
 console.log("Wrote src/app/icon.png and src/app/favicon.ico from src/app/icon.svg");
