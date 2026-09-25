@@ -11,9 +11,25 @@ const figtree = Figtree({
   variable: "--font-figtree",
 });
 
+const { meta } = siteContent;
+
 export const metadata: Metadata = {
-  title: siteContent.meta.title,
-  description: siteContent.meta.description,
+  metadataBase: new URL(meta.siteUrl),
+  title: meta.title,
+  description: meta.description,
+  openGraph: {
+    title: meta.openGraphTitle,
+    description: meta.openGraphDescription,
+    url: meta.siteUrl,
+    siteName: siteContent.brand,
+    locale: "en_CA",
+    type: "website",
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: meta.openGraphTitle,
+    description: meta.openGraphDescription,
+  },
 };
 
 const themeBootstrapScript = `(function(){try{var k=${JSON.stringify(THEME_STORAGE_KEY)};var s=localStorage.getItem(k);var t=s==="light"||s==="dark"?s:(window.matchMedia("(prefers-color-scheme: dark)").matches?"dark":"light");document.documentElement.setAttribute("data-theme",t);}catch(e){}})();`;

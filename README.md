@@ -7,14 +7,14 @@ See [AGENTS.md](./AGENTS.md) for repo rules and architecture.
 ## Stack
 
 - Next.js (App Router) + TypeScript (strict)
-- Tailwind CSS v4 (tokens from `design/HANDOFF.md`)
+- Tailwind CSS v4 (design tokens in `src/app/globals.css`, sourced from `design/web.dc.html`)
 - Deployed to Cloudflare Workers via [`@opennextjs/cloudflare`](https://opennext.js.org/cloudflare)
 
 ## Local development
 
 ```bash
 npm ci
-cp .env.example .env.local   # optional for `next dev` if you wire env manually
+cp .env.example .env.local
 npm run dev
 ```
 
@@ -25,8 +25,21 @@ For the full Workers runtime locally (including secrets from `.dev.vars`):
 ```bash
 cp .dev.vars.example .dev.vars
 # fill in secrets
+cp .env.example .env.local
+# NEXT_PUBLIC_TURNSTILE_SITE_KEY is required here too (see below)
 npm run preview
 ```
+
+### Turnstile test keys (local)
+
+Cloudflare documents always-pass test keys for development:
+
+| Kind   | Value                                 |
+| ------ | ------------------------------------- |
+| Site   | `1x00000000000000000000AA`            |
+| Secret | `1x0000000000000000000000000000000AA` |
+
+Put the site key in `.env.local` as `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for both `npm run dev` and `npm run preview`. Preview runs a production build, so the site key must be present at build time, not only at dev-server runtime.
 
 ## Environment variables
 
@@ -43,7 +56,7 @@ npm run preview
 
 **Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear vars, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
 
-**`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables (and in `.env.local` for `npm run dev`). Setting it only as a runtime Worker var will ship a build without the Turnstile widget.
+**`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables and in `.env.local` for `npm run dev` and `npm run preview`. Setting it only as a runtime Worker var will ship a build without the Turnstile widget.
 
 Never commit real secrets.
 
@@ -61,7 +74,7 @@ Never commit real secrets.
 
 ## Design
 
-UI is implemented from the handoff in `design/` (`Didi Build.dc.html`, `HANDOFF.md`). Marketing copy lives in `src/content/site.ts`.
+UI is implemented from `design/web.dc.html` (single design export). Marketing copy lives in `src/content/site.ts`.
 
 ## Lead pipeline
 

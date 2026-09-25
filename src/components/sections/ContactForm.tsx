@@ -147,7 +147,7 @@ export function ContactForm() {
       noValidate
       onSubmit={onSubmit}
       aria-labelledby={`${sectionIds.contact}-heading`}
-      className="flex flex-col gap-5 rounded-lg border border-line bg-surface p-6 md:p-10"
+      className="flex flex-col gap-6"
     >
       {status === "error" && (
         <div
@@ -183,9 +183,7 @@ export function ContactForm() {
         </p>
       )}
 
-      <p className="m-0 text-[15px] text-ink-muted">{contact.formNote}</p>
-
-      <div className="grid gap-5 sm:grid-cols-2">
+      <div className="grid gap-5 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))]">
         <FormField
           id={`${formId}-name`}
           label={contact.fields.name}
@@ -232,28 +230,21 @@ export function ContactForm() {
       </div>
 
       <div className="flex flex-col gap-2">
-        <label htmlFor={`${formId}-message`} className="text-base font-semibold">
+        <label htmlFor={`${formId}-message`} className="text-[15px] font-medium">
           {contact.fields.message}
         </label>
-        <p id={`${formId}-message-hint`} className="m-0 text-[15px] text-ink-muted">
-          {contact.messageHint}
-        </p>
         <textarea
           id={`${formId}-message`}
           name="message"
-          rows={6}
+          rows={5}
           value={values.message}
           onChange={(e) => setValues((v) => ({ ...v, message: e.target.value }))}
           onBlur={() => setTouched((t) => ({ ...t, message: true }))}
           aria-required
           aria-invalid={showError("message")}
-          aria-describedby={
-            showError("message")
-              ? `${formId}-message-error ${formId}-message-hint`
-              : `${formId}-message-hint`
-          }
+          aria-describedby={showError("message") ? `${formId}-message-error` : undefined}
           placeholder={contact.messagePlaceholder}
-          className={`min-h-[168px] w-full resize-y rounded-md border-[1.5px] bg-bg px-4 py-3.5 text-[17px] leading-relaxed text-ink focus:border-accent focus:shadow-[0_0_0_3px_var(--accent)] focus:outline-none ${
+          className={`min-h-36 w-full resize-y rounded-md border bg-surface px-4 py-3.5 text-[17px] leading-[1.55] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent)] focus:outline-none ${
             showError("message") ? "border-error" : "border-line-strong"
           }`}
         />
@@ -286,11 +277,11 @@ export function ContactForm() {
         )}
       </div>
 
-      <div className="flex flex-wrap items-center gap-4">
+      <div className="flex">
         <Button
           type="submit"
           disabled={status === "sending"}
-          className={`min-h-14 ${status === "sending" ? "opacity-70" : ""}`}
+          className={`min-h-14 px-[30px] ${status === "sending" ? "opacity-70" : ""}`}
         >
           {status === "sending"
             ? contact.sending
@@ -298,7 +289,6 @@ export function ContactForm() {
               ? contact.tryAgain
               : contact.submit}
         </Button>
-        <p className="m-0 text-[15px] text-ink-muted">{contact.replyNote}</p>
       </div>
     </form>
   );
@@ -334,7 +324,7 @@ function FormField({
   const errorId = `${id}-error`;
   return (
     <div className="flex min-w-0 flex-col gap-2">
-      <label htmlFor={id} className="flex items-baseline gap-2 text-base font-semibold">
+      <label htmlFor={id} className="flex items-baseline gap-1.5 text-[15px] font-medium">
         {label}
         {optionalLabel ? (
           <span className="text-sm font-normal text-ink-muted">{optionalLabel}</span>
@@ -353,7 +343,7 @@ function FormField({
         aria-required={required}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className={`min-h-[52px] w-full rounded-md border-[1.5px] bg-bg px-4 text-[17px] text-ink focus:border-accent focus:shadow-[0_0_0_3px_var(--accent)] focus:outline-none ${
+        className={`min-h-[52px] w-full rounded-md border bg-surface px-4 text-[17px] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent)] focus:outline-none ${
           error ? "border-error" : "border-line-strong"
         }`}
       />

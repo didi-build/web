@@ -5,6 +5,8 @@ const DEFAULT_MODEL = "claude-sonnet-5";
 const TIMEOUT_MS = 10_000;
 const MAX_ERROR_MESSAGE_CHARS = 200;
 
+const MODEL_OUTPUT_RETRY_ERRORS = new Set(["invalid_json", "invalid_shape", "anthropic_empty"]);
+
 const SYSTEM_PROMPT = `You are a lead intake assistant for a freelance AI integration practice.
 Return ONLY valid JSON (no markdown fences) matching this schema:
 {
@@ -38,6 +40,16 @@ type AnthropicErrorBody = {
   error?: { type?: string; message?: string };
 };
 
+export class AnthropicHttpError extends Error {
+  readonly status: number;
+
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = "AnthropicHttpError";
+    this.status = status;
+  }
+}
+
 function truncateMessage(message: string): string {
   if (message.length <= MAX_ERROR_MESSAGE_CHARS) {
     return message;
@@ -45,26 +57,32 @@ function truncateMessage(message: string): string {
   return `${message.slice(0, MAX_ERROR_MESSAGE_CHARS)}…`;
 }
 
-export function formatAnthropicHttpError(status: number, bodyText: string): Error {
+export function formatAnthropicHttpError(status: number, bodyText: string): AnthropicHttpError {
   try {
     const parsed = JSON.parse(bodyText) as AnthropicErrorBody;
     if (parsed.type === "error" && parsed.error?.message) {
       const errType = parsed.error.type ?? "error";
       const msg = truncateMessage(parsed.error.message);
-      return new Error(`anthropic_http_${status} ${errType}: ${msg}`);
+      return new AnthropicHttpError(status, `anthropic_http_${status} ${errType}: ${msg}`);
     }
   } catch {
     // ignore parse errors
   }
-  return new Error(`anthropic_http_${status}`);
+  return new AnthropicHttpError(status, `anthropic_http_${status}`);
 }
 
 export function isRetryableAnthropicError(error: unknown): boolean {
   if (error instanceof TypeError) {
     return true;
   }
+  if (error instanceof AnthropicHttpError) {
+    return error.status === 429 || error.status >= 500;
+  }
   if (error instanceof Error) {
     if (error.name === "TimeoutError" || error.name === "AbortError") {
+      return true;
+    }
+    if (MODEL_OUTPUT_RETRY_ERRORS.has(error.message)) {
       return true;
     }
     const match = /^anthropic_http_(\d+)/.exec(error.message);
