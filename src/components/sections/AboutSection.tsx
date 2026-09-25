@@ -15,13 +15,12 @@ export function AboutSection() {
       <div className="mt-6 max-w-[62ch] space-y-4 text-pretty text-base leading-relaxed text-ink-muted">
         <p className="m-0">{about.lead}</p>
         <p className="m-0">
-          {about.followUp}{" "}
-          {about.ctaPrefix}{" "}
+          {about.followUp} {about.ctaPrefix}{" "}
           <Link
             href={footer.portfolio.href}
             className="font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]"
           >
-            {footer.portfolio.label.toLowerCase()} site
+            {about.portfolioLinkLabel}
           </Link>{" "}
           {about.ctaOr}{" "}
           <Link
@@ -30,7 +29,7 @@ export function AboutSection() {
           >
             {footer.linkedin.label}
           </Link>
-          .
+          {about.ctaClosing}
         </p>
       </div>
     </SectionWrapper>

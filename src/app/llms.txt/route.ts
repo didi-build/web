@@ -1,5 +1,7 @@
 import { buildLlmsTxt } from "@/lib/llms-txt";
 
+export const dynamic = "force-static";
+
 export function GET(): Response {
   return new Response(buildLlmsTxt(), {
     headers: {

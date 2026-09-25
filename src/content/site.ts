@@ -4,6 +4,8 @@ export const siteContent = {
     title: "Didi Build | AI integration for small businesses in Toronto",
     description:
       "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
+    businessDescription:
+      "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
     keywords: [
       "AI integration for small business",
       "AI consultant Toronto",
@@ -72,41 +74,49 @@ export const siteContent = {
   },
   about: {
     eyebrow: "About me",
-    headline: "Software engineer, now focused on practical AI for small business.",
+    headline: "A software engineer building custom AI for small businesses.",
     lead: "I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.",
     followUp:
       "These days I help small businesses adopt AI in ways that fit how they actually work.",
     ctaPrefix: "Browse my",
+    portfolioLinkLabel: "portfolio site",
     ctaOr: "or connect on",
+    ctaClosing: ".",
+  },
+  llms: {
+    whoItIsFor:
+      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team.",
+    serviceArea:
+      "Based in Toronto, Ontario. Remote work across Canada; in-person locally when it helps.",
   },
   faq: {
     eyebrow: "FAQ",
     headline: "Straight answers to common questions.",
     items: [
       {
-        question: "How can AI help my small business?",
+        question: "How can AI help my small business grow?",
         answer:
-          "AI can take repetitive work off your plate: sorting leads, pulling data from forms and invoices, drafting replies, or answering questions from your own documents. I start by learning where your time goes, then build only what pays for itself in time saved or revenue.",
+          "AI can take repetitive work off your plate and help you respond to customers faster: sorting leads, pulling data from forms and invoices, drafting replies, or answering questions from your own documents. I start by learning where your time goes, then build custom AI tools only where they pay for themselves in time saved or revenue.",
       },
       {
         question: "Do I need technical staff to use what you build?",
         answer:
-          "No. I design for the people who will use it every day, in plain language, on the tools you already use. I hand off simple docs and show your team how it works. If something breaks, you can reach me through support or a fix visit.",
+          "No. I design for the people who will use it every day, in plain language, on the tools you already use. I hand off simple docs and show your team how it works. After launch, you can choose a simple monthly support plan or pay only when you need something.",
       },
       {
         question: "How much does it cost?",
         answer:
-          "Every project is fixed price and fixed scope, quoted after the free discovery chat so you know the number before work starts. Early clients get a discount while I build my client portfolio. There are no surprise hourly bills.",
+          "Every project is fixed price and fixed scope, quoted after the free discovery chat so you know the number before work starts. Early clients get a discount. There are no surprise hourly bills.",
       },
       {
         question: "How long does a project take?",
         answer:
-          "It depends on scope. Small automations can ship in a few weeks; larger builds take longer. The written plan we agree on before payment includes a realistic timeline, and I keep you updated along the way.",
+          "It depends on scope. The written plan we agree on before any payment includes a realistic timeline, and I keep you updated along the way.",
       },
       {
         question: "Is my business data safe?",
         answer:
-          "You keep ownership of your accounts and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I do not resell your data or train public models on it.",
+          "You keep ownership of your accounts and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
       },
       {
         question: "Do you only work in Toronto?",
@@ -116,7 +126,7 @@ export const siteContent = {
       {
         question: "What if AI isn't a good fit for us?",
         answer:
-          "I'll tell you in the free chat. If the problem is better solved without AI, or the timing is not right, I'd rather say so upfront than sell you something you do not need.",
+          "I'll tell you in the free chat. If the problem is better solved without AI, or the timing isn't right, I'd rather say so upfront than sell you something you don't need.",
       },
     ],
   },

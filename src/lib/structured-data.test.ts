@@ -36,6 +36,26 @@ describe("buildStructuredDataGraph", () => {
     });
   });
 
+  it("uses absolute @id values for graph nodes", () => {
+    const siteUrl = siteContent.meta.siteUrl.replace(/\/$/, "");
+    const graph = buildStructuredDataGraph();
+    const nodes = graph["@graph"] as Array<{ "@type": string; "@id": string }>;
+    const byType = Object.fromEntries(nodes.map((n) => [n["@type"], n["@id"]]));
+    expect(byType.WebSite).toBe(`${siteUrl}/#website`);
+    expect(byType.ProfessionalService).toBe(`${siteUrl}/#business`);
+    expect(byType.Person).toBe(`${siteUrl}/#founder`);
+    expect(byType.FAQPage).toBe(`${siteUrl}/#faq`);
+  });
+
+  it("uses businessDescription for WebSite and ProfessionalService", () => {
+    const graph = buildStructuredDataGraph();
+    const nodes = graph["@graph"] as Array<{ "@type": string; description?: string }>;
+    const website = nodes.find((n) => n["@type"] === "WebSite");
+    const business = nodes.find((n) => n["@type"] === "ProfessionalService");
+    expect(website?.description).toBe(siteContent.meta.businessDescription);
+    expect(business?.description).toBe(siteContent.meta.businessDescription);
+  });
+
   it("serializes to valid JSON for JSON-LD script", () => {
     expect(() => JSON.parse(structuredDataJsonLd())).not.toThrow();
   });

@@ -12,6 +12,13 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(siteContent.footer.portfolio.href);
   });
 
+  it("includes businessDescription and llms prose from site content", () => {
+    const text = buildLlmsTxt();
+    expect(text).toContain(siteContent.meta.businessDescription);
+    expect(text).toContain(siteContent.llms.whoItIsFor);
+    expect(text).toContain(siteContent.llms.serviceArea);
+  });
+
   it("lists each service example from What I do", () => {
     const text = buildLlmsTxt();
     for (const example of siteContent.whatIDo.examples) {

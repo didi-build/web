@@ -1,10 +1,5 @@
 import { siteContent } from "@/content/site";
 
-const SITE_ID = "#website";
-const BUSINESS_ID = "#business";
-const PERSON_ID = "#founder";
-const FAQ_ID = "#faq";
-
 function absoluteUrl(path: string): string {
   const base = siteContent.meta.siteUrl.replace(/\/$/, "");
   return path.startsWith("http") ? path : `${base}${path.startsWith("/") ? path : `/${path}`}`;
@@ -13,6 +8,10 @@ function absoluteUrl(path: string): string {
 export function buildStructuredDataGraph(): Record<string, unknown> {
   const { brand, meta, footer, founder, whatIDo, faq } = siteContent;
   const siteUrl = meta.siteUrl.replace(/\/$/, "");
+  const siteId = `${siteUrl}/#website`;
+  const businessId = `${siteUrl}/#business`;
+  const personId = `${siteUrl}/#founder`;
+  const faqId = `${siteUrl}/#faq`;
   const ogImage = absoluteUrl("/opengraph-image");
   const logo = absoluteUrl("/icon.svg");
 
@@ -31,21 +30,21 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
     "@graph": [
       {
         "@type": "WebSite",
-        "@id": SITE_ID,
+        "@id": siteId,
         url: `${siteUrl}/`,
         name: brand,
-        description: meta.description,
-        publisher: { "@id": BUSINESS_ID },
+        description: meta.businessDescription,
+        publisher: { "@id": businessId },
       },
       {
         "@type": "ProfessionalService",
-        "@id": BUSINESS_ID,
+        "@id": businessId,
         name: brand,
         url: `${siteUrl}/`,
         logo,
         image: ogImage,
         email: siteContent.contact.email,
-        description: meta.description,
+        description: meta.businessDescription,
         areaServed: [
           { "@type": "City", name: "Toronto" },
           { "@type": "AdministrativeArea", name: "Ontario" },
@@ -57,20 +56,20 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
           name: whatIDo.headline,
           itemListElement: serviceItems,
         },
-        founder: { "@id": PERSON_ID },
+        founder: { "@id": personId },
       },
       {
         "@type": "Person",
-        "@id": PERSON_ID,
+        "@id": personId,
         name: founder.name,
         jobTitle: founder.jobTitle,
         url: `${siteUrl}/`,
         sameAs: [footer.linkedin.href, footer.github.href, footer.portfolio.href],
-        worksFor: { "@id": BUSINESS_ID },
+        worksFor: { "@id": businessId },
       },
       {
         "@type": "FAQPage",
-        "@id": FAQ_ID,
+        "@id": faqId,
         mainEntity: faq.items.map((item) => ({
           "@type": "Question",
           name: item.question,
