@@ -7,15 +7,16 @@ import { siteContent } from "../src/content/site";
 const root = join(import.meta.dirname, "..");
 const vinesSvg = readFileSync(join(root, "src/assets/og/og-vines.svg"), "utf8");
 const vinesSrc = `data:image/svg+xml;base64,${Buffer.from(vinesSvg, "utf8").toString("base64")}`;
-const figtreeSemiBoldFont = readFileSync(join(root, "src/assets/fonts/figtree/Figtree-SemiBold.ttf"));
+const figtreeSemiBoldFont = readFileSync(
+  join(root, "src/assets/fonts/figtree/Figtree-SemiBold.ttf"),
+);
 const figtreeBoldFont = readFileSync(join(root, "src/assets/fonts/figtree/Figtree-Bold.ttf"));
 
 const { brand, meta } = siteContent;
 const { ogHeadline, ogImageAlt } = meta;
 
 async function main() {
-const imageResponse = new ImageResponse(
-  (
+  const imageResponse = new ImageResponse(
     <div
       style={{
         position: "relative",
@@ -106,32 +107,31 @@ const imageResponse = new ImageResponse(
           {brand}
         </div>
       </div>
-    </div>
-  ),
-  {
-    width: 1200,
-    height: 630,
-    fonts: [
-      {
-        name: "Figtree",
-        data: figtreeSemiBoldFont,
-        weight: 600,
-        style: "normal",
-      },
-      {
-        name: "Figtree",
-        data: figtreeBoldFont,
-        weight: 700,
-        style: "normal",
-      },
-    ],
-  },
-);
+    </div>,
+    {
+      width: 1200,
+      height: 630,
+      fonts: [
+        {
+          name: "Figtree",
+          data: figtreeSemiBoldFont,
+          weight: 600,
+          style: "normal",
+        },
+        {
+          name: "Figtree",
+          data: figtreeBoldFont,
+          weight: 700,
+          style: "normal",
+        },
+      ],
+    },
+  );
 
-const pngBuffer = Buffer.from(await imageResponse.arrayBuffer());
-writeFileSync(join(root, "src/app/opengraph-image.png"), pngBuffer);
-writeFileSync(join(root, "src/app/opengraph-image.alt.txt"), ogImageAlt);
-console.log("Wrote src/app/opengraph-image.png and src/app/opengraph-image.alt.txt");
+  const pngBuffer = Buffer.from(await imageResponse.arrayBuffer());
+  writeFileSync(join(root, "src/app/opengraph-image.png"), pngBuffer);
+  writeFileSync(join(root, "src/app/opengraph-image.alt.txt"), ogImageAlt);
+  console.log("Wrote src/app/opengraph-image.png and src/app/opengraph-image.alt.txt");
 }
 
 main().catch((err) => {

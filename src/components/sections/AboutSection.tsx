@@ -15,10 +15,7 @@ export function AboutSection() {
       <div className="about-card relative flex flex-wrap gap-[clamp(24px,5vw,64px)] rounded-lg bg-accent-soft p-[clamp(28px,5vw,64px)]">
         <div className="flex min-w-0 flex-1 basis-[440px] flex-col gap-6">
           <p className="m-0 flex items-center gap-2.5 text-[15px] font-semibold text-accent-text">
-            <span
-              aria-hidden
-              className="h-3 w-3 rounded-[12px_2px_12px_2px] bg-accent"
-            />
+            <span aria-hidden className="h-3 w-3 rounded-[12px_2px_12px_2px] bg-accent" />
             {about.eyebrow}
           </p>
           <h2

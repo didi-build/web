@@ -47,9 +47,7 @@ export function FaqSection() {
           <div id={listId}>
             {faq.items.map((item) => (
               <details key={item.question} className="faq-details border-b border-line">
-                <summary
-                  className="faq-summary flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-[18px] text-left text-lg font-semibold leading-snug tracking-[-0.005em] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
-                >
+                <summary className="faq-summary flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-[18px] text-left text-lg font-semibold leading-snug tracking-[-0.005em] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent">
                   <span className="text-pretty">{item.question}</span>
                   <span
                     aria-hidden
