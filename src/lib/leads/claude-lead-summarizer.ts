@@ -3,6 +3,7 @@ import type { LeadRecord, LeadSummarizer, LeadSummary } from "./types";
 
 const DEFAULT_MODEL = "claude-sonnet-5";
 const TIMEOUT_MS = 10_000;
+const MAX_ERROR_MESSAGE_CHARS = 200;
 
 const SYSTEM_PROMPT = `You are a lead intake assistant for a freelance AI integration practice.
 Return ONLY valid JSON (no markdown fences) matching this schema:
@@ -32,6 +33,55 @@ function buildUserMessage(lead: LeadRecord): string {
 <message>${escapeXml(lead.message)}</message>`;
 }
 
+type AnthropicErrorBody = {
+  type?: string;
+  error?: { type?: string; message?: string };
+};
+
+function truncateMessage(message: string): string {
+  if (message.length <= MAX_ERROR_MESSAGE_CHARS) {
+    return message;
+  }
+  return `${message.slice(0, MAX_ERROR_MESSAGE_CHARS)}…`;
+}
+
+export function formatAnthropicHttpError(status: number, bodyText: string): Error {
+  try {
+    const parsed = JSON.parse(bodyText) as AnthropicErrorBody;
+    if (parsed.type === "error" && parsed.error?.message) {
+      const errType = parsed.error.type ?? "error";
+      const msg = truncateMessage(parsed.error.message);
+      return new Error(`anthropic_http_${status} ${errType}: ${msg}`);
+    }
+  } catch {
+    // ignore parse errors
+  }
+  return new Error(`anthropic_http_${status}`);
+}
+
+export function isRetryableAnthropicError(error: unknown): boolean {
+  if (error instanceof TypeError) {
+    return true;
+  }
+  if (error instanceof Error) {
+    if (error.name === "TimeoutError" || error.name === "AbortError") {
+      return true;
+    }
+    const match = /^anthropic_http_(\d+)/.exec(error.message);
+    if (match) {
+      const status = Number.parseInt(match[1], 10);
+      if (status === 429) {
+        return true;
+      }
+      if (status >= 500) {
+        return true;
+      }
+      return false;
+    }
+  }
+  return false;
+}
+
 async function callAnthropic(apiKey: string, model: string, userMessage: string): Promise<string> {
   const response = await fetch("https://api.anthropic.com/v1/messages", {
     method: "POST",
@@ -43,7 +93,6 @@ async function callAnthropic(apiKey: string, model: string, userMessage: string)
     body: JSON.stringify({
       model,
       max_tokens: 1024,
-      temperature: 0,
       system: SYSTEM_PROMPT,
       messages: [{ role: "user", content: userMessage }],
     }),
@@ -51,7 +100,8 @@ async function callAnthropic(apiKey: string, model: string, userMessage: string)
   });
 
   if (!response.ok) {
-    throw new Error(`anthropic_http_${response.status}`);
+    const bodyText = await response.text();
+    throw formatAnthropicHttpError(response.status, bodyText);
   }
 
   const payload = (await response.json()) as {
@@ -88,6 +138,10 @@ export class ClaudeLeadSummarizer implements LeadSummarizer {
         return parsed.data;
       } catch (error) {
         lastError = error;
+        const canRetry = attempt === 0 && isRetryableAnthropicError(error);
+        if (!canRetry) {
+          break;
+        }
       }
     }
 
