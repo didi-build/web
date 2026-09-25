@@ -1,23 +1,15 @@
+import { figtreeBoldFont, figtreeSemiBoldFont } from "@/lib/og-assets.generated";
 import { siteContent } from "@/content/site";
-import { loadOgVinesDataUri } from "@/lib/og-vines-data-uri";
-import { readFile } from "node:fs/promises";
-import { join } from "node:path";
+import { getOgVinesDataUri } from "@/lib/og-vines-data-uri";
 import { ImageResponse } from "next/og";
 
 export const alt = siteContent.meta.ogImageAlt;
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
 
-const fontsDir = join(process.cwd(), "src/assets/fonts/figtree");
-
 export default async function OpenGraphImage() {
   const { brand, meta } = siteContent;
-  const [fontSemiBold, fontBold, vinesSrc] = await Promise.all([
-    readFile(join(fontsDir, "Figtree-SemiBold.ttf")),
-    readFile(join(fontsDir, "Figtree-Bold.ttf")),
-    Promise.resolve(loadOgVinesDataUri()),
-  ]);
-
+  const vinesSrc = getOgVinesDataUri();
   const { ogHeadline } = meta;
 
   return new ImageResponse(
@@ -117,13 +109,13 @@ export default async function OpenGraphImage() {
       fonts: [
         {
           name: "Figtree",
-          data: fontSemiBold,
+          data: figtreeSemiBoldFont,
           weight: 600,
           style: "normal",
         },
         {
           name: "Figtree",
-          data: fontBold,
+          data: figtreeBoldFont,
           weight: 700,
           style: "normal",
         },
