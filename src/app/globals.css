@@ -101,6 +101,23 @@ a:hover {
   color: var(--ink);
 }
 
+/* ButtonLink uses <a>; beat default link colors on filled / outline CTAs */
+a.bg-accent,
+a.bg-accent:hover {
+  color: var(--accent-ink);
+  text-decoration: none;
+}
+
+a.border-ink,
+a.border-ink:hover {
+  color: var(--ink);
+  text-decoration: none;
+}
+
+a.border-ink:hover {
+  color: var(--bg);
+}
+
 :focus-visible {
   outline: 3px solid var(--accent);
   outline-offset: 3px;

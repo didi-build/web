@@ -7,8 +7,9 @@ const base =
   "inline-flex min-h-11 items-center justify-center gap-3 rounded-pill px-7 font-semibold transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-accent text-accent-ink hover:bg-accent-hover",
-  outline: "border-[1.5px] border-ink bg-transparent text-ink hover:bg-ink hover:text-bg",
+  primary: "bg-accent text-accent-ink no-underline hover:bg-accent-hover hover:text-accent-ink",
+  outline:
+    "border-[1.5px] border-ink bg-transparent text-ink no-underline hover:bg-ink hover:text-bg",
 };
 
 export function Button({
