@@ -2,7 +2,7 @@
 # Same variables as `.env.example`.
 
 ANTHROPIC_API_KEY=
-ANTHROPIC_MODEL=claude-sonnet-4-20250514
+ANTHROPIC_MODEL=claude-sonnet-5
 LINEAR_API_KEY=
 LINEAR_TEAM_ID=
 LINEAR_PROJECT_ID=
