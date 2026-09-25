@@ -30,18 +30,20 @@ npm run preview
 
 ## Environment variables
 
-| Variable                         | Where  | Purpose                                |
-| -------------------------------- | ------ | -------------------------------------- |
-| `ANTHROPIC_API_KEY`              | server | Claude API key for lead summaries      |
-| `ANTHROPIC_MODEL`                | server | Model id (default in code if unset)    |
-| `LINEAR_API_KEY`                 | server | Linear API key for `issueCreate`       |
-| `LINEAR_TEAM_ID`                 | server | Linear team id                         |
-| `LINEAR_PROJECT_ID`              | server | Linear project id                      |
-| `LINEAR_LEAD_LABEL_ID`           | server | Linear label id for leads              |
-| `TURNSTILE_SECRET_KEY`           | server | Turnstile secret for `/api/leads`      |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | client | Turnstile site key for the form widget |
+| Variable                         | Where       | Purpose                                                    |
+| -------------------------------- | ----------- | ---------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`              | server      | Claude API key for lead summaries (Worker secret)          |
+| `ANTHROPIC_MODEL`                | server      | Model id (default in code if unset; Worker secret or var)  |
+| `LINEAR_API_KEY`                 | server      | Linear API key for `issueCreate` (Worker secret)           |
+| `LINEAR_TEAM_ID`                 | server      | Linear team id (Worker secret or var)                      |
+| `LINEAR_PROJECT_ID`              | server      | Linear project id (Worker secret or var)                   |
+| `LINEAR_LEAD_LABEL_ID`           | server      | Linear label id for leads (Worker secret or var)           |
+| `TURNSTILE_SECRET_KEY`           | server      | Turnstile secret for `/api/leads` (Worker secret)          |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | build + dev | Turnstile site key (inlined at **build time**; see Deploy) |
 
-Production: set these as **Cloudflare Worker secrets** (and `NEXT_PUBLIC_TURNSTILE_SITE_KEY` as a Worker var). Local preview: use `.dev.vars` (gitignored).
+**Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear vars, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
+
+**`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables (and in `.env.local` for `npm run dev`). Setting it only as a runtime Worker var will ship a build without the Turnstile widget.
 
 Never commit real secrets.
 
@@ -72,3 +74,9 @@ GitHub Actions runs on pushes to `main` and on pull requests: format check, lint
 ## Deploy
 
 Cloudflare deploys from `main` after the repo is connected in the dashboard. Use `npm run deploy` for manual deploys with Wrangler authenticated.
+
+Before deploy:
+
+1. Set **build-time** env in Workers Builds: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (required for the form widget).
+2. Set **Worker secrets** for server-side keys (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear IDs, etc.).
+3. Attach custom domains (`didi.build`, etc.) in the Cloudflare dashboard.
