@@ -3,7 +3,12 @@ export const siteContent = {
   meta: {
     title: "Didi Build | AI integration for small businesses",
     description:
-      "Independent AI integration in Toronto. I learn how your business runs, then build tools that save time where it matters.",
+      "Independent AI integration in Toronto. I learn how your business runs, then build tools that save time or make money where they fit.",
+    openGraphTitle: "Didi Build",
+    openGraphDescription:
+      "AI that saves you time or makes you money. I find where it fits in your business, then I build it.",
+    ogImageAlt: "Didi Build: AI integration for small businesses in Toronto",
+    siteUrl: "https://didi.build",
   },
   a11y: {
     skipToContact: "Skip to contact form",
@@ -17,16 +22,15 @@ export const siteContent = {
     cta: "Book a chat",
   },
   hero: {
-    eyebrow: "Independent AI integration · Toronto",
-    // Pitch option A (active). B and C are kept for easy swaps.
-    // B: "I build custom AI tools for small businesses: I start by learning how you work, then build whatever actually fits."
-    // C: "I help businesses turn 'we should probably be using AI' into something that actually works for them."
-    headline:
-      "I help small businesses figure out where AI can actually save them time or make them money, then I build it.",
+    intro: "Hi, I'm Didi.",
+    introMuted: "A software engineer in Toronto.",
+    headline: "AI that saves you time or makes you money.",
+    headlineAccent: "I find where it fits in your business, then I build it.",
     supporting:
-      "It starts with learning how your business runs today. Then we decide together if AI is worth it, and where.",
+      "First I learn how your business actually runs. The tools come after that, only where they fit.",
     primaryCta: "Book a free 30-min chat",
     secondaryCta: "See how it works",
+    badges: ["Free first chat", "Fixed price, fixed scope", "Plain English, no jargon"],
   },
   whatIDo: {
     eyebrow: "What I do",
@@ -80,7 +84,6 @@ export const siteContent = {
       "What you do, and what's taking up more time than it should. I'll reply within 2 business days to find a time to talk.",
     emailLabel: "Prefer email?",
     email: "hello@didi.build",
-    formNote: "All fields are required unless marked optional.",
     fields: {
       name: "Your name",
       email: "Email",
@@ -88,15 +91,11 @@ export const siteContent = {
       website: "Website",
       message: "What would you like help with?",
     },
-    messageHint:
-      "A few sentences is plenty. What does your business do, and what feels slow or repetitive?",
-    messagePlaceholder:
-      "e.g. We run a small bakery and spend hours every week answering the same catering questions by email.",
+    messagePlaceholder: "A few sentences about your business and what feels slow.",
     optional: "(optional)",
     submit: "Send message",
     sending: "Sending…",
     tryAgain: "Try again",
-    replyNote: "I reply within 2 business days.",
     success: "Thanks! I'll get back to you within 2 business days.",
     sendAnother: "Send another message",
     errorTitle: "Your message didn't send.",

@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 14 14" role="img" aria-label="Didi Build">
+  <style>
+    .mark {
+      fill: oklch(0.44 0.09 158);
+    }
+    @media (prefers-color-scheme: dark) {
+      .mark {
+        fill: oklch(0.8 0.1 150);
+      }
+    }
+  </style>
+  <path
+    class="mark"
+    d="M0 7A7 7 0 0 1 7 0h5a2 2 0 0 1 2 2v5a7 7 0 0 1-7 7H2a2 2 0 0 1-2-2V7Z"
+  />
+</svg>

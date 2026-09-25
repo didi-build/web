@@ -111,6 +111,42 @@ describe("ClaudeLeadSummarizer", () => {
     expect(fetchMock).toHaveBeenCalledTimes(2);
   });
 
+  it("retries once when model output is not valid JSON", async () => {
+    fetchMock
+      .mockResolvedValueOnce(
+        mockResponse({
+          ok: true,
+          status: 200,
+          json: { content: [{ type: "text", text: "not json at all" }] },
+        }),
+      )
+      .mockResolvedValueOnce(
+        mockResponse({
+          ok: true,
+          status: 200,
+          json: {
+            content: [
+              {
+                type: "text",
+                text: JSON.stringify({
+                  summary: "Email triage help.",
+                  needs: ["Faster replies"],
+                  suggestedPattern: "Inbox triage",
+                  urgency: "medium",
+                  followUpQuestions: ["Volume?"],
+                }),
+              },
+            ],
+          },
+        }),
+      );
+
+    const summarizer = new ClaudeLeadSummarizer({ apiKey: "test-key" });
+    const result = await summarizer.summarize(lead);
+    expect(result.summary).toBe("Email triage help.");
+    expect(fetchMock).toHaveBeenCalledTimes(2);
+  });
+
   it("does not send temperature in the request body", async () => {
     fetchMock.mockResolvedValueOnce(
       mockResponse({

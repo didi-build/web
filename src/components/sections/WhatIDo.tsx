@@ -22,11 +22,11 @@ export function WhatIDo() {
           {whatIDo.intro}
         </p>
       </div>
-      <ul className="mt-10 grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-[clamp(36px,5vw,56px)] grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4">
         {whatIDo.examples.map((example, index) => (
           <li
             key={example.title}
-            className="flex min-h-60 flex-col gap-3 rounded-lg border border-line bg-surface p-7"
+            className="flex min-h-[240px] flex-col gap-3 rounded-lg border border-line bg-surface p-7"
           >
             <span className="self-start rounded-pill bg-surface-2 px-2.5 py-1 text-[13px] font-semibold text-ink-muted">
               {whatIDo.exampleLabel} {index + 1}
