@@ -12,7 +12,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
   const businessId = `${siteUrl}/#business`;
   const personId = `${siteUrl}/#founder`;
   const faqId = `${siteUrl}/#faq`;
-  const ogImage = absoluteUrl("/opengraph-image");
+  const ogImage = absoluteUrl("/opengraph-image.png");
   const logo = absoluteUrl("/icon.png");
 
   const serviceItems = whatIDo.examples.map((example, index) => ({

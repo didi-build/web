@@ -1,18 +1,21 @@
-import { figtreeBoldFont, figtreeSemiBoldFont } from "@/lib/og-assets.generated";
-import { siteContent } from "@/content/site";
-import { getOgVinesDataUri } from "@/lib/og-vines-data-uri";
+import { readFileSync, writeFileSync } from "node:fs";
+import { join } from "node:path";
 import { ImageResponse } from "next/og";
+import React from "react";
+import { siteContent } from "../src/content/site";
 
-export const alt = siteContent.meta.ogImageAlt;
-export const size = { width: 1200, height: 630 };
-export const contentType = "image/png";
+const root = join(import.meta.dirname, "..");
+const vinesSvg = readFileSync(join(root, "src/assets/og/og-vines.svg"), "utf8");
+const vinesSrc = `data:image/svg+xml;base64,${Buffer.from(vinesSvg, "utf8").toString("base64")}`;
+const figtreeSemiBoldFont = readFileSync(join(root, "src/assets/fonts/figtree/Figtree-SemiBold.ttf"));
+const figtreeBoldFont = readFileSync(join(root, "src/assets/fonts/figtree/Figtree-Bold.ttf"));
 
-export default async function OpenGraphImage() {
-  const { brand, meta } = siteContent;
-  const vinesSrc = getOgVinesDataUri();
-  const { ogHeadline } = meta;
+const { brand, meta } = siteContent;
+const { ogHeadline, ogImageAlt } = meta;
 
-  return new ImageResponse(
+async function main() {
+const imageResponse = new ImageResponse(
+  (
     <div
       style={{
         position: "relative",
@@ -103,23 +106,35 @@ export default async function OpenGraphImage() {
           {brand}
         </div>
       </div>
-    </div>,
-    {
-      ...size,
-      fonts: [
-        {
-          name: "Figtree",
-          data: figtreeSemiBoldFont,
-          weight: 600,
-          style: "normal",
-        },
-        {
-          name: "Figtree",
-          data: figtreeBoldFont,
-          weight: 700,
-          style: "normal",
-        },
-      ],
-    },
-  );
+    </div>
+  ),
+  {
+    width: 1200,
+    height: 630,
+    fonts: [
+      {
+        name: "Figtree",
+        data: figtreeSemiBoldFont,
+        weight: 600,
+        style: "normal",
+      },
+      {
+        name: "Figtree",
+        data: figtreeBoldFont,
+        weight: 700,
+        style: "normal",
+      },
+    ],
+  },
+);
+
+const pngBuffer = Buffer.from(await imageResponse.arrayBuffer());
+writeFileSync(join(root, "src/app/opengraph-image.png"), pngBuffer);
+writeFileSync(join(root, "src/app/opengraph-image.alt.txt"), ogImageAlt);
+console.log("Wrote src/app/opengraph-image.png and src/app/opengraph-image.alt.txt");
 }
+
+main().catch((err) => {
+  console.error(err);
+  process.exit(1);
+});
