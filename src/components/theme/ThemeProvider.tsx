@@ -24,9 +24,7 @@ function readThemeFromDocument(): ThemeMode {
 
 export function ThemeProvider({ children }: { children: React.ReactNode }) {
   const { a11y } = siteContent;
-  const [theme, setTheme] = useState<ThemeMode>(() =>
-    typeof document !== "undefined" ? readThemeFromDocument() : "light",
-  );
+  const [theme, setTheme] = useState<ThemeMode>("light");
 
   useEffect(() => {
     setTheme(readThemeFromDocument());

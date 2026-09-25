@@ -40,7 +40,13 @@ export async function processLeadSubmission(
   }
 
   const { turnstileToken, ...rest } = parsed.data;
-  const turnstileOk = await deps.verifyTurnstile(turnstileToken);
+  let turnstileOk = false;
+  try {
+    turnstileOk = await deps.verifyTurnstile(turnstileToken);
+  } catch (error) {
+    console.error("lead_turnstile_failed", error instanceof Error ? error.message : "unknown");
+    return { status: 403, message: "Spam verification failed." };
+  }
   if (!turnstileOk) {
     return { status: 403, message: "Spam verification failed." };
   }

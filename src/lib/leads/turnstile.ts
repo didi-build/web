@@ -9,6 +9,7 @@ export function createTurnstileVerifier(secretKey: string): TurnstileVerifier {
       method: "POST",
       headers: { "content-type": "application/json" },
       body: JSON.stringify({ secret: secretKey, response: token }),
+      signal: AbortSignal.timeout(10_000),
     });
     if (!response.ok) {
       return false;

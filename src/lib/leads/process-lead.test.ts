@@ -55,6 +55,18 @@ describe("processLeadSubmission (API pipeline integration)", () => {
     expect(result.status).toBe(403);
   });
 
+  it("rejects when Turnstile verifier throws", async () => {
+    const result = await processLeadSubmission(
+      basePayload,
+      makeDeps({
+        verifyTurnstile: async () => {
+          throw new Error("turnstile_unreachable");
+        },
+      }),
+    );
+    expect(result).toEqual({ status: 403, message: "Spam verification failed." });
+  });
+
   it("still submits when summarizer fails", async () => {
     const submit = vi.fn(async (_lead: LeadRecord, sum: LeadSummary | null) => {
       expect(sum).toBeNull();

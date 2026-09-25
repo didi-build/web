@@ -266,6 +266,7 @@ export function ContactForm() {
 
       <div
         id={`${formId}-turnstile`}
+        role="group"
         tabIndex={-1}
         aria-label={a11y.spamProtectionLabel}
         className="max-w-full"
