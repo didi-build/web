@@ -46,6 +46,7 @@ async function main() {
           background: "#193124",
         }}
       />
+      {/* eslint-disable-next-line @next/next/no-img-element -- Satori OG card uses raw img */}
       <img
         src={vinesSrc}
         alt=""
