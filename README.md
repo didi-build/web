@@ -18,6 +18,8 @@ cp .env.example .env.local
 npm run dev
 ```
 
+`npm ci` installs [husky](https://typicode.github.io/husky/) git hooks: pre-commit runs lint-staged (ESLint + Prettier on staged files); pre-push runs typecheck and tests. Do not use `--no-verify`. Set `HUSKY=0` only in environments that must skip hook installation (e.g. some CI/build images).
+
 Open [http://localhost:3000](http://localhost:3000).
 
 For the full Workers runtime locally (including secrets from `.dev.vars`):
@@ -71,6 +73,8 @@ Never commit real secrets.
 | `npm run lint` / `format` / `format:check` | ESLint + Prettier                      |
 | `npm run typecheck`                        | `tsc --noEmit`                         |
 | `npm run test`                             | Vitest                                 |
+
+Pre-commit and pre-push hooks (see Local development) run a subset of these automatically; CI still runs the full pipeline including `build`.
 
 ## Design
 

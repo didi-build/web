@@ -84,8 +84,9 @@ Be explicit about which seam each test targets.
 
 ## CI/CD
 
+- **Git hooks (husky):** `npm ci` / `npm install` runs `prepare` to install hooks. **Pre-commit** runs `lint-staged` (ESLint `--fix` and Prettier on staged files). **Pre-push** runs `npm run typecheck` and `npm test`. Never bypass hooks with `git commit --no-verify` or `git push --no-verify`. In CI and other non-interactive installs where hooks should not run, set `HUSKY=0` (documented husky escape hatch).
 - **CI (GitHub Actions)** runs on every PR and push to `main`: install → format check → lint → typecheck → test → build.
-- **Before pushing or marking a PR ready:** run the same steps locally and fix failures. From a clean `npm ci`:
+- **Before pushing or marking a PR ready:** hooks cover formatting, lint fixes, typecheck, and tests on push, but still run the full local CI and fix failures. From a clean `npm ci`:
 
   ```bash
   npm run format:check
