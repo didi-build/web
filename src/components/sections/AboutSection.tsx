@@ -1,10 +1,15 @@
 import { VineStem } from "@/components/decorative/VineStem";
+import { founderLinks } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 import Link from "next/link";
 
+const aboutLinkClass =
+  "font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]";
+
 export function AboutSection() {
-  const { about, footer, sectionIds } = siteContent;
+  const { about, sectionIds } = siteContent;
   const headingId = `${sectionIds.about}-heading`;
+  const [portfolioLink, githubLink, linkedinLink] = founderLinks;
 
   return (
     <section
@@ -29,18 +34,16 @@ export function AboutSection() {
             <p className="m-0 text-ink-muted">{about.followUp}</p>
             <p className="m-0 text-ink-muted">
               {about.ctaPrefix}{" "}
-              <Link
-                href={footer.portfolio.href}
-                className="font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]"
-              >
+              <Link href={portfolioLink.href} className={aboutLinkClass}>
                 {about.portfolioLinkLabel}
+              </Link>
+              {", "}
+              <Link href={githubLink.href} className={aboutLinkClass}>
+                {githubLink.label}
               </Link>{" "}
               {about.ctaOr}{" "}
-              <Link
-                href={footer.linkedin.href}
-                className="font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]"
-              >
-                {footer.linkedin.label}
+              <Link href={linkedinLink.href} className={aboutLinkClass}>
+                {linkedinLink.label}
               </Link>
               {about.ctaClosing}
             </p>

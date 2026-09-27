@@ -1,6 +1,11 @@
 import { describe, expect, it } from "vitest";
+import { businessLinks, founderLinks } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 import { buildStructuredDataGraph, structuredDataJsonLd } from "./structured-data";
+
+function graphNodes(): Record<string, unknown>[] {
+  return buildStructuredDataGraph()["@graph"] as Record<string, unknown>[];
+}
 
 describe("buildStructuredDataGraph", () => {
   it("includes WebSite, ProfessionalService, Person, and FAQPage in @graph", () => {
@@ -65,5 +70,20 @@ describe("buildStructuredDataGraph", () => {
 
   it("serializes to valid JSON for JSON-LD script", () => {
     expect(() => JSON.parse(structuredDataJsonLd())).not.toThrow();
+  });
+
+  it("puts business profile URLs on the business entity and founder URLs on Person", () => {
+    const business = graphNodes().find((n) => n["@type"] === "ProfessionalService");
+    const person = graphNodes().find((n) => n["@type"] === "Person");
+    expect(business?.sameAs).toEqual(businessLinks.map((link) => link.href));
+    expect(person?.sameAs).toEqual(founderLinks.map((link) => link.href));
+  });
+
+  it("does not put founder profile URLs on the business entity", () => {
+    const business = graphNodes().find((n) => n["@type"] === "ProfessionalService");
+    const businessSameAs = (business?.sameAs ?? []) as string[];
+    for (const href of founderLinks.map((link) => link.href)) {
+      expect(businessSameAs).not.toContain(href);
+    }
   });
 });

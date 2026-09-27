@@ -184,17 +184,6 @@ export const siteContent = {
       manyFields: (count: number) => `${count} fields need a fix before sending.`,
     },
   },
-  footer: {
-    portfolio: { label: "Portfolio", href: "https://portfolio.didi.build" },
-    github: {
-      label: "GitHub",
-      href: "https://github.com/DiademShoukralla/",
-    },
-    linkedin: {
-      label: "LinkedIn",
-      href: "https://www.linkedin.com/in/diadem-shoukralla/",
-    },
-  },
   sectionIds: {
     contact: "contact",
     how: "how-it-works",
