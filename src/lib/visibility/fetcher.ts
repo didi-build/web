@@ -1,7 +1,8 @@
-import type { FetchResult, VisibilityFetcher } from "./types";
-import { assertHostnameResolvesToPublicIps, validatePublicHttpUrl } from "./url-validation";
+import type { FetchResult, FetchUrlOptions, VisibilityFetcher } from "./types";
+import { precheckHostnameDns, validatePublicHttpUrl } from "./url-validation";
 
 const DEFAULT_TIMEOUT_MS = 12_000;
+const AUXILIARY_TIMEOUT_MS = 6_000;
 const MAX_BYTES = 512 * 1024;
 const MAX_REDIRECTS = 5;
 
@@ -50,19 +51,23 @@ async function readBodyWithLimit(
 }
 
 export function createSafeVisibilityFetcher(config?: SafeFetcherConfig): VisibilityFetcher {
-  const timeoutMs = config?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
+  const defaultTimeoutMs = config?.timeoutMs ?? DEFAULT_TIMEOUT_MS;
   const maxBytes = config?.maxBytes ?? MAX_BYTES;
 
   return {
-    async fetchUrl(url: string): Promise<FetchResult> {
+    async fetchUrl(url: string, options?: FetchUrlOptions): Promise<FetchResult> {
+      const timeoutMs = options?.timeoutMs ?? defaultTimeoutMs;
       const validated = validatePublicHttpUrl(url);
       if (!validated.ok) {
         return { ok: false, error: "blocked" };
       }
 
-      const resolvesPublic = await assertHostnameResolvesToPublicIps(validated.hostname);
-      if (!resolvesPublic) {
+      const dnsPrecheck = await precheckHostnameDns(validated.hostname);
+      if (dnsPrecheck === "blocked_private") {
         return { ok: false, error: "blocked" };
+      }
+      if (dnsPrecheck === "unresolvable") {
+        return { ok: false, error: "fetch_failed", message: "dns_unresolvable" };
       }
 
       let currentUrl = validated.normalized;
@@ -127,9 +132,11 @@ export async function fetchSiteResources(
   const origin = originUrl.origin;
 
   const homepage = await fetcher.fetchUrl(normalizedUrl);
-  const robotsTxt = await fetcher.fetchUrl(`${origin}/robots.txt`);
-  const sitemapXml = await fetcher.fetchUrl(`${origin}/sitemap.xml`);
-  const llmsTxt = await fetcher.fetchUrl(`${origin}/llms.txt`);
+  const [robotsTxt, sitemapXml, llmsTxt] = await Promise.all([
+    fetcher.fetchUrl(`${origin}/robots.txt`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
+    fetcher.fetchUrl(`${origin}/sitemap.xml`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
+    fetcher.fetchUrl(`${origin}/llms.txt`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
+  ]);
 
   return {
     normalizedUrl,

@@ -31,8 +31,12 @@ export type FetchFailure = {
 
 export type FetchResult = FetchSuccess | FetchFailure;
 
+export type FetchUrlOptions = {
+  timeoutMs?: number;
+};
+
 export interface VisibilityFetcher {
-  fetchUrl(url: string): Promise<FetchResult>;
+  fetchUrl(url: string, options?: FetchUrlOptions): Promise<FetchResult>;
 }
 
 export type SiteResources = {

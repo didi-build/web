@@ -1,3 +1,4 @@
+import { lookup as dnsLookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
 const BLOCKED_HOSTNAMES = new Set([
@@ -7,6 +8,47 @@ const BLOCKED_HOSTNAMES = new Set([
 ]);
 
 const BLOCKED_SUFFIXES = [".local", ".internal", ".localhost"];
+
+let dnsPrecheckSkipLogged = false;
+
+export function resetDnsPrecheckStateForTests(): void {
+  dnsPrecheckSkipLogged = false;
+}
+
+function logDnsPrecheckSkippedOnce(): void {
+  if (!dnsPrecheckSkipLogged) {
+    console.info("visibility_dns_precheck_skipped", "node_dns_unavailable");
+    dnsPrecheckSkipLogged = true;
+  }
+}
+
+function isDnsRuntimeUnsupported(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return false;
+  }
+  const message = error.message.toLowerCase();
+  if (message.includes("not implemented")) {
+    return true;
+  }
+  const code = (error as NodeJS.ErrnoException).code;
+  return code === "ERR_UNSUPPORTED_NODE_API" || code === "ENOTSUP";
+}
+
+function isDnsResolutionFailure(error: unknown): boolean {
+  if (!(error instanceof Error)) {
+    return true;
+  }
+  const code = (error as NodeJS.ErrnoException).code;
+  return (
+    code === "ENOTFOUND" ||
+    code === "ENODATA" ||
+    code === "ESERVFAIL" ||
+    code === "EAI_AGAIN" ||
+    code === "ETIMEOUT"
+  );
+}
+
+export type HostnameDnsPrecheckResult = "allowed" | "skipped" | "blocked_private" | "unresolvable";
 
 function isPrivateIpv4(octets: number[]): boolean {
   const [a, b] = octets;
@@ -100,24 +142,31 @@ export function validatePublicHttpUrl(raw: string): UrlValidationResult {
   return { ok: true, normalized: parsed.toString(), hostname };
 }
 
-export async function assertHostnameResolvesToPublicIps(hostname: string): Promise<boolean> {
-  if (isIP(hostname)) {
-    return !isPrivateOrLocalIp(hostname);
+export async function precheckHostnameDns(hostname: string): Promise<HostnameDnsPrecheckResult> {
+  const ipVersion = isIP(hostname);
+  if (ipVersion === 4 || ipVersion === 6) {
+    return isPrivateOrLocalIp(hostname) ? "blocked_private" : "allowed";
   }
 
   try {
-    const { lookup } = await import("node:dns/promises");
-    const results = await lookup(hostname, { all: true, verbatim: true });
+    const results = await dnsLookup(hostname, { all: true, verbatim: true });
     if (results.length === 0) {
-      return false;
+      return "unresolvable";
     }
     for (const entry of results) {
       if (isPrivateOrLocalIp(entry.address)) {
-        return false;
+        return "blocked_private";
       }
     }
-    return true;
-  } catch {
-    return false;
+    return "allowed";
+  } catch (error) {
+    if (isDnsRuntimeUnsupported(error)) {
+      logDnsPrecheckSkippedOnce();
+      return "skipped";
+    }
+    if (isDnsResolutionFailure(error)) {
+      return "unresolvable";
+    }
+    throw error;
   }
 }
