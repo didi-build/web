@@ -1,3 +1,4 @@
+import { businessLinks, founderLinks, profileLinkHrefs } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 
 function absoluteUrl(path: string): string {
@@ -6,7 +7,7 @@ function absoluteUrl(path: string): string {
 }
 
 export function buildStructuredDataGraph(): Record<string, unknown> {
-  const { brand, meta, footer, founder, whatIDo, faq } = siteContent;
+  const { brand, meta, founder, whatIDo, faq } = siteContent;
   const siteUrl = meta.siteUrl.replace(/\/$/, "");
   const siteId = `${siteUrl}/#website`;
   const businessId = `${siteUrl}/#business`;
@@ -57,6 +58,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
           itemListElement: serviceItems,
         },
         founder: { "@id": personId },
+        sameAs: profileLinkHrefs(businessLinks),
       },
       {
         "@type": "Person",
@@ -64,7 +66,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
         name: founder.name,
         jobTitle: founder.jobTitle,
         url: `${siteUrl}/`,
-        sameAs: [footer.linkedin.href, footer.github.href, footer.portfolio.href],
+        sameAs: profileLinkHrefs(founderLinks),
         worksFor: { "@id": businessId },
       },
       {

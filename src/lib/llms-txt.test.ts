@@ -1,15 +1,16 @@
 import { describe, expect, it } from "vitest";
+import { businessLinks, founderLinks } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 import { buildLlmsTxt } from "./llms-txt";
 
 describe("buildLlmsTxt", () => {
-  it("includes contact URL, email, and social links from site content", () => {
+  it("includes contact URL, email, and profile links from config", () => {
     const text = buildLlmsTxt();
     expect(text).toContain(`#${siteContent.sectionIds.contact}`);
     expect(text).toContain(siteContent.contact.email);
-    expect(text).toContain(siteContent.footer.linkedin.href);
-    expect(text).toContain(siteContent.footer.github.href);
-    expect(text).toContain(siteContent.footer.portfolio.href);
+    for (const link of [...businessLinks, ...founderLinks]) {
+      expect(text).toContain(link.href);
+    }
   });
 
   it("includes businessDescription and llms prose from site content", () => {

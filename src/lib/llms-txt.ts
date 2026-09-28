@@ -1,7 +1,12 @@
+import { businessLinks, founderLinks } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 
+function formatLinkLines(links: readonly { label: string; href: string }[]): string {
+  return links.map((link) => `- ${link.label}: ${link.href}`).join("\n");
+}
+
 export function buildLlmsTxt(): string {
-  const { brand, meta, contact, footer, whatIDo, founder, about, llms } = siteContent;
+  const { brand, meta, contact, whatIDo, founder, about, llms } = siteContent;
   const siteUrl = meta.siteUrl.replace(/\/$/, "");
   const contactUrl = `${siteUrl}/#${siteContent.sectionIds.contact}`;
   const serviceLines = whatIDo.examples.map((e) => `- ${e.title}: ${e.body}`).join("\n");
@@ -31,10 +36,12 @@ ${founder.name}, ${founder.jobTitle}. ${about.followUp}
 - Book a chat: ${contactUrl}
 - Email: ${contact.email}
 
-## Links
+## Business links
 
-- LinkedIn: ${footer.linkedin.href}
-- GitHub: ${footer.github.href}
-- Portfolio: ${footer.portfolio.href}
+${formatLinkLines(businessLinks)}
+
+## Founder links
+
+${formatLinkLines(founderLinks)}
 `;
 }
