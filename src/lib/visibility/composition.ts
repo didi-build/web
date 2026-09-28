@@ -2,6 +2,7 @@ import { getCloudflareContext } from "@opennextjs/cloudflare";
 import { createTurnstileVerifier } from "../leads/turnstile";
 import { ClaudeVisibilityExplainer } from "./claude-visibility-explainer";
 import { createSafeVisibilityFetcher } from "./fetcher";
+import type { GenerateVisibilityReportDeps } from "./generate-visibility-report";
 import type { VisibilityPipelineDeps } from "./process-visibility-check";
 import { DefaultVisibilityChecker } from "./visibility-checker";
 
@@ -32,14 +33,22 @@ function requireEnv(name: string): string {
   return value;
 }
 
-export function createVisibilityPipelineFromEnv(): VisibilityPipelineDeps {
+export function createVisibilityReportDepsFromEnv(): GenerateVisibilityReportDeps {
   const fetcher = createSafeVisibilityFetcher();
   return {
-    verifyTurnstile: createTurnstileVerifier(requireEnv("TURNSTILE_SECRET_KEY")),
     checker: new DefaultVisibilityChecker(fetcher),
     explainer: new ClaudeVisibilityExplainer({
       apiKey: requireEnv("ANTHROPIC_API_KEY"),
       model: readEnv("ANTHROPIC_MODEL"),
     }),
+  };
+}
+
+export function createVisibilityPipelineFromEnv(): VisibilityPipelineDeps {
+  const reportDeps = createVisibilityReportDepsFromEnv();
+  return {
+    verifyTurnstile: createTurnstileVerifier(requireEnv("TURNSTILE_SECRET_KEY")),
+    checker: reportDeps.checker,
+    explainer: reportDeps.explainer,
   };
 }

@@ -1,6 +1,6 @@
 # didi-build/web
 
-Public site for [Didi Build](https://didi.build): a landing page and contact form. Submissions are verified with Cloudflare Turnstile, summarized with Claude, and filed as Linear issues.
+Public site for [Didi Build](https://didi.build): a landing page and contact form. Submissions are verified with Cloudflare Turnstile, summarized with Claude, checked for website visibility when a URL is provided, and delivered as a Linear issue plus an email to the team inbox.
 
 See [AGENTS.md](./AGENTS.md) for repo rules and architecture.
 
@@ -54,9 +54,12 @@ Put the site key in `.env.local` as `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for both `n
 | `LINEAR_PROJECT_ID`              | server      | Linear project id (Worker secret or var)                   |
 | `LINEAR_LEAD_LABEL_ID`           | server      | Linear label id for leads (Worker secret or var)           |
 | `TURNSTILE_SECRET_KEY`           | server      | Turnstile secret for `/api/leads` (Worker secret)          |
+| `GMAIL_SERVICE_ACCOUNT_JSON`     | server      | Google service account key JSON for lead notification mail |
+| `GMAIL_SENDER`                   | server      | From address for Gmail API send (e.g. `diadem@didi.build`) |
+| `LEAD_EMAIL_TO`                  | server      | Inbox for new leads (e.g. `hello@didi.build`)              |
 | `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | build + dev | Turnstile site key (inlined at **build time**; see Deploy) |
 
-**Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear vars, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
+**Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear vars, Gmail vars, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
 
 **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables and in `.env.local` for `npm run dev` and `npm run preview`. Setting it only as a runtime Worker var will ship a build without the Turnstile widget.
 
@@ -101,5 +104,5 @@ Cloudflare deploys from `main` after the repo is connected in the dashboard. Use
 Before deploy:
 
 1. Set **build-time** env in Workers Builds: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (required for the form widget).
-2. Set **Worker secrets** for server-side keys (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear IDs, etc.).
+2. Set **Worker secrets** for server-side keys (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear IDs, Gmail service account JSON, etc.).
 3. Attach custom domains (`didi.build`, etc.) in the Cloudflare dashboard.

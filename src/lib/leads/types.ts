@@ -1,3 +1,5 @@
+import type { VisibilityReport } from "../visibility/types";
+
 export type LeadInput = {
   name: string;
   email: string;
@@ -17,10 +19,18 @@ export type LeadSummary = {
 
 export type LeadRecord = Omit<LeadInput, "turnstileToken">;
 
+export type LeadSummarizeContext = {
+  visibilityReport: VisibilityReport | null;
+};
+
 export interface LeadSummarizer {
-  summarize(lead: LeadRecord): Promise<LeadSummary>;
+  summarize(lead: LeadRecord, context?: LeadSummarizeContext): Promise<LeadSummary>;
 }
 
 export interface LeadSink {
-  submit(lead: LeadRecord, summary: LeadSummary | null): Promise<void>;
+  submit(
+    lead: LeadRecord,
+    summary: LeadSummary | null,
+    visibilityReport: VisibilityReport | null,
+  ): Promise<void>;
 }

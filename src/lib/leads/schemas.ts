@@ -1,5 +1,15 @@
 import { z } from "zod";
 
+const noControlCharacters = (value: string) => !/[\u0000-\u001f\u007f]/.test(value);
+
+const leadTextField = (label: string) =>
+  z
+    .string()
+    .trim()
+    .min(1, `${label} is required`)
+    .max(200)
+    .refine(noControlCharacters, `Invalid ${label.toLowerCase()}`);
+
 export const leadSummarySchema = z.object({
   summary: z.string().min(1).max(4000),
   needs: z.array(z.string().min(1).max(500)).max(20),
@@ -9,9 +19,14 @@ export const leadSummarySchema = z.object({
 });
 
 export const leadRequestSchema = z.object({
-  name: z.string().trim().min(1, "Name is required").max(200),
+  name: leadTextField("Name"),
   email: z.string().trim().min(1, "Email is required").max(320).email("Invalid email"),
-  businessName: z.string().trim().max(200).optional(),
+  businessName: z
+    .string()
+    .trim()
+    .max(200)
+    .refine((value) => value.length === 0 || noControlCharacters(value), "Invalid business name")
+    .optional(),
   website: z.string().trim().max(500).optional(),
   message: z.string().trim().min(1, "Message is required").max(2000),
   turnstileToken: z.string().min(1, "Turnstile token is required").max(4096),

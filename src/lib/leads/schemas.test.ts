@@ -17,6 +17,16 @@ describe("parseLeadRequest (input schema validation)", () => {
     }
   });
 
+  it("rejects names with control characters", () => {
+    const result = parseLeadRequest({
+      name: "Bob\r\nBcc: attacker@example.com",
+      email: "sam@example.com",
+      message: "Hello",
+      turnstileToken: "token",
+    });
+    expect(result.ok).toBe(false);
+  });
+
   it("rejects oversized messages", () => {
     const result = parseLeadRequest({
       name: "Sam",

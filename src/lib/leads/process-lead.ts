@@ -1,11 +1,15 @@
 import { parseLeadRequest } from "./schemas";
-import type { LeadRecord, LeadSink, LeadSummarizer } from "./types";
+import { runLeadVisibilityCheck } from "./run-lead-visibility-check";
+import type { LeadRecord, LeadSink, LeadSummarizer, LeadSummary } from "./types";
 import type { TurnstileVerifier } from "./turnstile";
+import type { GenerateVisibilityReportDeps } from "../visibility/generate-visibility-report";
+import type { VisibilityReport } from "../visibility/types";
 
 export type LeadPipelineDeps = {
   verifyTurnstile: TurnstileVerifier;
   summarizer: LeadSummarizer;
   sink: LeadSink;
+  visibility?: GenerateVisibilityReportDeps;
 };
 
 export type LeadPipelineResult =
@@ -30,6 +34,18 @@ function toLeadRecord(input: {
   };
 }
 
+async function runSummarizer(
+  summarizer: LeadSummarizer,
+  lead: LeadRecord,
+): Promise<LeadSummary | null> {
+  try {
+    return await summarizer.summarize(lead);
+  } catch (error) {
+    console.error("lead_summarizer_failed", error instanceof Error ? error.message : "unknown");
+    return null;
+  }
+}
+
 export async function processLeadSubmission(
   body: unknown,
   deps: LeadPipelineDeps,
@@ -52,16 +68,21 @@ export async function processLeadSubmission(
   }
 
   const lead = toLeadRecord(rest);
-  let summary = null;
-  try {
-    summary = await deps.summarizer.summarize(lead);
-  } catch (error) {
-    console.error("lead_summarizer_failed", error instanceof Error ? error.message : "unknown");
-    summary = null;
-  }
+  const website = lead.website?.trim();
+  const visibilityDeps = deps.visibility;
+
+  const visibilityPromise =
+    website && visibilityDeps
+      ? runLeadVisibilityCheck(website, visibilityDeps)
+      : Promise.resolve<VisibilityReport | null>(null);
+
+  const [visibilityReport, summary] = await Promise.all([
+    visibilityPromise,
+    runSummarizer(deps.summarizer, lead),
+  ]);
 
   try {
-    await deps.sink.submit(lead, summary);
+    await deps.sink.submit(lead, summary, visibilityReport);
   } catch (error) {
     console.error("lead_sink_failed", error instanceof Error ? error.message : "unknown");
     return { status: 500, message: "Could not save your message. Please try again." };
