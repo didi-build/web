@@ -1,5 +1,6 @@
 import { formatLinearIssueDescription, formatLinearIssueTitle } from "./format-linear-issue";
 import type { LeadRecord, LeadSink, LeadSummary } from "./types";
+import type { VisibilityReport } from "../visibility/types";
 
 const LINEAR_API = "https://api.linear.app/graphql";
 
@@ -22,7 +23,11 @@ export type LinearLeadSinkConfig = {
 export class LinearLeadSink implements LeadSink {
   constructor(private readonly config: LinearLeadSinkConfig) {}
 
-  async submit(lead: LeadRecord, summary: LeadSummary | null): Promise<void> {
+  async submit(
+    lead: LeadRecord,
+    summary: LeadSummary | null,
+    visibilityReport: VisibilityReport | null,
+  ): Promise<void> {
     const response = await fetch(LINEAR_API, {
       method: "POST",
       headers: {
@@ -36,7 +41,7 @@ export class LinearLeadSink implements LeadSink {
             teamId: this.config.teamId,
             projectId: this.config.projectId,
             title: formatLinearIssueTitle(lead),
-            description: formatLinearIssueDescription(lead, summary),
+            description: formatLinearIssueDescription(lead, summary, visibilityReport),
             labelIds: [this.config.leadLabelId],
           },
         },

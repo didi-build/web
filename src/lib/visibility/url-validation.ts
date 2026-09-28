@@ -1,4 +1,3 @@
-import { lookup as dnsLookup } from "node:dns/promises";
 import { isIP } from "node:net";
 
 const BLOCKED_HOSTNAMES = new Set([
@@ -149,6 +148,14 @@ export async function precheckHostnameDns(hostname: string): Promise<HostnameDns
   }
 
   try {
+    let dnsLookup: (typeof import("node:dns/promises"))["lookup"];
+    try {
+      dnsLookup = (await import("node:dns/promises")).lookup;
+    } catch {
+      logDnsPrecheckSkippedOnce();
+      return "skipped";
+    }
+
     const results = await dnsLookup(hostname, { all: true, verbatim: true });
     if (results.length === 0) {
       return "unresolvable";
