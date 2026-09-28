@@ -133,16 +133,55 @@ export async function getGmailAccessToken(config: GmailServiceAccountConfig): Pr
   return payload.access_token;
 }
 
+const CONTROL_CHAR_PATTERN = /[\u0000-\u001f\u007f]/g;
+
+function isAsciiOnly(value: string): boolean {
+  for (let i = 0; i < value.length; i++) {
+    if (value.charCodeAt(i) > 127) {
+      return false;
+    }
+  }
+  return true;
+}
+
+function base64EncodeUtf8(value: string): string {
+  const bytes = new TextEncoder().encode(value);
+  let binary = "";
+  for (const byte of bytes) {
+    binary += String.fromCharCode(byte);
+  }
+  return btoa(binary);
+}
+
+/** Strip control characters and collapse whitespace for MIME header values. */
+export function sanitizeEmailHeaderValue(value: string): string {
+  const withoutControls = value.replace(CONTROL_CHAR_PATTERN, " ");
+  return withoutControls.replace(/\s+/g, " ").trim();
+}
+
+/** Encode Subject per RFC 2047 when non-ASCII characters are present. */
+export function encodeEmailSubject(subject: string): string {
+  const sanitized = sanitizeEmailHeaderValue(subject);
+  if (isAsciiOnly(sanitized)) {
+    return sanitized;
+  }
+  return `=?UTF-8?B?${base64EncodeUtf8(sanitized)}?=`;
+}
+
 export function buildRawEmailMessage(options: {
   from: string;
   to: string;
   subject: string;
   body: string;
 }): string {
+  const from = sanitizeEmailHeaderValue(options.from);
+  const to = sanitizeEmailHeaderValue(options.to);
+  const subject = encodeEmailSubject(options.subject);
+
   const lines = [
-    `From: ${options.from}`,
-    `To: ${options.to}`,
-    `Subject: ${options.subject}`,
+    `From: ${from}`,
+    `To: ${to}`,
+    `Subject: ${subject}`,
     "MIME-Version: 1.0",
     "Content-Type: text/plain; charset=utf-8",
     "",

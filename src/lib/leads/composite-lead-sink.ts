@@ -14,18 +14,21 @@ export class CompositeLeadSink implements LeadSink {
     summary: LeadSummary | null,
     visibilityReport: VisibilityReport | null,
   ): Promise<void> {
-    const failures: { name: string; error: unknown }[] = [];
+    const results = await Promise.allSettled(
+      this.sinks.map(({ sink }) => sink.submit(lead, summary, visibilityReport)),
+    );
 
-    for (const { name, sink } of this.sinks) {
-      try {
-        await sink.submit(lead, summary, visibilityReport);
-      } catch (error) {
+    const failures: { name: string; error: unknown }[] = [];
+    for (let i = 0; i < results.length; i++) {
+      const result = results[i];
+      if (result.status === "rejected") {
+        const { name } = this.sinks[i];
         console.error(
           "lead_sink_partial_failure",
           name,
-          error instanceof Error ? error.message : "unknown",
+          result.reason instanceof Error ? result.reason.message : "unknown",
         );
-        failures.push({ name, error });
+        failures.push({ name, error: result.reason });
       }
     }
 
