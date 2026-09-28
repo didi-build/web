@@ -84,6 +84,12 @@ UI is implemented from `design/web.dc.html` (single design export). Marketing co
 
 `POST /api/leads` validates input, verifies Turnstile, summarizes via `ClaudeLeadSummarizer`, and submits through `LinearLeadSink`. If summarization fails, the raw lead is still submitted with a "summary unavailable" note.
 
+## Website visibility checker
+
+`POST /api/visibility-check` accepts a public `http`/`https` URL plus a Turnstile token, runs deterministic fetch-only checks in `src/lib/visibility/`, and returns a JSON report (findings plus a Claude-written summary). If explanation fails, findings are still returned with a fallback summary.
+
+A functional preview page lives at `/tools/visibility-check` (not linked from the homepage, `noindex`, omitted from the sitemap). It uses the same Turnstile site key as the contact form.
+
 ## CI
 
 GitHub Actions runs on pushes to `main` and on pull requests: format check, lint, typecheck, test, build (no production secrets required).
