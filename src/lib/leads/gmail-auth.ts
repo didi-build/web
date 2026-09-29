@@ -153,6 +153,16 @@ function base64EncodeUtf8(value: string): string {
   return btoa(binary);
 }
 
+/** Base64-encode UTF-8 content for MIME bodies (RFC 2045, 76-char lines). */
+function base64EncodeMimeBody(value: string): string {
+  const base64 = base64EncodeUtf8(value);
+  const lines: string[] = [];
+  for (let i = 0; i < base64.length; i += 76) {
+    lines.push(base64.slice(i, i + 76));
+  }
+  return lines.join("\r\n");
+}
+
 /** Strip control characters and collapse whitespace for MIME header values. */
 export function sanitizeEmailHeaderValue(value: string): string {
   const withoutControls = value.replace(CONTROL_CHAR_PATTERN, " ");
@@ -188,14 +198,14 @@ export function buildRawEmailMessage(options: {
   const mimeBody = [
     `--${boundary}`,
     "Content-Type: text/plain; charset=utf-8",
-    "Content-Transfer-Encoding: 8bit",
+    "Content-Transfer-Encoding: base64",
     "",
-    options.textPlain,
+    base64EncodeMimeBody(options.textPlain),
     `--${boundary}`,
     "Content-Type: text/html; charset=utf-8",
-    "Content-Transfer-Encoding: 8bit",
+    "Content-Transfer-Encoding: base64",
     "",
-    options.textHtml,
+    base64EncodeMimeBody(options.textHtml),
     `--${boundary}--`,
     "",
   ].join("\r\n");
