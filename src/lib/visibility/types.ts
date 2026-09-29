@@ -21,6 +21,8 @@ export type FetchSuccess = {
   status: number;
   body: string;
   finalUrl: string;
+  headers?: Record<string, string>;
+  truncated?: boolean;
 };
 
 export type FetchFailure = {

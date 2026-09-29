@@ -1,16 +1,20 @@
 import { visibilityToolContent } from "@/content/visibility-tool";
-import type { VisibilityReport } from "@/lib/visibility/schemas";
+import { isHostBlockedVisibilityFindings, type VisibilityReport } from "@/lib/visibility/schemas";
 
 const copy = visibilityToolContent.page.report;
 
 export function VisibilityCheckReport({ report }: { report: VisibilityReport }) {
+  const hostBlocked = isHostBlockedVisibilityFindings(report.findings);
+
   return (
     <div className="flex flex-col gap-8">
-      {typeof report.score === "number" && (
+      {typeof report.score === "number" ? (
         <p className="m-0 text-lg font-semibold text-ink">
           {copy.scoreLabel}: {report.score}/100
         </p>
-      )}
+      ) : hostBlocked ? (
+        <p className="m-0 text-base leading-relaxed text-ink-muted">{copy.hostBlockedNotice}</p>
+      ) : null}
 
       <section aria-labelledby="visibility-summary">
         <h2 id="visibility-summary" className="m-0 text-xl font-semibold">
@@ -54,14 +58,16 @@ export function VisibilityCheckReport({ report }: { report: VisibilityReport }) 
   );
 }
 
-function StatusBadge({ status }: { status: "pass" | "warn" | "fail" }) {
+function StatusBadge({ status }: { status: "pass" | "warn" | "fail" | "unknown" }) {
   const label = copy.statusLabels[status];
   const className =
     status === "pass"
       ? "bg-accent-soft text-ink"
       : status === "warn"
         ? "bg-surface-2 text-ink"
-        : "bg-error-soft text-error";
+        : status === "unknown"
+          ? "bg-surface-2 text-ink-muted"
+          : "bg-error-soft text-error";
   return (
     <span className={`rounded-pill px-2.5 py-0.5 text-sm font-medium ${className}`}>{label}</span>
   );

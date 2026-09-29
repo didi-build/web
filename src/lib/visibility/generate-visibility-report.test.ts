@@ -1,8 +1,14 @@
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
+import { formatLeadEmailSubject } from "../leads/format-lead-email";
+import { runDeterministicChecks } from "./checks";
 import { clearReportCache } from "./report-cache";
 import { generateVisibilityReport } from "./generate-visibility-report";
 import { VisibilityCheckError } from "./visibility-checker";
-import type { VisibilityChecker, VisibilityExplainer } from "./types";
+import type { FetchResult, SiteResources, VisibilityChecker, VisibilityExplainer } from "./types";
+
+const fixturesDir = join(__dirname, "__fixtures__");
 
 describe("generateVisibilityReport", () => {
   it("returns cached report without calling checker", async () => {
@@ -58,6 +64,55 @@ describe("generateVisibilityReport", () => {
       status: 404,
       message: "We could not reach that website.",
     });
+  });
+
+  it("omits score for host-blocked challenge reports", async () => {
+    clearReportCache();
+    const challengeHtml = readFileSync(join(fixturesDir, "siteground-challenge.html"), "utf8");
+    const fetchOk = (
+      body: string,
+      status = 200,
+      headers?: Record<string, string>,
+    ): FetchResult => ({
+      ok: true,
+      status,
+      body,
+      finalUrl: "https://thrivehivestudio.ca/",
+      headers,
+    });
+    const resources: SiteResources = {
+      normalizedUrl: "https://thrivehivestudio.ca/",
+      origin: "https://thrivehivestudio.ca",
+      homepage: fetchOk(challengeHtml, 202, { "sg-captcha": "challenge" }),
+      robotsTxt: fetchOk(challengeHtml, 202, { "sg-captcha": "challenge" }),
+      sitemapXml: fetchOk(challengeHtml, 202, { "sg-captcha": "challenge" }),
+      llmsTxt: fetchOk(challengeHtml, 202, { "sg-captcha": "challenge" }),
+    };
+    const findings = runDeterministicChecks(resources);
+
+    const result = await generateVisibilityReport("https://thrivehivestudio.ca/", {
+      checker: { check: vi.fn(async () => findings) },
+      explainer: {
+        explain: vi.fn(async () => ({
+          summary: "Host blocked our check.",
+          topFixes: ["Try again later", "Confirm HTTPS", "Review robots when readable"],
+        })),
+      },
+    });
+
+    expect(result.ok).toBe(true);
+    if (result.ok) {
+      expect(result.report.score).toBeUndefined();
+      const subject = formatLeadEmailSubject(
+        {
+          name: "Test",
+          email: "test@example.com",
+          message: "Hi",
+        },
+        result.report,
+      );
+      expect(subject).not.toContain("visibility");
+    }
   });
 
   it("returns findings when explainer fails", async () => {

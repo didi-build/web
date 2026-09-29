@@ -1,5 +1,6 @@
 import { describe, expect, it } from "vitest";
-import { computeScore, visibilityReportSchema } from "./schemas";
+import { computeScore, resolveVisibilityScore, visibilityReportSchema } from "./schemas";
+import type { VisibilityFinding } from "./schemas";
 
 describe("visibilityReportSchema", () => {
   it("accepts a valid report", () => {
@@ -23,7 +24,49 @@ describe("visibilityReportSchema", () => {
   });
 });
 
+describe("resolveVisibilityScore", () => {
+  it("returns undefined when fewer than half of findings are scorable", () => {
+    const findings: VisibilityFinding[] = [
+      {
+        id: "https",
+        label: "HTTPS",
+        status: "pass",
+        detail: "ok",
+        whyItMatters: "y",
+      },
+      ...Array.from({ length: 7 }, (_, i) => ({
+        id: `unknown-${i}`,
+        label: "Check",
+        status: "unknown" as const,
+        detail: "blocks automated",
+        whyItMatters: "y",
+      })),
+    ];
+    expect(resolveVisibilityScore(findings)).toBeUndefined();
+  });
+});
+
 describe("computeScore", () => {
+  it("ignores unknown findings in the denominator", () => {
+    const score = computeScore([
+      {
+        id: "a",
+        label: "A",
+        status: "pass",
+        detail: "x",
+        whyItMatters: "y",
+      },
+      {
+        id: "b",
+        label: "B",
+        status: "unknown",
+        detail: "x",
+        whyItMatters: "y",
+      },
+    ]);
+    expect(score).toBe(100);
+  });
+
   it("weights warn at half credit", () => {
     const score = computeScore([
       {

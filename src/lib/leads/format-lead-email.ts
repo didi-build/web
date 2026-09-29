@@ -1,7 +1,20 @@
 import type { LeadRecord, LeadSummary } from "./types";
+import { isHostBlockedVisibilityFindings } from "../visibility/schemas";
 import type { FindingStatus, VisibilityFinding, VisibilityReport } from "../visibility/types";
 
-const FINDING_STATUS_ORDER: Record<FindingStatus, number> = { fail: 0, warn: 1, pass: 2 };
+const FINDING_STATUS_ORDER: Record<FindingStatus, number> = {
+  fail: 0,
+  warn: 1,
+  pass: 2,
+  unknown: 3,
+};
+
+const HOST_BLOCKED_VISIBILITY_LINE =
+  "This site's host blocks automated checks, so we couldn't read the page.";
+
+export function isHostBlockedVisibilityReport(report: VisibilityReport): boolean {
+  return isHostBlockedVisibilityFindings(report.findings);
+}
 
 export type LeadEmailMeta = {
   linearIssueUrl?: string;
@@ -46,7 +59,7 @@ export function formatLeadEmailSubject(
   const business = lead.businessName?.trim();
   const base = business ? `New lead: ${lead.name} (${business})` : `New lead: ${lead.name}`;
 
-  if (visibilityReport?.score !== undefined) {
+  if (visibilityReport?.score !== undefined && !isHostBlockedVisibilityReport(visibilityReport)) {
     return `${base} · visibility ${visibilityReport.score}/100`;
   }
 
@@ -63,12 +76,14 @@ function groupFindingsByStatus(findings: VisibilityFinding[]): {
   fails: VisibilityFinding[];
   warnings: VisibilityFinding[];
   passed: VisibilityFinding[];
+  unknown: VisibilityFinding[];
 } {
   const sorted = sortFindings(findings);
   return {
     fails: sorted.filter((f) => f.status === "fail"),
     warnings: sorted.filter((f) => f.status === "warn"),
     passed: sorted.filter((f) => f.status === "pass"),
+    unknown: sorted.filter((f) => f.status === "unknown"),
   };
 }
 
@@ -113,10 +128,13 @@ function renderWebsiteBlock(lead: LeadRecord, visibilityReport: VisibilityReport
     return rows.join("");
   }
 
+  const hostBlocked = isHostBlockedVisibilityReport(visibilityReport);
   const scoreBlock =
-    visibilityReport.score !== undefined
+    !hostBlocked && visibilityReport.score !== undefined
       ? `<div style="font-size:32px;font-weight:700;line-height:1.1;color:#111827;margin-bottom:8px;">${visibilityReport.score} <span style="font-size:16px;font-weight:500;color:#6b7280;">/ 100</span></div>`
-      : "";
+      : hostBlocked
+        ? `<p style="margin:0 0 12px 0;font-family:Helvetica,Arial,sans-serif;font-size:14px;line-height:1.55;color:#6b7280;">${escapeHtml(HOST_BLOCKED_VISIBILITY_LINE)}</p>`
+        : "";
 
   const topFixes = visibilityReport.topFixes
     .map(
@@ -143,9 +161,21 @@ function renderWebsiteBlock(lead: LeadRecord, visibilityReport: VisibilityReport
 
 function renderFindingRow(finding: VisibilityFinding, compact: boolean): string {
   const statusLabel =
-    finding.status === "fail" ? "Fail" : finding.status === "warn" ? "Warning" : "Passed";
+    finding.status === "fail"
+      ? "Fail"
+      : finding.status === "warn"
+        ? "Warning"
+        : finding.status === "unknown"
+          ? "Couldn't check"
+          : "Passed";
   const statusColor =
-    finding.status === "fail" ? "#b91c1c" : finding.status === "warn" ? "#b45309" : "#15803d";
+    finding.status === "fail"
+      ? "#b91c1c"
+      : finding.status === "warn"
+        ? "#b45309"
+        : finding.status === "unknown"
+          ? "#6b7280"
+          : "#15803d";
 
   const whyBlock = compact
     ? ""
@@ -166,10 +196,11 @@ function renderFindingsSection(report: VisibilityReport | null): string {
     return "";
   }
 
-  const { fails, warnings, passed } = groupFindingsByStatus(report.findings);
+  const { fails, warnings, passed, unknown } = groupFindingsByStatus(report.findings);
   const groups: { title: string; items: VisibilityFinding[]; compact: boolean }[] = [
     { title: "Fails", items: fails, compact: false },
     { title: "Warnings", items: warnings, compact: false },
+    { title: "Couldn't check", items: unknown, compact: true },
     { title: "Passed", items: passed, compact: true },
   ];
 
@@ -382,7 +413,10 @@ export function buildLeadEmailPlainText(
     if (!visibilityReport) {
       lines.push("Visibility report unavailable (check failed, timed out, or URL invalid).");
     } else {
-      if (visibilityReport.score !== undefined) {
+      const hostBlocked = isHostBlockedVisibilityReport(visibilityReport);
+      if (hostBlocked) {
+        lines.push(HOST_BLOCKED_VISIBILITY_LINE);
+      } else if (visibilityReport.score !== undefined) {
         lines.push(`Score: ${visibilityReport.score} / 100`);
       }
       lines.push(visibilityReport.summary, "", "Top fixes:");
@@ -390,7 +424,7 @@ export function buildLeadEmailPlainText(
         lines.push(`  ${index + 1}. ${fix}`);
       });
 
-      const { fails, warnings, passed } = groupFindingsByStatus(visibilityReport.findings);
+      const { fails, warnings, passed, unknown } = groupFindingsByStatus(visibilityReport.findings);
       lines.push("", "ALL FINDINGS", "------------");
 
       const appendGroup = (title: string, items: VisibilityFinding[], compact: boolean) => {
@@ -400,7 +434,13 @@ export function buildLeadEmailPlainText(
         lines.push("", title);
         for (const finding of items) {
           const status =
-            finding.status === "fail" ? "Fail" : finding.status === "warn" ? "Warning" : "Passed";
+            finding.status === "fail"
+              ? "Fail"
+              : finding.status === "warn"
+                ? "Warning"
+                : finding.status === "unknown"
+                  ? "Couldn't check"
+                  : "Passed";
           lines.push(`  ${finding.label} (${status})`);
           lines.push(`    ${finding.detail}`);
           if (!compact) {
@@ -411,6 +451,7 @@ export function buildLeadEmailPlainText(
 
       appendGroup("Fails", fails, false);
       appendGroup("Warnings", warnings, false);
+      appendGroup("Couldn't check", unknown, true);
       appendGroup("Passed", passed, true);
     }
     lines.push("");

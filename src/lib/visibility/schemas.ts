@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const findingStatusSchema = z.enum(["pass", "warn", "fail"]);
+export const findingStatusSchema = z.enum(["pass", "warn", "fail", "unknown"]);
 
 export type FindingStatus = z.infer<typeof findingStatusSchema>;
 
@@ -59,17 +59,54 @@ export function parseExplainerOutputJson(raw: string) {
   return { ok: true as const, data: result.data };
 }
 
-export function computeScore(findings: VisibilityFinding[]): number {
+const HOMEPAGE_HTML_CHECK_IDS = [
+  "title",
+  "metaDescription",
+  "h1",
+  "viewport",
+  "openGraph",
+  "structuredData",
+  "contactInfo",
+] as const;
+
+export function isHostBlockedVisibilityFindings(findings: VisibilityFinding[]): boolean {
+  return findings.some(
+    (f) => f.status === "unknown" && f.detail.toLowerCase().includes("blocks automated"),
+  );
+}
+
+export function resolveVisibilityScore(findings: VisibilityFinding[]): number | undefined {
   if (findings.length === 0) {
+    return undefined;
+  }
+
+  const scorableCount = findings.filter((f) => f.status !== "unknown").length;
+  if (scorableCount < findings.length / 2) {
+    return undefined;
+  }
+
+  const htmlFindings = findings.filter((f) =>
+    (HOMEPAGE_HTML_CHECK_IDS as readonly string[]).includes(f.id),
+  );
+  if (htmlFindings.length > 0 && htmlFindings.every((f) => f.status === "unknown")) {
+    return undefined;
+  }
+
+  return computeScore(findings);
+}
+
+export function computeScore(findings: VisibilityFinding[]): number {
+  const scored = findings.filter((f) => f.status !== "unknown");
+  if (scored.length === 0) {
     return 0;
   }
   let points = 0;
-  for (const finding of findings) {
+  for (const finding of scored) {
     if (finding.status === "pass") {
       points += 1;
     } else if (finding.status === "warn") {
       points += 0.5;
     }
   }
-  return Math.round((points / findings.length) * 100);
+  return Math.round((points / scored.length) * 100);
 }

@@ -1,5 +1,10 @@
 import { describe, expect, it } from "vitest";
-import { buildLeadEmailHtml, buildLeadEmailPlainText, safeWebsiteHref } from "./format-lead-email";
+import {
+  buildLeadEmailHtml,
+  buildLeadEmailPlainText,
+  formatLeadEmailSubject,
+  safeWebsiteHref,
+} from "./format-lead-email";
 import type { VisibilityReport } from "../visibility/types";
 
 const baseLead = {
@@ -68,6 +73,60 @@ describe("buildLeadEmailPlainText", () => {
     const text = buildLeadEmailPlainText(baseLead, summary, sampleReport);
     expect(text).not.toMatch(/\*\*/);
     expect(text).not.toMatch(/^##/m);
+  });
+});
+
+const hostBlockedReport: VisibilityReport = {
+  url: "https://thrivehivestudio.ca/",
+  checkedAt: "2026-09-29T12:00:00.000Z",
+  summary:
+    "This site's host blocks automated checks from our servers, so we could not read the homepage HTML or some auxiliary files.",
+  topFixes: [
+    "Keep HTTPS enabled",
+    "Monitor when the host allows checks",
+    "Review robots.txt later",
+  ],
+  findings: [
+    {
+      id: "https",
+      label: "Secure HTTPS connection",
+      status: "pass",
+      detail: "Your site loads over HTTPS.",
+      whyItMatters: "HTTPS builds trust.",
+    },
+    {
+      id: "title",
+      label: "Page title",
+      status: "unknown",
+      detail: "This site's host blocks automated checks, so we could not read your homepage HTML.",
+      whyItMatters: "Titles help search.",
+    },
+    {
+      id: "robotsTxt",
+      label: "robots.txt file",
+      status: "unknown",
+      detail: "This site's host blocks automated checks, so we could not verify robots.txt.",
+      whyItMatters: "robots.txt guides crawlers.",
+    },
+  ],
+};
+
+describe("host-blocked visibility report email", () => {
+  it("omits visibility score from subject and shows blocked-host copy in HTML and plain text", () => {
+    const subject = formatLeadEmailSubject(baseLead, hostBlockedReport);
+    expect(subject).toBe("New lead: Sam Rivera (Rivera Bakery)");
+    expect(subject).not.toContain("visibility");
+
+    const html = buildLeadEmailHtml(baseLead, summary, hostBlockedReport);
+    expect(html).toContain("Couldn&#39;t check");
+    expect(html).toContain("blocks automated checks, so we couldn&#39;t read the page.");
+    expect(html).not.toContain("100 <span");
+
+    const text = buildLeadEmailPlainText(baseLead, summary, hostBlockedReport);
+    expect(text).toContain("Couldn't check");
+    expect(text).toContain("blocks automated checks, so we couldn't read the page.");
+    expect(text).not.toContain("Score: 100");
+    expect(text).toContain("Page title (Couldn't check)");
   });
 });
 
