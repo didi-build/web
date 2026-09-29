@@ -20,6 +20,12 @@
 # production
 /build
 
+# local throwaway experiments (DIDI-469 recon is tracked under scratch/recon-browser-run/)
+scratch/**
+!scratch/recon-browser-run/
+!scratch/recon-browser-run/**
+scratch/recon-browser-run/results.json
+
 # misc
 .DS_Store
 *.pem
