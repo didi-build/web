@@ -1,17 +1,19 @@
 export const siteContent = {
   brand: "Didi Build",
   meta: {
-    title: "Custom AI for Small Businesses | Didi Build",
+    title: "Custom AI for Small Businesses and Startups | Didi Build",
     description:
       "Curious how AI could help your business grow? I'll find where it fits, then build it.",
     businessDescription:
-      "Toronto AI consultant for small businesses across Ontario and Canada. Custom AI tools and automation with fixed scope and plain English. Book a free discovery chat.",
+      "Toronto AI consultant for small businesses and startups across Ontario and Canada. Custom AI tools, automation, and AI features built with fixed scope and plain English. Book a free discovery chat.",
     keywords: [
       "AI integration for small business",
       "AI consultant Toronto",
       "AI automation small business Ontario",
       "custom AI tools for my business",
       "how can AI help my small business",
+      "AI consultant for startups",
+      "AI engineering for startups Toronto",
     ],
     ogHeadline: ["AI that actually", "fits your", "business."],
     ogImageAlt: "Didi Build: AI that actually fits your business.",
@@ -58,8 +60,8 @@ export const siteContent = {
         body: "A private assistant that knows your policies, pricing, and procedures, so you and your team can simply ask.",
       },
       {
-        title: "A calmer inbox",
-        body: "Customer emails get sorted by what needs you first, with replies drafted in your voice for you to check and send.",
+        title: "AI features in your product",
+        body: "LLM features and agent workflows, built into your product with the evaluation and guardrails behind them, alongside your team.",
       },
     ],
     closingPrefix: "Have something else in mind?",
@@ -72,18 +74,19 @@ export const siteContent = {
   },
   about: {
     eyebrow: "About me",
-    headline: "A software engineer building custom AI for small businesses.",
+    headline: "A software engineer building custom AI for small businesses and startups.",
     lead: "I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.",
     followUp:
-      "These days I help small businesses adopt AI in ways that fit how they actually work.",
+      "These days I help small businesses adopt AI in ways that fit how they actually work, and help early-stage startups design and ship the AI systems behind their products.",
     ctaPrefix: "Browse my",
     portfolioLinkLabel: "portfolio site",
-    ctaOr: "or connect on",
+    ctaPortfolioOrGithub: "or",
+    ctaOrLinkedIn: ", or connect on",
     ctaClosing: ".",
   },
   llms: {
     whoItIsFor:
-      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team.",
+      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team. Also early-stage startups that want AI features, agent workflows, or LLM integrations designed and built properly, working alongside their team.",
     serviceArea:
       "Based in Toronto, Ontario. Remote work across Canada; in-person locally when it helps.",
   },
@@ -103,6 +106,11 @@ export const siteContent = {
         question: "Do I need technical staff to use what you build?",
         answer:
           "No. I design for the people who will use it every day, in plain language, on the tools you already use. I hand off simple docs and show your team how it works. After launch, you can choose a simple monthly support plan or pay only when you need something.",
+      },
+      {
+        question: "Do you work with startups?",
+        answer:
+          "Yes. For startups I help design and build AI features and systems: LLM integrations, agent workflows, and the evaluation and guardrails that keep them reliable. I can work alongside your engineers or own a feature end to end, with the same fixed scope and written plan.",
       },
       {
         question: "How much does it cost?",

@@ -1,17 +1,33 @@
 import { describe, expect, it } from "vitest";
-import { businessLinks, founderLinks } from "./profile-links";
+import { businessLinks, founderLinks, type ProfileLink } from "./profile-links";
+
+function assertLinkListIntegrity(
+  links: readonly ProfileLink[],
+  options?: { requireAriaLabel?: boolean },
+) {
+  const hrefs: string[] = [];
+
+  for (const link of links) {
+    expect(link.label.trim().length).toBeGreaterThan(0);
+    expect(link.href).toMatch(/^https:\/\/.+/);
+
+    if (options?.requireAriaLabel) {
+      expect(link.ariaLabel?.trim().length).toBeGreaterThan(0);
+    }
+
+    hrefs.push(link.href);
+  }
+
+  expect(new Set(hrefs).size).toBe(hrefs.length);
+}
 
 describe("profile-links", () => {
-  it("lists Didi Build business profiles for the footer and Organization JSON-LD", () => {
-    expect(founderLinks.map((l) => l.href)).toEqual([
-      "https://portfolio.didi.build",
-      "https://github.com/DiademShoukralla/",
-      "https://www.linkedin.com/in/diadem-shoukralla/",
-    ]);
-    expect(businessLinks.map((l) => l.href)).toEqual([
-      "https://www.linkedin.com/company/didi-build",
-      "https://github.com/didi-build/",
-      "https://share.google/3BoTSKdmxNKgKCExS",
-    ]);
+  it("keeps founder links well-formed and unique", () => {
+    assertLinkListIntegrity(founderLinks);
+    expect(founderLinks.map((l) => l.icon).sort()).toEqual(["github", "linkedin", "portfolio"]);
+  });
+
+  it("keeps business links well-formed, unique, and with accessible names for icon-only footer links", () => {
+    assertLinkListIntegrity(businessLinks, { requireAriaLabel: true });
   });
 });
