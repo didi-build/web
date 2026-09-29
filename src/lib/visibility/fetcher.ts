@@ -1,3 +1,8 @@
+import {
+  isValidSitemapXml,
+  parseRobotsSitemapUrls,
+  resolveSitemapUrl,
+} from "./challenge-detection";
 import type { FetchResult, FetchUrlOptions, VisibilityFetcher } from "./types";
 import { precheckHostnameDns, validatePublicHttpUrl } from "./url-validation";
 
@@ -11,32 +16,39 @@ export type SafeFetcherConfig = {
   maxBytes?: number;
 };
 
-async function readBodyWithLimit(
-  response: Response,
-  maxBytes: number,
-): Promise<string | "too_large"> {
+type ReadBodyResult = { body: string; truncated: boolean };
+
+async function readBodyWithLimit(response: Response, maxBytes: number): Promise<ReadBodyResult> {
   const reader = response.body?.getReader();
   if (!reader) {
     const text = await response.text();
     if (text.length > maxBytes) {
-      return "too_large";
+      return { body: text.slice(0, maxBytes), truncated: true };
     }
-    return text;
+    return { body: text, truncated: false };
   }
 
   const chunks: Uint8Array[] = [];
   let total = 0;
+  let truncated = false;
   while (true) {
     const { done, value } = await reader.read();
     if (done) {
       break;
     }
     if (value) {
-      total += value.byteLength;
-      if (total > maxBytes) {
+      const nextTotal = total + value.byteLength;
+      if (nextTotal > maxBytes) {
+        const remaining = maxBytes - total;
+        if (remaining > 0) {
+          chunks.push(value.subarray(0, remaining));
+          total = maxBytes;
+        }
+        truncated = true;
         await reader.cancel();
-        return "too_large";
+        break;
       }
+      total = nextTotal;
       chunks.push(value);
     }
   }
@@ -47,7 +59,18 @@ async function readBodyWithLimit(
     combined.set(chunk, offset);
     offset += chunk.byteLength;
   }
-  return new TextDecoder("utf-8", { fatal: false }).decode(combined);
+  return {
+    body: new TextDecoder("utf-8", { fatal: false }).decode(combined),
+    truncated,
+  };
+}
+
+function collectHeaders(response: Response): Record<string, string> {
+  const headers: Record<string, string> = {};
+  response.headers.forEach((value, key) => {
+    headers[key] = value;
+  });
+  return headers;
 }
 
 export function createSafeVisibilityFetcher(config?: SafeFetcherConfig): VisibilityFetcher {
@@ -97,16 +120,15 @@ export function createSafeVisibilityFetcher(config?: SafeFetcherConfig): Visibil
             continue;
           }
 
-          const body = await readBodyWithLimit(response, maxBytes);
-          if (body === "too_large") {
-            return { ok: false, error: "too_large" };
-          }
+          const { body, truncated } = await readBodyWithLimit(response, maxBytes);
 
           return {
             ok: true,
             status: response.status,
             body,
             finalUrl: response.url || currentUrl,
+            headers: collectHeaders(response),
+            truncated,
           };
         } catch (error) {
           if (
@@ -132,11 +154,19 @@ export async function fetchSiteResources(
   const origin = originUrl.origin;
 
   const homepage = await fetcher.fetchUrl(normalizedUrl);
-  const [robotsTxt, sitemapXml, llmsTxt] = await Promise.all([
+  const [robotsTxt, defaultSitemap, llmsTxt] = await Promise.all([
     fetcher.fetchUrl(`${origin}/robots.txt`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
     fetcher.fetchUrl(`${origin}/sitemap.xml`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
     fetcher.fetchUrl(`${origin}/llms.txt`, { timeoutMs: AUXILIARY_TIMEOUT_MS }),
   ]);
+
+  let sitemapXml = defaultSitemap;
+  const robotsBody = robotsTxt?.ok ? robotsTxt.body : "";
+  const robotsSitemaps = parseRobotsSitemapUrls(robotsBody);
+  if (!isValidSitemapXml(sitemapXml?.ok ? sitemapXml.body : "") && robotsSitemaps.length > 0) {
+    const fallbackUrl = resolveSitemapUrl(robotsSitemaps[0], origin);
+    sitemapXml = await fetcher.fetchUrl(fallbackUrl, { timeoutMs: AUXILIARY_TIMEOUT_MS });
+  }
 
   return {
     normalizedUrl,

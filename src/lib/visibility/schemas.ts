@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-export const findingStatusSchema = z.enum(["pass", "warn", "fail"]);
+export const findingStatusSchema = z.enum(["pass", "warn", "fail", "unknown"]);
 
 export type FindingStatus = z.infer<typeof findingStatusSchema>;
 
@@ -60,16 +60,17 @@ export function parseExplainerOutputJson(raw: string) {
 }
 
 export function computeScore(findings: VisibilityFinding[]): number {
-  if (findings.length === 0) {
+  const scored = findings.filter((f) => f.status !== "unknown");
+  if (scored.length === 0) {
     return 0;
   }
   let points = 0;
-  for (const finding of findings) {
+  for (const finding of scored) {
     if (finding.status === "pass") {
       points += 1;
     } else if (finding.status === "warn") {
       points += 0.5;
     }
   }
-  return Math.round((points / findings.length) * 100);
+  return Math.round((points / scored.length) * 100);
 }

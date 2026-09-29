@@ -24,6 +24,26 @@ describe("visibilityReportSchema", () => {
 });
 
 describe("computeScore", () => {
+  it("ignores unknown findings in the denominator", () => {
+    const score = computeScore([
+      {
+        id: "a",
+        label: "A",
+        status: "pass",
+        detail: "x",
+        whyItMatters: "y",
+      },
+      {
+        id: "b",
+        label: "B",
+        status: "unknown",
+        detail: "x",
+        whyItMatters: "y",
+      },
+    ]);
+    expect(score).toBe(100);
+  });
+
   it("weights warn at half credit", () => {
     const score = computeScore([
       {

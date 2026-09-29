@@ -31,6 +31,7 @@ export const visibilityToolContent = {
         pass: "Good",
         warn: "Could improve",
         fail: "Needs attention",
+        unknown: "Could not verify",
       },
       whyHeading: "Why it matters",
     },

@@ -54,14 +54,16 @@ export function VisibilityCheckReport({ report }: { report: VisibilityReport }) 
   );
 }
 
-function StatusBadge({ status }: { status: "pass" | "warn" | "fail" }) {
+function StatusBadge({ status }: { status: "pass" | "warn" | "fail" | "unknown" }) {
   const label = copy.statusLabels[status];
   const className =
     status === "pass"
       ? "bg-accent-soft text-ink"
       : status === "warn"
         ? "bg-surface-2 text-ink"
-        : "bg-error-soft text-error";
+        : status === "unknown"
+          ? "bg-surface-2 text-ink-muted"
+          : "bg-error-soft text-error";
   return (
     <span className={`rounded-pill px-2.5 py-0.5 text-sm font-medium ${className}`}>{label}</span>
   );
