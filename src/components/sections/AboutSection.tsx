@@ -1,5 +1,5 @@
 import { VineStem } from "@/components/decorative/VineStem";
-import { founderLinks } from "@/content/profile-links";
+import { getFounderLinkByIcon } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 import Link from "next/link";
 
@@ -9,7 +9,9 @@ const aboutLinkClass =
 export function AboutSection() {
   const { about, sectionIds } = siteContent;
   const headingId = `${sectionIds.about}-heading`;
-  const [portfolioLink, githubLink, linkedinLink] = founderLinks;
+  const portfolioLink = getFounderLinkByIcon("portfolio");
+  const githubLink = getFounderLinkByIcon("github");
+  const linkedinLink = getFounderLinkByIcon("linkedin");
 
   return (
     <section
@@ -36,12 +38,12 @@ export function AboutSection() {
               {about.ctaPrefix}{" "}
               <Link href={portfolioLink.href} className={aboutLinkClass}>
                 {about.portfolioLinkLabel}
-              </Link>
-              {", "}
+              </Link>{" "}
+              {about.ctaPortfolioOrGithub}{" "}
               <Link href={githubLink.href} className={aboutLinkClass}>
                 {githubLink.label}
-              </Link>{" "}
-              {about.ctaOr}{" "}
+              </Link>
+              {about.ctaOrLinkedIn}{" "}
               <Link href={linkedinLink.href} className={aboutLinkClass}>
                 {linkedinLink.label}
               </Link>

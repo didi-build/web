@@ -1,5 +1,5 @@
 import { SocialProfileIcon } from "@/components/SocialProfileIcon";
-import { businessLinks } from "@/content/profile-links";
+import { businessLinks, profileLinkAriaLabel } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 
 const socialIconClass =
@@ -23,7 +23,7 @@ export function Footer() {
               <li key={link.href}>
                 <a
                   href={link.href}
-                  aria-label={link.label}
+                  aria-label={profileLinkAriaLabel(link)}
                   title={link.label}
                   className={socialIconClass}
                 >
