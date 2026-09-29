@@ -38,7 +38,7 @@ export function AboutSection() {
               {about.ctaPrefix}{" "}
               <Link href={portfolioLink.href} className={aboutLinkClass}>
                 {about.portfolioLinkLabel}
-              </Link>
+              </Link>{" "}
               {about.ctaPortfolioOrGithub}{" "}
               <Link href={githubLink.href} className={aboutLinkClass}>
                 {githubLink.label}
