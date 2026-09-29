@@ -17,6 +17,35 @@ function decodeRawEmailMessage(raw: string): string {
   return new TextDecoder().decode(bytes);
 }
 
+function decodeMimePartBase64(encoded: string): string {
+  const compact = encoded.replace(/\r\n/g, "");
+  const binary = atob(compact);
+  const bytes = new Uint8Array(binary.length);
+  for (let i = 0; i < binary.length; i++) {
+    bytes[i] = binary.charCodeAt(i);
+  }
+  return new TextDecoder().decode(bytes);
+}
+
+function extractMimePartBodies(decoded: string, boundary: string): { plain: string; html: string } {
+  const parts = decoded.split(`--${boundary}`);
+  let plain = "";
+  let html = "";
+  for (const part of parts) {
+    if (!part.includes("Content-Type:")) {
+      continue;
+    }
+    const [, bodyBlock = ""] = part.split("\r\n\r\n");
+    const body = bodyBlock.replace(/\r\n--$/, "").trimEnd();
+    if (part.includes("text/plain")) {
+      plain = decodeMimePartBase64(body);
+    } else if (part.includes("text/html")) {
+      html = decodeMimePartBase64(body);
+    }
+  }
+  return { plain, html };
+}
+
 describe("gmail-auth helpers", () => {
   it("parses service account JSON", () => {
     const parsed = parseServiceAccountJson(
@@ -100,9 +129,37 @@ describe("gmail-auth helpers", () => {
     expect(decoded).toContain(`Content-Type: multipart/alternative; boundary="${boundary}"`);
     expect(decoded).toContain(`--${boundary}`);
     expect(decoded).toContain("Content-Type: text/plain; charset=utf-8");
-    expect(decoded).toContain("Plain fallback");
+    expect(decoded).toContain("Content-Transfer-Encoding: base64");
     expect(decoded).toContain("Content-Type: text/html; charset=utf-8");
-    expect(decoded).toContain("<p>HTML part</p>");
     expect(decoded).toContain(`--${boundary}--`);
+
+    const { plain, html } = extractMimePartBodies(decoded, boundary);
+    expect(plain).toBe("Plain fallback");
+    expect(html).toBe("<p>HTML part</p>");
+  });
+
+  it("base64-encodes MIME parts so no line exceeds 998 characters and bodies round-trip", () => {
+    const boundary = "boundary-long-lines-468";
+    const message = "x".repeat(2000);
+    const textPlain = `Message:\n\n${message}`;
+    const textHtml = `<p>${message}</p>`;
+
+    const raw = buildRawEmailMessage({
+      from: "diadem@didi.build",
+      to: "hello@didi.build",
+      subject: "New lead: Long message",
+      textPlain,
+      textHtml,
+      boundary,
+    });
+
+    const decoded = decodeRawEmailMessage(raw);
+    const lines = decoded.split("\r\n");
+    const longestLine = Math.max(...lines.map((line) => line.length));
+    expect(longestLine).toBeLessThanOrEqual(998);
+
+    const { plain, html } = extractMimePartBodies(decoded, boundary);
+    expect(plain).toBe(textPlain);
+    expect(html).toBe(textHtml);
   });
 });
