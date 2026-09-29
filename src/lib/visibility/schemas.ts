@@ -59,6 +59,42 @@ export function parseExplainerOutputJson(raw: string) {
   return { ok: true as const, data: result.data };
 }
 
+const HOMEPAGE_HTML_CHECK_IDS = [
+  "title",
+  "metaDescription",
+  "h1",
+  "viewport",
+  "openGraph",
+  "structuredData",
+  "contactInfo",
+] as const;
+
+export function isHostBlockedVisibilityFindings(findings: VisibilityFinding[]): boolean {
+  return findings.some(
+    (f) => f.status === "unknown" && f.detail.toLowerCase().includes("blocks automated"),
+  );
+}
+
+export function resolveVisibilityScore(findings: VisibilityFinding[]): number | undefined {
+  if (findings.length === 0) {
+    return undefined;
+  }
+
+  const scorableCount = findings.filter((f) => f.status !== "unknown").length;
+  if (scorableCount < findings.length / 2) {
+    return undefined;
+  }
+
+  const htmlFindings = findings.filter((f) =>
+    (HOMEPAGE_HTML_CHECK_IDS as readonly string[]).includes(f.id),
+  );
+  if (htmlFindings.length > 0 && htmlFindings.every((f) => f.status === "unknown")) {
+    return undefined;
+  }
+
+  return computeScore(findings);
+}
+
 export function computeScore(findings: VisibilityFinding[]): number {
   const scored = findings.filter((f) => f.status !== "unknown");
   if (scored.length === 0) {

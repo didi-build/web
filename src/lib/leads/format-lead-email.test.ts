@@ -79,7 +79,6 @@ describe("buildLeadEmailPlainText", () => {
 const hostBlockedReport: VisibilityReport = {
   url: "https://thrivehivestudio.ca/",
   checkedAt: "2026-09-29T12:00:00.000Z",
-  score: 100,
   summary:
     "This site's host blocks automated checks from our servers, so we could not read the homepage HTML or some auxiliary files.",
   topFixes: [

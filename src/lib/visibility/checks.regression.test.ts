@@ -1,7 +1,7 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it } from "vitest";
-import { computeScore } from "./schemas";
+import { resolveVisibilityScore } from "./schemas";
 import { runDeterministicChecks } from "./checks";
 import type { FetchResult, SiteResources } from "./types";
 
@@ -95,7 +95,7 @@ describe("visibility checker regressions (DIDI-467)", () => {
     expect(findings.find((f) => f.id === "contactInfo")?.status).toBe("unknown");
   });
 
-  it("excludes unknown findings from the visibility score", () => {
+  it("omits visibility score when the host blocks automated checks", () => {
     const resources: SiteResources = {
       normalizedUrl: "https://thrivehivestudio.ca/",
       origin: "https://thrivehivestudio.ca",
@@ -105,8 +105,22 @@ describe("visibility checker regressions (DIDI-467)", () => {
       llmsTxt: fetchOk(challengeHtml, 202, { headers: { "sg-captcha": "challenge" } }),
     };
     const findings = runDeterministicChecks(resources);
-    const score = computeScore(findings);
-    expect(score).toBe(100);
+    expect(resolveVisibilityScore(findings)).toBeUndefined();
+  });
+
+  it("does not block a normal page that mentions 'just a moment' in body copy", () => {
+    const body = readFileSync(join(fixturesDir, "page-with-just-a-moment-copy.html"), "utf8");
+    const resources: SiteResources = {
+      normalizedUrl: "https://calmspa.example/",
+      origin: "https://calmspa.example",
+      homepage: fetchOk(body),
+      robotsTxt: fetchOk("User-agent: *\nAllow: /\n"),
+      sitemapXml: { ok: false, error: "fetch_failed" },
+      llmsTxt: { ok: false, error: "fetch_failed" },
+    };
+    const findings = runDeterministicChecks(resources);
+    expect(findings.find((f) => f.id === "title")?.status).toBe("pass");
+    expect(resolveVisibilityScore(findings)).toBeDefined();
   });
 
   it("parses truncated large homepages instead of failing", () => {

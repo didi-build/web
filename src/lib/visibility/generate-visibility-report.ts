@@ -1,5 +1,5 @@
 import { fallbackExplainerOutput } from "./claude-visibility-explainer";
-import { computeScore, visibilityReportSchema, type VisibilityReport } from "./schemas";
+import { resolveVisibilityScore, visibilityReportSchema, type VisibilityReport } from "./schemas";
 import { getCachedReport, setCachedReport } from "./report-cache";
 import type { VisibilityChecker, VisibilityExplainer } from "./types";
 import { VisibilityCheckError } from "./visibility-checker";
@@ -74,7 +74,7 @@ export async function generateVisibilityReport(
   const report = visibilityReportSchema.parse({
     url: validated.normalized,
     checkedAt: new Date().toISOString(),
-    score: computeScore(findings),
+    score: resolveVisibilityScore(findings),
     findings,
     summary: summaryText,
     topFixes,

@@ -28,4 +28,15 @@ describe("challenge detection", () => {
     );
     expect(urls).toEqual(["https://example.com/sitemap_index.xml"]);
   });
+
+  it("does not treat casual copy containing 'just a moment' as a bot challenge", () => {
+    const body = readFileSync(join(fixturesDir, "page-with-just-a-moment-copy.html"), "utf8");
+    expect(isBotChallengeBody(body)).toBe(false);
+  });
+
+  it("detects Cloudflare interstitial challenges with title and cf markers", () => {
+    const body = readFileSync(join(fixturesDir, "cloudflare-challenge.html"), "utf8");
+    expect(isBotChallengeBody(body)).toBe(true);
+    expect(isBotChallengeBody(body, { "cf-mitigated": "challenge" })).toBe(true);
+  });
 });

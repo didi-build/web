@@ -23,6 +23,8 @@ export const visibilityToolContent = {
       service: "The checker is temporarily unavailable.",
     },
     report: {
+      hostBlockedNotice:
+        "This site's host blocks automated checks, so we couldn't fully read your page. Here's what we could still verify.",
       scoreLabel: "Visibility score",
       summaryHeading: "Summary",
       fixesHeading: "Top fixes",

@@ -1,4 +1,5 @@
 import type { LeadRecord, LeadSummary } from "./types";
+import { isHostBlockedVisibilityFindings } from "../visibility/schemas";
 import type { FindingStatus, VisibilityFinding, VisibilityReport } from "../visibility/types";
 
 const FINDING_STATUS_ORDER: Record<FindingStatus, number> = {
@@ -12,9 +13,7 @@ const HOST_BLOCKED_VISIBILITY_LINE =
   "This site's host blocks automated checks, so we couldn't read the page.";
 
 export function isHostBlockedVisibilityReport(report: VisibilityReport): boolean {
-  return report.findings.some(
-    (f) => f.status === "unknown" && f.detail.toLowerCase().includes("blocks automated"),
-  );
+  return isHostBlockedVisibilityFindings(report.findings);
 }
 
 export type LeadEmailMeta = {
