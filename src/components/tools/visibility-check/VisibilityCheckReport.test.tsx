@@ -1,6 +1,5 @@
 import { renderToStaticMarkup } from "react-dom/server";
 import { describe, expect, it } from "vitest";
-import { visibilityToolContent } from "@/content/visibility-tool";
 import type { VisibilityReport } from "@/lib/visibility/schemas";
 import { VisibilityCheckReport } from "./VisibilityCheckReport";
 
