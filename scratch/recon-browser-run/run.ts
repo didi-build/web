@@ -11,6 +11,7 @@ import { writeFileSync } from "node:fs";
 import { join } from "node:path";
 import { measureHtml } from "./html-metrics";
 import { describeBotChallenge } from "./challenge-label";
+import { fetchPageSpeed, type PageSpeedResult } from "./pagespeed";
 import { TEST_TARGETS, type TestTarget } from "./urls";
 
 const GAP_MS = 12_000;
@@ -36,6 +37,7 @@ type UrlRunResult = {
   target: TestTarget;
   raw: ViewResult;
   rendered: ViewResult;
+  pageSpeed: PageSpeedResult;
   verdict: "rendered got real content" | "rendered got challenged" | "error";
 };
 
@@ -314,6 +316,30 @@ function printMarkdownTable(results: UrlRunResult[], plan: WorkersPlanReport, ra
       );
     }
     console.log(`\n**Verdict:** ${row.verdict}\n`);
+
+    const psi = row.pageSpeed;
+    console.log("#### PageSpeed Insights (mobile, SEO + performance)\n");
+    if (psi.apiError) {
+      console.log(`API error (HTTP ${psi.httpStatus}): ${psi.apiError}\n`);
+      continue;
+    }
+    console.log("| Field | Value |");
+    console.log("| --- | --- |");
+    console.log(`| Wall-clock | ${psi.wallClockMs}ms |`);
+    console.log(`| captchaResult | ${psi.captchaResult ?? "—"} |`);
+    console.log(
+      `| runtimeError | ${psi.runtimeError ? `${psi.runtimeError.code}: ${psi.runtimeError.message}` : "—"} |`,
+    );
+    console.log(
+      `| Final document HTTP (network-requests) | ${psi.finalDocumentHttpStatus ?? "—"} |`,
+    );
+    console.log(
+      `| Screenshot challenge? | ${psi.screenshotLooksLikeChallenge ? "yes" : "no"}${psi.screenshotChallengeReasons.length ? ` (${psi.screenshotChallengeReasons.join("; ")})` : ""} |`,
+    );
+    console.log(`| Screenshot file | ${psi.finalScreenshotPath ?? "—"} |`);
+    console.log(`| SEO score | ${psi.seoScore ?? "—"} |`);
+    console.log(`| SEO audit IDs | ${psi.seoAuditIds.join(", ") || "—"} |`);
+    console.log("");
   }
 }
 
@@ -329,6 +355,8 @@ async function main(): Promise<void> {
   const workersPlan = await detectWorkersPlan(accountId, apiToken);
   let rateLimit429Count = 0;
   const targets: UrlRunResult[] = [];
+  const outDir = join(import.meta.dirname);
+  const screenshotsDir = join(outDir, "screenshots");
 
   for (let i = 0; i < TEST_TARGETS.length; i++) {
     const target = TEST_TARGETS[i];
@@ -342,10 +370,15 @@ async function main(): Promise<void> {
       rateLimit429Count += 1;
     }
 
+    await sleep(GAP_MS);
+
+    const pageSpeed = await fetchPageSpeed(target.url, screenshotsDir, target.category);
+
     targets.push({
       target,
       raw,
       rendered,
+      pageSpeed,
       verdict: verdictFor(raw, rendered),
     });
 
@@ -362,7 +395,6 @@ async function main(): Promise<void> {
     targets,
   };
 
-  const outDir = join(import.meta.dirname);
   writeFileSync(join(outDir, "results.json"), `${JSON.stringify(output, null, 2)}\n`, "utf8");
 
   printMarkdownTable(targets, workersPlan, rateLimit429Count);

@@ -25,6 +25,7 @@ scratch/**
 !scratch/recon-browser-run/
 !scratch/recon-browser-run/**
 scratch/recon-browser-run/results.json
+scratch/recon-browser-run/screenshots/
 
 # misc
 .DS_Store
