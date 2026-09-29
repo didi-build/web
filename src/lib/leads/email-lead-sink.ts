@@ -1,5 +1,8 @@
-import { formatLeadDeliveryBody } from "./format-lead-delivery";
-import { formatLinearIssueTitle } from "./format-linear-issue";
+import {
+  buildLeadEmailHtml,
+  buildLeadEmailPlainText,
+  formatLeadEmailSubject,
+} from "./format-lead-email";
 import {
   buildRawEmailMessage,
   getGmailAccessToken,
@@ -27,13 +30,15 @@ export class EmailLeadSink implements LeadSink {
       senderEmail: this.config.senderEmail,
     });
 
-    const subject = formatLinearIssueTitle(lead);
-    const body = formatLeadDeliveryBody(lead, summary, visibilityReport);
+    const subject = formatLeadEmailSubject(lead, visibilityReport);
+    const textPlain = buildLeadEmailPlainText(lead, summary, visibilityReport);
+    const textHtml = buildLeadEmailHtml(lead, summary, visibilityReport);
     const raw = buildRawEmailMessage({
       from: this.config.senderEmail,
       to: this.config.toEmail,
       subject,
-      body,
+      textPlain,
+      textHtml,
     });
 
     const response = await fetch(GMAIL_SEND_URL, {

@@ -168,24 +168,46 @@ export function encodeEmailSubject(subject: string): string {
   return `=?UTF-8?B?${base64EncodeUtf8(sanitized)}?=`;
 }
 
+function createMimeBoundary(): string {
+  return `----=_Part_${crypto.randomUUID().replace(/-/g, "")}`;
+}
+
 export function buildRawEmailMessage(options: {
   from: string;
   to: string;
   subject: string;
-  body: string;
+  textPlain: string;
+  textHtml: string;
+  boundary?: string;
 }): string {
   const from = sanitizeEmailHeaderValue(options.from);
   const to = sanitizeEmailHeaderValue(options.to);
   const subject = encodeEmailSubject(options.subject);
+  const boundary = options.boundary ?? createMimeBoundary();
+
+  const mimeBody = [
+    `--${boundary}`,
+    "Content-Type: text/plain; charset=utf-8",
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    options.textPlain,
+    `--${boundary}`,
+    "Content-Type: text/html; charset=utf-8",
+    "Content-Transfer-Encoding: 8bit",
+    "",
+    options.textHtml,
+    `--${boundary}--`,
+    "",
+  ].join("\r\n");
 
   const lines = [
     `From: ${from}`,
     `To: ${to}`,
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
-    "Content-Type: text/plain; charset=utf-8",
+    `Content-Type: multipart/alternative; boundary="${boundary}"`,
     "",
-    options.body,
+    mimeBody,
   ];
   return base64UrlEncode(lines.join("\r\n"));
 }

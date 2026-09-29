@@ -33,7 +33,9 @@ describe("gmail-auth helpers", () => {
       from: "diadem@didi.build",
       to: "hello@didi.build",
       subject: "Lead: Sam",
-      body: "Test body",
+      textPlain: "Plain body",
+      textHtml: "<p>HTML body</p>",
+      boundary: "test-boundary-1234",
     });
     expect(raw).not.toContain("+");
     expect(raw).not.toContain("/");
@@ -46,7 +48,9 @@ describe("gmail-auth helpers", () => {
       from: "diadem@didi.build",
       to: "hello@didi.build",
       subject: maliciousSubject,
-      body: "Body",
+      textPlain: "Body",
+      textHtml: "<p>Body</p>",
+      boundary: "test-boundary-inject",
     });
 
     const decoded = decodeRawEmailMessage(raw);
@@ -58,7 +62,7 @@ describe("gmail-auth helpers", () => {
       "To: hello@didi.build",
       "Subject: Lead: Bob Bcc: attacker@example.com",
       "MIME-Version: 1.0",
-      "Content-Type: text/plain; charset=utf-8",
+      'Content-Type: multipart/alternative; boundary="test-boundary-inject"',
     ]);
     expect(headerLines.some((line) => line.startsWith("Bcc:"))).toBe(false);
   });
@@ -69,7 +73,8 @@ describe("gmail-auth helpers", () => {
       from: "diadem@didi.build",
       to: "hello@didi.build",
       subject: "Lead: José",
-      body: "Body",
+      textPlain: "Body",
+      textHtml: "<p>Body</p>",
     });
     const decoded = decodeRawEmailMessage(raw);
     expect(decoded).toContain("Subject: =?UTF-8?B?");
@@ -78,5 +83,26 @@ describe("gmail-auth helpers", () => {
 
   it("strips control characters from header values", () => {
     expect(sanitizeEmailHeaderValue("a\u0000b\nc")).toBe("a b c");
+  });
+
+  it("builds multipart/alternative with plain and HTML UTF-8 parts", () => {
+    const boundary = "boundary-demo-466";
+    const raw = buildRawEmailMessage({
+      from: "diadem@didi.build",
+      to: "hello@didi.build",
+      subject: "New lead: Sam",
+      textPlain: "Plain fallback",
+      textHtml: "<p>HTML part</p>",
+      boundary,
+    });
+
+    const decoded = decodeRawEmailMessage(raw);
+    expect(decoded).toContain(`Content-Type: multipart/alternative; boundary="${boundary}"`);
+    expect(decoded).toContain(`--${boundary}`);
+    expect(decoded).toContain("Content-Type: text/plain; charset=utf-8");
+    expect(decoded).toContain("Plain fallback");
+    expect(decoded).toContain("Content-Type: text/html; charset=utf-8");
+    expect(decoded).toContain("<p>HTML part</p>");
+    expect(decoded).toContain(`--${boundary}--`);
   });
 });
