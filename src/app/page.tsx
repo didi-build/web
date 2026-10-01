@@ -5,6 +5,7 @@ import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
+import { PricingSection } from "@/components/sections/PricingSection";
 import { WhatIDo } from "@/components/sections/WhatIDo";
 
 export default function Home() {
@@ -15,6 +16,7 @@ export default function Home() {
         <Hero />
         <WhatIDo />
         <HowItWorks />
+        <PricingSection />
         <ContactSection />
         <FaqSection />
         <AboutSection />

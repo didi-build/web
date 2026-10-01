@@ -68,7 +68,13 @@ export function ContactForm() {
     }
     const firstInvalid = (["name", "email", "message"] as const).find((key) => nextErrors[key]);
     if (firstInvalid || !turnstileToken) {
-      const el = document.getElementById(`${formId}-${firstInvalid ?? "turnstile"}`);
+      const focusId =
+        firstInvalid === "name"
+          ? "contact-form-name"
+          : firstInvalid
+            ? `${formId}-${firstInvalid}`
+            : `${formId}-turnstile`;
+      const el = document.getElementById(focusId);
       el?.focus();
       return;
     }
@@ -107,11 +113,16 @@ export function ContactForm() {
         ref={statusRef}
         role="status"
         tabIndex={-1}
-        className="flex flex-col items-start gap-4 rounded-lg bg-accent-soft p-8 md:p-10"
+        className="flex flex-col items-start gap-4 rounded-lg p-8 md:p-10"
+        style={{
+          background:
+            "radial-gradient(100% 100% at 100% 0%, var(--glow-2), transparent 60%), var(--accent-soft)",
+          boxShadow: "inset 0 1px 0 var(--hi)",
+        }}
       >
         <span
           aria-hidden
-          className="grid h-12 w-12 place-items-center rounded-pill bg-accent text-[22px] font-bold text-accent-ink"
+          className="grid h-12 w-12 place-items-center rounded-pill bg-accent text-[22px] font-bold text-accent-ink shadow-[0_0_24px_var(--cta-glow)]"
         >
           ✓
         </span>
@@ -147,7 +158,7 @@ export function ContactForm() {
       noValidate
       onSubmit={onSubmit}
       aria-labelledby={`${sectionIds.contact}-heading`}
-      className="flex flex-col gap-6"
+      className="glass-surface flex flex-col gap-6 rounded-xl p-[clamp(22px,4vw,40px)] shadow-[0_40px_80px_-50px_var(--cta-glow)] backdrop-blur-md"
     >
       {status === "error" && (
         <div
@@ -185,7 +196,7 @@ export function ContactForm() {
 
       <div className="grid gap-5 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))]">
         <FormField
-          id={`${formId}-name`}
+          id="contact-form-name"
           label={contact.fields.name}
           value={values.name}
           onChange={(value) => setValues((v) => ({ ...v, name: value }))}
@@ -244,7 +255,7 @@ export function ContactForm() {
           aria-invalid={showError("message")}
           aria-describedby={showError("message") ? `${formId}-message-error` : undefined}
           placeholder={contact.messagePlaceholder}
-          className={`min-h-36 w-full resize-y rounded-md border bg-surface px-4 py-3.5 text-[17px] leading-[1.55] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent)] focus:outline-none ${
+          className={`min-h-36 w-full resize-y rounded-md border bg-surface px-4 py-3.5 text-[17px] leading-[1.55] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent),0_0_24px_-4px_var(--cta-glow)] focus:outline-none ${
             showError("message") ? "border-error" : "border-line-strong"
           }`}
         />
@@ -281,7 +292,7 @@ export function ContactForm() {
         <Button
           type="submit"
           disabled={status === "sending"}
-          className={`min-h-14 px-[30px] ${status === "sending" ? "opacity-70" : ""}`}
+          className={`min-h-14 px-[30px] cta-primary-glow ${status === "sending" ? "opacity-70" : ""}`}
         >
           {status === "sending"
             ? contact.sending
@@ -343,7 +354,7 @@ function FormField({
         aria-required={required}
         aria-invalid={Boolean(error)}
         aria-describedby={error ? errorId : undefined}
-        className={`min-h-[52px] w-full rounded-md border bg-surface px-4 text-[17px] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent)] focus:outline-none ${
+        className={`min-h-[52px] w-full rounded-md border bg-surface px-4 text-[17px] text-ink transition-[border-color,box-shadow] focus:border-accent focus:shadow-[0_0_0_2px_var(--accent),0_0_24px_-4px_var(--cta-glow)] focus:outline-none ${
           error ? "border-error" : "border-line-strong"
         }`}
       />

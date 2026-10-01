@@ -13,6 +13,7 @@ type VineStemProps = {
   animationDelay?: number;
   seed?: number;
   startT?: number;
+  alive?: boolean;
 };
 
 function bezierPoint(t: number, p0: Point, p1: Point, p2: Point, p3: Point): Point {
@@ -39,6 +40,9 @@ function Leaf({
   color,
   visible,
   transitionDelay,
+  swayDuration,
+  swayDelay,
+  alive,
 }: {
   x: number;
   y: number;
@@ -47,26 +51,36 @@ function Leaf({
   color: string;
   visible: boolean;
   transitionDelay: number;
+  swayDuration: number;
+  swayDelay: number;
+  alive: boolean;
 }) {
   const s = size;
   const d = `M0 0C${s * 0.25} ${-s * 0.33} ${s * 0.7} ${-s * 0.36} ${s} 0C${s * 0.7} ${s * 0.36} ${s * 0.25} ${s * 0.33} 0 0Z`;
+  const swayStyle = alive
+    ? {
+        animation: `db-sway ${swayDuration.toFixed(2)}s ease-in-out ${swayDelay.toFixed(2)}s infinite alternate`,
+      }
+    : undefined;
   return (
     <g transform={`translate(${x.toFixed(1)} ${y.toFixed(1)}) rotate(${angle.toFixed(1)})`}>
-      <g
-        style={{
-          transform: visible ? "scale(1)" : "scale(0)",
-          transition: `transform 0.8s cubic-bezier(0.3, 1.35, 0.5, 1) ${transitionDelay.toFixed(2)}s`,
-        }}
-      >
-        <path d={d} fill={color} />
-        <path
-          d={`M${s * 0.1} 0L${s * 0.78} 0`}
-          stroke="var(--bg)"
-          strokeOpacity={0.4}
-          strokeWidth={1.2}
-          strokeLinecap="round"
-          fill="none"
-        />
+      <g style={swayStyle}>
+        <g
+          style={{
+            transform: visible ? "scale(1)" : "scale(0)",
+            transition: `transform 0.8s cubic-bezier(0.3, 1.35, 0.5, 1) ${transitionDelay.toFixed(2)}s`,
+          }}
+        >
+          <path d={d} fill={color} />
+          <path
+            d={`M${s * 0.1} 0L${s * 0.78} 0`}
+            stroke="var(--bg)"
+            strokeOpacity={0.4}
+            strokeWidth={1.2}
+            strokeLinecap="round"
+            fill="none"
+          />
+        </g>
       </g>
     </g>
   );
@@ -81,6 +95,7 @@ export function VineStem({
   animationDelay = 0,
   seed = 1,
   startT = 0.1,
+  alive = true,
 }: VineStemProps) {
   const ref = useRef<SVGSVGElement>(null);
   const [animated, setAnimated] = useState(false);
@@ -126,6 +141,7 @@ export function VineStem({
     const ang = (Math.atan2(dy, dx) * 180) / Math.PI + side * (42 + rnd() * 22);
     const leafScale = size * (1 - 0.4 * t) * (0.82 + rnd() * 0.32);
     const color = `var(--leaf-${1 + ((i + seed) % 3)})`;
+    const swaySeed = rnd();
     leaves.push(
       <Leaf
         key={i}
@@ -136,6 +152,9 @@ export function VineStem({
         color={color}
         visible={animated}
         transitionDelay={animationDelay + 0.25 + t * 1.5}
+        swayDuration={4.5 + swaySeed * 3.5}
+        swayDelay={-swaySeed * 7}
+        alive={alive}
       />,
     );
   }
@@ -152,6 +171,9 @@ export function VineStem({
       color="var(--leaf-2)"
       visible={animated}
       transitionDelay={animationDelay + 1.75}
+      swayDuration={5}
+      swayDelay={0}
+      alive={alive}
     />,
   );
 

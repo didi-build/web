@@ -10,7 +10,8 @@ export function Footer() {
   const year = new Date().getFullYear();
 
   return (
-    <footer className="border-t border-line">
+    <footer className="relative">
+      <div aria-hidden className="footer-gradient-rule" />
       <div className="section-inner flex flex-wrap items-center justify-between gap-5 py-8 pb-10">
         <div className="flex items-center gap-2.5">
           <span aria-hidden className="h-3 w-3 rounded-[12px_2px_12px_2px] bg-accent" />
