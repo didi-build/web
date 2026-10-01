@@ -47,7 +47,7 @@ export function Header() {
       window.setTimeout(() => scrollToSection(sectionId, focusId), wasOpen ? 30 : 0);
     };
 
-  const contactFocusId = "contact-form-name";
+  const contactFocusId = siteContent.formIds.contactName;
 
   return (
     <header

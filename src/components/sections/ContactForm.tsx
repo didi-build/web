@@ -70,7 +70,7 @@ export function ContactForm() {
     if (firstInvalid || !turnstileToken) {
       const focusId =
         firstInvalid === "name"
-          ? "contact-form-name"
+          ? siteContent.formIds.contactName
           : firstInvalid
             ? `${formId}-${firstInvalid}`
             : `${formId}-turnstile`;
@@ -196,7 +196,7 @@ export function ContactForm() {
 
       <div className="grid gap-5 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,230px),1fr))]">
         <FormField
-          id="contact-form-name"
+          id={siteContent.formIds.contactName}
           label={contact.fields.name}
           value={values.name}
           onChange={(value) => setValues((v) => ({ ...v, name: value }))}

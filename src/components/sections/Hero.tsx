@@ -81,17 +81,17 @@ export function Hero() {
             {hero.supporting}
           </p>
         </div>
-        <div className="relative mt-[clamp(32px,5vw,40px)] flex flex-wrap items-center gap-3">
+        <div className="relative mt-[clamp(32px,5vw,40px)] flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <ButtonLink
             href={`#${sectionIds.contact}`}
-            className="min-h-14 flex-1 justify-center text-[17px] sm:flex-none cta-primary-glow"
+            className="min-h-14 w-full justify-center whitespace-nowrap text-[17px] sm:w-auto cta-primary-glow"
           >
             {hero.primaryCta} <span aria-hidden>→</span>
           </ButtonLink>
           <ButtonLink
             href={`#${sectionIds.how}`}
             variant="outline"
-            className="min-h-[52px] flex-1 justify-center bg-[var(--glass)] text-base sm:min-h-12 sm:flex-none"
+            className="min-h-[52px] w-full justify-center whitespace-nowrap bg-[var(--glass)] text-base sm:min-h-12 sm:w-auto"
           >
             {hero.secondaryCta}
           </ButtonLink>

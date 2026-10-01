@@ -5,7 +5,7 @@ export const siteContent = {
     description:
       "Built your app with Base44, Lovable, or Bolt? I help founders make AI-built apps production-ready. SMB AI integration in Toronto and across Canada.",
     businessDescription:
-      "Toronto software engineer helping founders move AI-built apps from prototype to production (Base44, Lovable, Bolt, Replit, Cursor) and small and medium businesses adopt practical AI. Fixed scope, plain English. Book a free discovery chat.",
+      "Toronto AI systems engineer helping founders move AI-built apps from prototype to production (Base44, Lovable, Bolt, Replit, Cursor) and small and medium businesses adopt practical AI. Free first chat, plain English. Book a free discovery chat.",
     keywords: [
       "Base44 developer",
       "migrate from Base44",
@@ -44,7 +44,7 @@ export const siteContent = {
   },
   hero: {
     intro: "Hi, I'm Didi.",
-    introMuted: "A software engineer in Toronto.",
+    introMuted: "An AI systems engineer in Toronto.",
     headline: "Built something with AI?",
     headlineAccent: "Let's make it real.",
     supporting:
@@ -92,12 +92,12 @@ export const siteContent = {
   },
   founder: {
     name: "Diadem (Didi) Shoukralla",
-    jobTitle: "Founder and AI integration consultant",
+    jobTitle: "Founder and AI systems engineer",
   },
   about: {
     eyebrow: "About me",
     headline: "I build with AI every day. I know where it breaks.",
-    lead: "I'm Didi, a software engineer in Toronto. I've shipped production software at startups and SaaS companies, and today I build my own AI systems the same way you built your app: with AI doing a lot of the work.",
+    lead: "I'm Didi, an AI systems engineer in Toronto with a background in software engineering. I've shipped production software at startups and SaaS companies, and today I build my own AI systems the same way you built your app: with AI doing a lot of the work.",
     followUp:
       "The difference is knowing what happens after it works on your screen. That's the part I help with, for founders and for businesses putting AI to work.",
     linksLead: "See what I'm building on",
@@ -363,5 +363,8 @@ export const siteContent = {
     pricing: "pricing",
     about: "about",
     faq: "faq",
+  },
+  formIds: {
+    contactName: "contact-form-name",
   },
 } as const;
