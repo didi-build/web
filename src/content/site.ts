@@ -1,11 +1,13 @@
+import { mvpProductionReadyAngle } from "@/content/positioning";
+
 export const siteContent = {
   brand: "Didi Build",
   meta: {
     title: "Custom AI for Small Businesses and Startups | Didi Build",
     description:
-      "Curious how AI could help your business grow? I'll find where it fits, then build it.",
+      "Curious how AI could help your business grow, or stuck with an AI-built app you cannot deploy? I find where AI fits, then build it, or make your MVP production-ready.",
     businessDescription:
-      "Toronto AI consultant for small businesses and startups across Ontario and Canada. Custom AI tools, automation, and AI features built with fixed scope and plain English. Book a free discovery chat.",
+      "Toronto AI consultant for small businesses and startups across Ontario and Canada. Custom AI tools, automation, and AI features, plus production-ready engineering for AI-built MVPs. Fixed scope and plain English. Book a free discovery chat.",
     keywords: [
       "AI integration for small business",
       "AI consultant Toronto",
@@ -14,6 +16,9 @@ export const siteContent = {
       "how can AI help my small business",
       "AI consultant for startups",
       "AI engineering for startups Toronto",
+      "AI MVP production ready",
+      "deploy AI built app",
+      "AI prototype to production",
     ],
     ogHeadline: ["AI that actually", "fits your", "business."],
     ogImageAlt: "Didi Build: AI that actually fits your business.",
@@ -36,7 +41,7 @@ export const siteContent = {
     headline: "AI that saves you time or makes you money.",
     headlineAccent: "I find where it fits in your business, then I build it.",
     supporting:
-      "First I learn how your business actually runs. The tools come after that, only where they fit.",
+      "First I learn how your business actually runs, or what you already built with AI. The engineering comes after that, only where it fits.",
     primaryCta: "Book a free 30-min chat",
     secondaryCta: "See how it works",
     badges: ["Free first chat", "Fixed price, fixed scope", "Plain English, no jargon"],
@@ -45,8 +50,12 @@ export const siteContent = {
     eyebrow: "What I do",
     headline: "I learn how you work first, then build what fits.",
     intro:
-      "Every business runs a little differently, so I don't sell packages. Here are a few examples of what that has looked like.",
+      "Every business runs a little differently, so I don't sell one-size packages. Some clients need AI inside daily operations; others need an AI-built app turned into something production-ready. Here are examples of both.",
     examples: [
+      {
+        title: mvpProductionReadyAngle.exampleTitle,
+        body: mvpProductionReadyAngle.exampleBody,
+      },
       {
         title: "Never lose a lead",
         body: "New inquiries from your website, email, or social messages get sorted, summarized, and followed up, even on your busiest days.",
@@ -77,7 +86,7 @@ export const siteContent = {
     headline: "A software engineer building custom AI for small businesses and startups.",
     lead: "I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.",
     followUp:
-      "These days I help small businesses adopt AI in ways that fit how they actually work, and help early-stage startups design and ship the AI systems behind their products.",
+      "These days I help small businesses adopt AI in ways that fit how they actually work, help early-stage startups design and ship the AI systems behind their products, and help non-technical founders turn AI-built MVPs into deployed, maintainable software they can trust.",
     ctaPrefix: "Browse my",
     portfolioLinkLabel: "portfolio site",
     ctaPortfolioOrGithub: "or",
@@ -86,7 +95,7 @@ export const siteContent = {
   },
   llms: {
     whoItIsFor:
-      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team. Also early-stage startups that want AI features, agent workflows, or LLM integrations designed and built properly, working alongside their team.",
+      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team. Early-stage startups that want AI features, agent workflows, or LLM integrations designed and built properly, working alongside their team. Non-technical founders who built an MVP with AI tools and need repo, deployment, security basics, and plain-English handoff before they can grow or sell with confidence.",
     serviceArea:
       "Based in Toronto, Ontario. Remote work across Canada; in-person locally when it helps.",
   },
@@ -111,6 +120,11 @@ export const siteContent = {
         question: "Do you work with startups?",
         answer:
           "Yes. For startups I help design and build AI features and systems: LLM integrations, agent workflows, and the evaluation and guardrails that keep them reliable. I can work alongside your engineers or own a feature end to end, with the same fixed scope and written plan.",
+      },
+      {
+        question: "I built an app with AI tools. Can you make it production-ready?",
+        answer:
+          "Often, yes. If you used Claude, Bolt, Base44, or similar to get a first version but cannot put it on GitHub, deploy it, or explain how it works, I can stabilize the code, set up hosting, review security basics, and document what you have in plain language. We scope it fixed-price after the free chat, the same as other projects.",
       },
       {
         question: "How much does it cost?",
@@ -171,7 +185,8 @@ export const siteContent = {
       website: "Website",
       message: "What would you like help with?",
     },
-    messagePlaceholder: "A few sentences about your business and what feels slow.",
+    messagePlaceholder:
+      "A few sentences about your business, an AI-built app you need deployed, or what feels slow.",
     optional: "(optional)",
     submit: "Send message",
     sending: "Sending…",

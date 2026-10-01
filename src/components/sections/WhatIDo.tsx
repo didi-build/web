@@ -22,7 +22,7 @@ export function WhatIDo() {
           {whatIDo.intro}
         </p>
       </div>
-      <ul className="mt-[clamp(36px,5vw,56px)] grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-4">
+      <ul className="mt-[clamp(36px,5vw,56px)] grid list-none gap-4 p-0 sm:grid-cols-2 lg:grid-cols-3">
         {whatIDo.examples.map((example, index) => (
           <li
             key={example.title}
