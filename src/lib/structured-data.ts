@@ -16,7 +16,14 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
   const ogImage = absoluteUrl("/opengraph-image.png");
   const logo = absoluteUrl("/icon.png");
 
-  const serviceItems = whatIDo.examples.map((example, index) => ({
+  const serviceCatalog = [
+    ...whatIDo.founderCards.map((card) => ({ title: card.title, body: card.body })),
+    {
+      title: whatIDo.businessCard.title,
+      body: whatIDo.businessCard.bullets.join("; "),
+    },
+  ];
+  const serviceItems = serviceCatalog.map((example, index) => ({
     "@type": "Offer",
     "@id": `${siteUrl}/#service-${index + 1}`,
     itemOffered: {
@@ -51,7 +58,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
           { "@type": "AdministrativeArea", name: "Ontario" },
           { "@type": "Country", name: "Canada" },
         ],
-        serviceType: whatIDo.examples.map((e) => e.title),
+        serviceType: serviceCatalog.map((e) => e.title),
         hasOfferCatalog: {
           "@type": "OfferCatalog",
           name: whatIDo.headline,

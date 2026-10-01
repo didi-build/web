@@ -17,9 +17,16 @@ export function AboutSection() {
     <section
       id={sectionIds.about}
       aria-labelledby={headingId}
-      className="section-inner pt-[clamp(72px,10vw,128px)] pb-[clamp(56px,7vw,88px)]"
+      className="section-inner overflow-x-clip pt-[clamp(72px,10vw,128px)] pb-[clamp(56px,7vw,88px)]"
     >
-      <div className="about-card relative flex flex-wrap gap-[clamp(24px,5vw,64px)] rounded-lg bg-accent-soft p-[clamp(28px,5vw,64px)]">
+      <div
+        className="about-card relative flex flex-wrap gap-[clamp(24px,5vw,64px)] rounded-[32px] border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] p-[clamp(28px,5vw,64px)]"
+        style={{
+          background:
+            "radial-gradient(70% 110% at 100% 100%, var(--glow-1), transparent 60%), radial-gradient(60% 80% at 0% 0%, var(--glow-2), transparent 55%), var(--accent-soft)",
+          boxShadow: "inset 0 1px 0 var(--hi)",
+        }}
+      >
         <div className="flex min-w-0 flex-1 basis-[440px] flex-col gap-6">
           <p className="m-0 flex items-center gap-2.5 text-[15px] font-semibold text-accent-text">
             <span aria-hidden className="h-3 w-3 rounded-[12px_2px_12px_2px] bg-accent" />
@@ -35,19 +42,19 @@ export function AboutSection() {
             <p className="m-0">{about.lead}</p>
             <p className="m-0 text-ink-muted">{about.followUp}</p>
             <p className="m-0 text-ink-muted">
-              {about.ctaPrefix}{" "}
+              {about.linksLead}{" "}
+              <Link href={githubLink.href} className={aboutLinkClass}>
+                {about.githubLinkLabel}
+              </Link>
+              {about.linksMid}{" "}
               <Link href={portfolioLink.href} className={aboutLinkClass}>
                 {about.portfolioLinkLabel}
-              </Link>{" "}
-              {about.ctaPortfolioOrGithub}{" "}
-              <Link href={githubLink.href} className={aboutLinkClass}>
-                {githubLink.label}
               </Link>
-              {about.ctaOrLinkedIn}{" "}
+              {about.linksOr}{" "}
               <Link href={linkedinLink.href} className={aboutLinkClass}>
-                {linkedinLink.label}
+                {about.linkedinLinkLabel}
               </Link>
-              {about.ctaClosing}
+              {about.linksEnd}
             </p>
           </div>
         </div>

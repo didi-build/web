@@ -22,8 +22,9 @@ describe("buildLlmsTxt", () => {
 
   it("lists each service example from What I do", () => {
     const text = buildLlmsTxt();
-    for (const example of siteContent.whatIDo.examples) {
+    for (const example of siteContent.whatIDo.founderCards) {
       expect(text).toContain(example.title);
     }
+    expect(text).toContain(siteContent.whatIDo.businessCard.title);
   });
 });

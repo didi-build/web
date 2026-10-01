@@ -1,22 +1,25 @@
 export const siteContent = {
   brand: "Didi Build",
   meta: {
-    title: "Custom AI for Small Businesses and Startups | Didi Build",
+    title: "Base44 Developer & AI MVP Production Help | Didi Build Toronto",
     description:
-      "Curious how AI could help your business grow? I'll find where it fits, then build it.",
+      "Built your app with Base44, Lovable, or Bolt? I help founders make AI-built apps production-ready. SMB AI integration in Toronto and across Canada.",
     businessDescription:
-      "Toronto AI consultant for small businesses and startups across Ontario and Canada. Custom AI tools, automation, and AI features built with fixed scope and plain English. Book a free discovery chat.",
+      "Toronto AI systems engineer helping founders move AI-built apps from prototype to production (Base44, Lovable, Bolt, Replit, Cursor) and small and medium businesses adopt practical AI. Free first chat, plain English. Book a free discovery chat.",
     keywords: [
+      "Base44 developer",
+      "migrate from Base44",
+      "Base44 to GitHub",
+      "vibe-coded app help",
+      "make my AI app production ready",
+      "AI MVP developer Toronto",
       "AI integration for small business",
       "AI consultant Toronto",
       "AI automation small business Ontario",
       "custom AI tools for my business",
-      "how can AI help my small business",
-      "AI consultant for startups",
-      "AI engineering for startups Toronto",
     ],
-    ogHeadline: ["AI that actually", "fits your", "business."],
-    ogImageAlt: "Didi Build: AI that actually fits your business.",
+    ogHeadline: ["Built something", "with AI?", "Let's make it real."],
+    ogImageAlt: "Didi Build: Built something with AI? Let's make it real.",
     siteUrl: "https://didi.build",
   },
   a11y: {
@@ -24,69 +27,90 @@ export const siteContent = {
     spamProtectionLabel: "Spam protection",
     turnstileNotConfigured: "Spam protection is not configured in this environment.",
     footerNavLabel: "Elsewhere",
+    mainNavLabel: "Sections",
+    mobileMenuLabel: "Menu",
     themeSwitchToLight: "Switch to light mode",
     themeSwitchToDark: "Switch to dark mode",
   },
   header: {
     cta: "Book a chat",
+    mobileCta: "Book a free 30-min chat",
+    nav: [
+      { label: "What I do", sectionKey: "what" as const },
+      { label: "How it works", sectionKey: "how" as const },
+      { label: "Pricing", sectionKey: "pricing" as const },
+      { label: "FAQ", sectionKey: "faq" as const },
+    ],
   },
   hero: {
     intro: "Hi, I'm Didi.",
-    introMuted: "A software engineer in Toronto.",
-    headline: "AI that saves you time or makes you money.",
-    headlineAccent: "I find where it fits in your business, then I build it.",
+    introMuted: "An AI systems engineer in Toronto.",
+    headline: "Built something with AI?",
+    headlineAccent: "Let's make it real.",
     supporting:
-      "First I learn how your business actually runs. The tools come after that, only where they fit.",
+      "I take AI-built apps from prototype to production, and help small and medium businesses put AI to work.",
     primaryCta: "Book a free 30-min chat",
     secondaryCta: "See how it works",
-    badges: ["Free first chat", "Fixed price, fixed scope", "Plain English, no jargon"],
+    badges: [
+      { text: "Free first chat", emphasis: false },
+      { text: "Plain English, no jargon", emphasis: false },
+      { text: "20% off for founding clients", emphasis: true },
+    ],
   },
   whatIDo: {
     eyebrow: "What I do",
-    headline: "I learn how you work first, then build what fits.",
+    headline: "I take what you built and make it ready for real users.",
     intro:
-      "Every business runs a little differently, so I don't sell packages. Here are a few examples of what that has looked like.",
-    examples: [
+      "Most of my work is with founders who built fast on tools like Base44, Lovable, Bolt, or Replit. I also help small and medium businesses put AI to work.",
+    examplesLabel: "Example services",
+    foundersLabel: "For founders",
+    businessesLabel: "For businesses",
+    founderCards: [
       {
-        title: "Never lose a lead",
-        body: "New inquiries from your website, email, or social messages get sorted, summarized, and followed up, even on your busiest days.",
+        title: "Off Base44, onto your own code",
+        body: "Move your app to GitHub and your own hosting, so you actually own it.",
       },
       {
-        title: "Paperwork that reads itself",
-        body: "Invoices, intake forms, and applications. The key details get pulled out and put where they belong, with no retyping.",
+        title: "Production-ready, not just a prototype",
+        body: "Security, logins, backups, and monitoring, so it holds up with real users.",
       },
       {
-        title: "Answers from your own documents",
-        body: "A private assistant that knows your policies, pricing, and procedures, so you and your team can simply ask.",
-      },
-      {
-        title: "AI features in your product",
-        body: "LLM features and agent workflows, built into your product with the evaluation and guardrails behind them, alongside your team.",
+        title: "An audit before you scale",
+        body: "A clear look at what's solid, what's risky, and the path forward.",
       },
     ],
+    businessCard: {
+      title: "AI for small and medium businesses",
+      bullets: [
+        "Never lose a lead",
+        "Paperwork that reads itself",
+        "Answers from your own documents",
+      ],
+    },
     closingPrefix: "Have something else in mind?",
     closingLink: "Tell me about it.",
-    exampleLabel: "Example",
   },
   founder: {
     name: "Diadem (Didi) Shoukralla",
-    jobTitle: "Founder and AI integration consultant",
+    jobTitle: "Founder and AI systems engineer",
   },
   about: {
     eyebrow: "About me",
-    headline: "A software engineer building custom AI for small businesses and startups.",
-    lead: "I'm Diadem (Didi) Shoukralla, a software engineer with experience across full-stack web, SDK engineering, and distributed systems.",
+    headline: "I build with AI every day. I know where it breaks.",
+    lead: "I'm Didi, an AI systems engineer in Toronto with a background in software engineering. I've shipped production software at startups and SaaS companies, and today I build my own AI systems the same way you built your app: with AI doing a lot of the work.",
     followUp:
-      "These days I help small businesses adopt AI in ways that fit how they actually work, and help early-stage startups design and ship the AI systems behind their products.",
-    ctaPrefix: "Browse my",
-    portfolioLinkLabel: "portfolio site",
-    ctaPortfolioOrGithub: "or",
-    ctaOrLinkedIn: ", or connect on",
-    ctaClosing: ".",
+      "The difference is knowing what happens after it works on your screen. That's the part I help with, for founders and for businesses putting AI to work.",
+    linksLead: "See what I'm building on",
+    githubLinkLabel: "GitHub",
+    portfolioLinkLabel: "portfolio",
+    linkedinLinkLabel: "LinkedIn",
+    linksMid: ", browse my",
+    linksOr: ", or connect on",
+    linksEnd: ".",
   },
   llms: {
     whoItIsFor:
-      "Small businesses in Canada that want practical AI integration: automation, document handling, private assistants, and inbox tools, without hiring a full technical team. Also early-stage startups that want AI features, agent workflows, or LLM integrations designed and built properly, working alongside their team.",
+      "Founders who built apps with AI tools (Base44, Lovable, Bolt, Replit, Cursor) and need them production-ready, secure, and owned on their own infrastructure. Also small and medium businesses in Canada that want practical AI integration: automation, document handling, and inbox tools, without hiring a full technical team.",
     serviceArea:
       "Based in Toronto, Ontario. Remote work across Canada; in-person locally when it helps.",
   },
@@ -96,64 +120,204 @@ export const siteContent = {
     questionsLabel: "questions",
     expandAll: "Expand all",
     collapseAll: "Collapse all",
+    groups: [
+      {
+        label: "For everyone",
+        items: [
+          {
+            question: "How much does it cost?",
+            answer:
+              "The first 30-minute chat is free. System audits start at $375 and builds start at $500. Advisory and ongoing support are hourly or monthly, quoted after the audit. My first 5 clients get 20% off everything for 12 months. You always get a written quote before any work starts.",
+          },
+          {
+            question: "Is my data safe?",
+            answer:
+              "You keep ownership of your accounts, code, and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
+          },
+          {
+            question: "How long does a project take?",
+            answer:
+              "It depends on scope. The written plan we agree on includes a realistic timeline, and I keep you updated along the way.",
+          },
+          {
+            question: "Do you only work in Toronto?",
+            answer:
+              "I'm based in Toronto and happy to meet locally. I also work with founders and businesses across Canada remotely.",
+          },
+          {
+            question: "What if AI isn't the right fit?",
+            answer:
+              "I'll tell you in the free chat. I'd rather say so upfront than sell you something you don't need.",
+          },
+        ],
+      },
+      {
+        label: "For founders",
+        items: [
+          {
+            question: "Can you help me move my app off Base44?",
+            answer:
+              "Yes. Platforms like Base44 handle your hosting, database, and logins for you, so moving off means setting those up on infrastructure you own. I start with an audit to map what your app depends on, then give you a clear plan and a fixed price for the move.",
+          },
+          {
+            question: "I built my app with Lovable, Bolt, Replit, or Cursor. Can you help?",
+            answer:
+              "Yes. The approach is the same: understand what you've built, find what's solid and what's risky, and get it ready for real users.",
+          },
+          {
+            question: "Is my AI-built app secure?",
+            answer:
+              "Maybe not yet. AI tools are great at getting something working, but they often skip things like access rules, protecting secret keys, and checking user input. The audit looks at exactly this.",
+          },
+          {
+            question: "Do I own my code?",
+            answer:
+              "Yes. Everything lives in your own accounts, like GitHub and your hosting, so you're never locked in to me or a platform.",
+          },
+          {
+            question: "Do I need to understand the code?",
+            answer:
+              "No. I explain everything in plain English and hand off simple docs, so you know what you have and how it runs.",
+          },
+        ],
+      },
+      {
+        label: "For businesses",
+        items: [
+          {
+            question: "How can AI help my small business grow?",
+            answer:
+              "AI can take repetitive work off your plate and help you respond to customers faster: sorting leads, pulling data from forms and invoices, or answering questions from your own documents. I start by learning where your time goes, then build only where it pays off.",
+          },
+          {
+            question: "Do I need technical staff to use what you build?",
+            answer:
+              "No. I design for the people who use it every day, on the tools you already use, and show your team how it works.",
+          },
+        ],
+      },
+    ],
     items: [
-      {
-        question: "How can AI help my small business grow?",
-        answer:
-          "AI can take repetitive work off your plate and help you respond to customers faster: sorting leads, pulling data from forms and invoices, drafting replies, or answering questions from your own documents. I start by learning where your time goes, then build custom AI tools only where they pay for themselves in time saved or revenue.",
-      },
-      {
-        question: "Do I need technical staff to use what you build?",
-        answer:
-          "No. I design for the people who will use it every day, in plain language, on the tools you already use. I hand off simple docs and show your team how it works. After launch, you can choose a simple monthly support plan or pay only when you need something.",
-      },
-      {
-        question: "Do you work with startups?",
-        answer:
-          "Yes. For startups I help design and build AI features and systems: LLM integrations, agent workflows, and the evaluation and guardrails that keep them reliable. I can work alongside your engineers or own a feature end to end, with the same fixed scope and written plan.",
-      },
       {
         question: "How much does it cost?",
         answer:
-          "Every project is fixed price and fixed scope, quoted after the free discovery chat so you know the number before work starts. Early clients get a discount. There are no surprise hourly bills.",
+          "The first 30-minute chat is free. System audits start at $375 and builds start at $500. Advisory and ongoing support are hourly or monthly, quoted after the audit. My first 5 clients get 20% off everything for 12 months. You always get a written quote before any work starts.",
+      },
+      {
+        question: "Is my data safe?",
+        answer:
+          "You keep ownership of your accounts, code, and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
       },
       {
         question: "How long does a project take?",
         answer:
-          "It depends on scope. The written plan we agree on before any payment includes a realistic timeline, and I keep you updated along the way.",
-      },
-      {
-        question: "Is my business data safe?",
-        answer:
-          "You keep ownership of your accounts and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
+          "It depends on scope. The written plan we agree on includes a realistic timeline, and I keep you updated along the way.",
       },
       {
         question: "Do you only work in Toronto?",
         answer:
-          "I'm based in Toronto and happy to meet locally. I also work with businesses across Canada remotely, which is how most projects run once we have kicked off.",
+          "I'm based in Toronto and happy to meet locally. I also work with founders and businesses across Canada remotely.",
       },
       {
-        question: "What if AI isn't a good fit for us?",
+        question: "What if AI isn't the right fit?",
         answer:
-          "I'll tell you in the free chat. If the problem is better solved without AI, or the timing isn't right, I'd rather say so upfront than sell you something you don't need.",
+          "I'll tell you in the free chat. I'd rather say so upfront than sell you something you don't need.",
+      },
+      {
+        question: "Can you help me move my app off Base44?",
+        answer:
+          "Yes. Platforms like Base44 handle your hosting, database, and logins for you, so moving off means setting those up on infrastructure you own. I start with an audit to map what your app depends on, then give you a clear plan and a fixed price for the move.",
+      },
+      {
+        question: "I built my app with Lovable, Bolt, Replit, or Cursor. Can you help?",
+        answer:
+          "Yes. The approach is the same: understand what you've built, find what's solid and what's risky, and get it ready for real users.",
+      },
+      {
+        question: "Is my AI-built app secure?",
+        answer:
+          "Maybe not yet. AI tools are great at getting something working, but they often skip things like access rules, protecting secret keys, and checking user input. The audit looks at exactly this.",
+      },
+      {
+        question: "Do I own my code?",
+        answer:
+          "Yes. Everything lives in your own accounts, like GitHub and your hosting, so you're never locked in to me or a platform.",
+      },
+      {
+        question: "Do I need to understand the code?",
+        answer:
+          "No. I explain everything in plain English and hand off simple docs, so you know what you have and how it runs.",
+      },
+      {
+        question: "How can AI help my small business grow?",
+        answer:
+          "AI can take repetitive work off your plate and help you respond to customers faster: sorting leads, pulling data from forms and invoices, or answering questions from your own documents. I start by learning where your time goes, then build only where it pays off.",
+      },
+      {
+        question: "Do I need technical staff to use what you build?",
+        answer:
+          "No. I design for the people who use it every day, on the tools you already use, and show your team how it works.",
       },
     ],
   },
   howItWorks: {
     eyebrow: "How it works",
-    headline: "Three steps, and you always know what comes next.",
+    headline: "Four steps, and you always know what comes next.",
     steps: [
       {
-        title: "A free 30-minute chat",
-        body: "We talk about how your business runs and where the time goes. No prep needed. If AI isn't a good fit, I'll tell you.",
+        title: "Free 30-min chat",
+        body: "We talk about what you've built, or how your business runs. No prep needed. If I'm not the right fit, I'll tell you.",
       },
       {
-        title: "A fixed-price, fixed-scope build",
-        body: "Before any work starts, you get a written plan and one price. That's what you pay, so there are no surprise bills.",
+        title: "System audit",
+        body: "I review your app or workflow and give you a written summary: what's solid, what's risky, and what to do next.",
       },
       {
-        title: "Support, if you want it",
-        body: "Once it is running, choose a simple monthly plan or pay only when you need something. Either works.",
+        title: "Build or advise",
+        body: "A fixed-price project with a clear scope, or hourly guidance while you or your team build.",
+      },
+      {
+        title: "Support",
+        body: "Once it's running, choose a monthly plan or reach out as needed.",
+      },
+    ],
+  },
+  pricing: {
+    eyebrow: "Services & pricing",
+    headline: "Clear starting points.",
+    intro:
+      "Every project starts with a free chat. After the audit, you get a written quote for the work.",
+    foundingCallout:
+      "Founding client rates: 20% off everything for my first 5 clients, locked in for 12 months.",
+    taxFootnote: "Prices before tax, plus HST where applicable.",
+    tiers: [
+      {
+        name: "Free 30-min chat",
+        note: "No prep, no obligation.",
+        pricePrefix: "",
+        price: "$0",
+        priceSize: "large" as const,
+      },
+      {
+        name: "System audit",
+        note: "What's solid, what's risky, and the path forward.",
+        pricePrefix: "from",
+        price: "$375",
+        priceSize: "large" as const,
+      },
+      {
+        name: "Builds",
+        note: "Fixed-price projects.",
+        pricePrefix: "from",
+        price: "$500",
+        priceSize: "large" as const,
+      },
+      {
+        name: "Advisory and ongoing support",
+        note: "Quoted after the audit.",
+        pricePrefix: "",
+        price: "Hourly or monthly",
+        priceSize: "medium" as const,
       },
     ],
   },
@@ -196,7 +360,11 @@ export const siteContent = {
     contact: "contact",
     how: "how-it-works",
     what: "what-i-do",
+    pricing: "pricing",
     about: "about",
     faq: "faq",
+  },
+  formIds: {
+    contactName: "contact-form-name",
   },
 } as const;

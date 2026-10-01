@@ -1,3 +1,4 @@
+import { AmbientOrbs } from "@/components/decorative/AmbientOrbs";
 import { VineStem } from "@/components/decorative/VineStem";
 import { FaqExpandControls } from "@/components/sections/FaqExpandControls";
 import { siteContent } from "@/content/site";
@@ -11,9 +12,19 @@ export function FaqSection() {
   return (
     <section
       id={sectionIds.faq}
+      data-scroll-nudge="32"
       aria-labelledby={headingId}
-      className="faq-section relative overflow-x-clip bg-surface-2"
+      className="faq-section relative isolate overflow-x-clip bg-surface-2"
     >
+      <AmbientOrbs
+        orbs={[
+          {
+            className: "right-[-10%] bottom-[-20%] h-[70%] w-[50cqi]",
+            style: { "--orb-color": "var(--glow-2)" } as React.CSSProperties,
+            drift: "b",
+          },
+        ]}
+      />
       <div className="section-inner flex flex-wrap gap-[clamp(40px,6vw,80px)] py-section">
         <div className="flex min-w-0 flex-1 basis-[320px] flex-col gap-5">
           <p className="m-0 text-[15px] font-semibold text-accent-text">{faq.eyebrow}</p>
@@ -45,22 +56,34 @@ export function FaqSection() {
         <div className="min-w-0 flex-[1.3] basis-[440px]">
           <FaqExpandControls listId={listId} questionCount={questionCount} />
           <div id={listId}>
-            {faq.items.map((item) => (
-              <details key={item.question} className="faq-details border-b border-line">
-                <summary className="faq-summary flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-[18px] text-left text-lg font-semibold leading-snug tracking-[-0.005em] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent">
-                  <span className="text-pretty">{item.question}</span>
-                  <span
-                    aria-hidden
-                    className="faq-toggle-icon relative flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-transparent text-ink transition-[background-color,border-color,color] duration-200"
-                  >
-                    <span className="absolute left-[11px] top-4 h-0.5 w-3 rounded-sm bg-current" />
-                    <span className="faq-icon-plus-v absolute left-4 top-[11px] h-3 w-0.5 rounded-sm bg-current" />
-                  </span>
-                </summary>
-                <p className="m-0 max-w-[62ch] pb-7 pr-[clamp(0px,6vw,60px)] text-pretty text-base leading-relaxed text-ink-muted">
-                  {item.answer}
-                </p>
-              </details>
+            {faq.groups.map((group) => (
+              <div key={group.label}>
+                <h3 className="mb-1 mt-7 flex items-center gap-2 text-sm font-semibold text-accent-text">
+                  <span aria-hidden className="h-2 w-2 rounded-[8px_1px_8px_1px] bg-accent" />
+                  {group.label}
+                </h3>
+                <ul className="m-0 list-none p-0">
+                  {group.items.map((item) => (
+                    <li key={item.question}>
+                      <details className="faq-details border-b border-line">
+                        <summary className="faq-summary flex min-h-[72px] cursor-pointer list-none items-center justify-between gap-6 py-[18px] text-left text-lg font-semibold leading-snug tracking-[-0.005em] focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent">
+                          <span className="text-pretty">{item.question}</span>
+                          <span
+                            aria-hidden
+                            className="faq-toggle-icon relative flex h-9 w-9 shrink-0 items-center justify-center rounded-pill border border-line-strong bg-transparent text-ink transition-[background-color,border-color,color,box-shadow] duration-200"
+                          >
+                            <span className="absolute left-[11px] top-4 h-0.5 w-3 rounded-sm bg-current" />
+                            <span className="faq-icon-plus-v absolute left-4 top-[11px] h-3 w-0.5 rounded-sm bg-current" />
+                          </span>
+                        </summary>
+                        <p className="m-0 max-w-[62ch] pb-7 pr-[clamp(0px,6vw,60px)] text-pretty text-base leading-relaxed text-ink-muted">
+                          {item.answer}
+                        </p>
+                      </details>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
           </div>
         </div>

@@ -9,7 +9,11 @@ export function buildLlmsTxt(): string {
   const { brand, meta, contact, whatIDo, founder, about, llms } = siteContent;
   const siteUrl = meta.siteUrl.replace(/\/$/, "");
   const contactUrl = `${siteUrl}/#${siteContent.sectionIds.contact}`;
-  const serviceLines = whatIDo.examples.map((e) => `- ${e.title}: ${e.body}`).join("\n");
+  const founderLines = whatIDo.founderCards.map((e) => `- ${e.title}: ${e.body}`).join("\n");
+  const businessLines = [
+    `- ${whatIDo.businessCard.title}: ${whatIDo.businessCard.bullets.join("; ")}`,
+  ].join("\n");
+  const serviceLines = `${founderLines}\n${businessLines}`;
 
   return `# ${brand}
 

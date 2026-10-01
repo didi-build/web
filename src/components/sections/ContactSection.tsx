@@ -1,3 +1,4 @@
+import { AmbientOrbs } from "@/components/decorative/AmbientOrbs";
 import { VineStem } from "@/components/decorative/VineStem";
 import { siteContent } from "@/content/site";
 import { ContactForm } from "@/components/sections/ContactForm";
@@ -10,9 +11,18 @@ export function ContactSection() {
     <section
       id={sectionIds.contact}
       aria-labelledby={headingId}
-      className="section-inner grid gap-10 py-section md:grid-cols-[minmax(320px,1fr)_minmax(440px,1.3fr)] md:items-start md:gap-20"
+      className="section-inner relative isolate overflow-x-clip grid gap-10 py-section max-[829px]:grid-cols-1 min-[830px]:grid-cols-[minmax(320px,1fr)_minmax(440px,1.3fr)] min-[830px]:items-start min-[830px]:gap-20"
     >
-      <div className="flex min-w-0 flex-col gap-5 md:col-start-1 md:row-start-1">
+      <AmbientOrbs
+        orbs={[
+          {
+            className: "top-[10%] right-[-5%] h-[80%] w-[55cqi]",
+            style: { "--orb-color": "var(--glow-1)" } as React.CSSProperties,
+            drift: "a",
+          },
+        ]}
+      />
+      <div className="flex min-w-0 flex-col gap-5 min-[830px]:col-start-1 min-[830px]:row-start-1">
         <p className="m-0 text-[15px] font-semibold text-accent-text">{contact.eyebrow}</p>
         <h2 id={headingId} className="m-0 text-balance text-h2 font-semibold tracking-tight">
           {contact.headline}
@@ -28,12 +38,12 @@ export function ContactSection() {
           </a>
         </p>
       </div>
-      <div className="min-w-0 md:col-start-2 md:row-span-2 md:row-start-1">
+      <div className="min-w-0 min-[830px]:col-start-2 min-[830px]:row-span-2 min-[830px]:row-start-1">
         <ContactForm />
       </div>
       <div
         aria-hidden
-        className="pointer-events-none mt-3 min-h-[120px] max-h-[220px] md:col-start-1 md:row-start-2 md:min-h-[200px] md:max-h-[420px]"
+        className="pointer-events-none mt-3 min-h-[120px] max-h-[220px] max-[829px]:hidden min-[830px]:col-start-1 min-[830px]:row-start-2 min-[830px]:min-h-[200px] min-[830px]:max-h-[420px]"
       >
         <VineStem
           viewBox={[0, 0, 400, 400]}
@@ -47,6 +57,21 @@ export function ContactSection() {
           leafSize={56}
           seed={3}
           preserveAspectRatio="xMinYMax meet"
+        />
+      </div>
+      <div aria-hidden className="pointer-events-none mt-2 h-[180px] min-[830px]:hidden">
+        <VineStem
+          viewBox={[0, 0, 400, 180]}
+          stem={[
+            [0, 150],
+            [120, 175],
+            [220, 40],
+            [390, 70],
+          ]}
+          leafCount={9}
+          leafSize={40}
+          seed={3}
+          preserveAspectRatio="xMinYMid meet"
         />
       </div>
     </section>

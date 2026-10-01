@@ -1,3 +1,4 @@
+import { AmbientOrbs } from "@/components/decorative/AmbientOrbs";
 import { VineStem } from "@/components/decorative/VineStem";
 import { siteContent } from "@/content/site";
 
@@ -6,7 +7,20 @@ export function HowItWorks() {
   const headingId = `${sectionIds.how}-heading`;
 
   return (
-    <section id={sectionIds.how} aria-labelledby={headingId} className="relative bg-surface-2">
+    <section
+      id={sectionIds.how}
+      aria-labelledby={headingId}
+      className="relative isolate overflow-x-clip bg-surface-2"
+    >
+      <AmbientOrbs
+        orbs={[
+          {
+            className: "top-[-30%] left-[-10%] h-[70%] w-[60cqi]",
+            style: { "--orb-color": "var(--glow-1)" } as React.CSSProperties,
+            drift: "a",
+          },
+        ]}
+      />
       <div
         aria-hidden
         className="pointer-events-none absolute right-[6%] bottom-[calc(100%-4px)] aspect-[240/150] w-[clamp(90px,18vw,230px)]"
@@ -33,12 +47,17 @@ export function HowItWorks() {
         >
           {howItWorks.headline}
         </h2>
-        <ol className="mt-[clamp(36px,5vw,56px)] grid list-none gap-[clamp(28px,4vw,48px)] p-0 sm:grid-cols-2 lg:grid-cols-3">
+        <ol className="mt-[clamp(36px,5vw,56px)] grid list-none gap-[clamp(28px,3.5vw,40px)] p-0 sm:grid-cols-2 lg:grid-cols-4">
           {howItWorks.steps.map((step, index) => (
-            <li key={step.title} className="flex flex-col gap-3 border-t-2 border-ink pt-6">
+            <li key={step.title} className="flex flex-col gap-3">
+              <div
+                aria-hidden
+                className="step-pulse-line"
+                style={{ "--pulse-delay": `${index * 1.4}s` } as React.CSSProperties}
+              />
               <span
                 aria-hidden
-                className="text-[clamp(2.5rem,2rem+2vw,3.5rem)] font-semibold leading-none tracking-tight text-accent-text"
+                className="mt-4 text-[clamp(2.5rem,2rem+2vw,3.5rem)] font-semibold leading-none tracking-tight text-accent-text"
               >
                 {index + 1}
               </span>
