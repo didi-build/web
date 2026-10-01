@@ -87,6 +87,7 @@
 
 html {
   scroll-behavior: smooth;
+  overflow-x: clip;
 }
 
 @keyframes db-drift-a {
@@ -158,6 +159,7 @@ html {
 
 body {
   margin: 0;
+  overflow-x: clip;
   background:
     radial-gradient(1200px 720px at 80% -160px, var(--glow-top), transparent 70%) no-repeat,
     var(--bg);

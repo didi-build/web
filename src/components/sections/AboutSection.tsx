@@ -17,7 +17,7 @@ export function AboutSection() {
     <section
       id={sectionIds.about}
       aria-labelledby={headingId}
-      className="section-inner pt-[clamp(72px,10vw,128px)] pb-[clamp(56px,7vw,88px)]"
+      className="section-inner overflow-x-clip pt-[clamp(72px,10vw,128px)] pb-[clamp(56px,7vw,88px)]"
     >
       <div
         className="about-card relative flex flex-wrap gap-[clamp(24px,5vw,64px)] rounded-[32px] border border-[color-mix(in_oklch,var(--accent)_22%,transparent)] p-[clamp(28px,5vw,64px)]"

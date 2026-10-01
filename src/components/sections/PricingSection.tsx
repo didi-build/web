@@ -10,7 +10,7 @@ export function PricingSection() {
       id={sectionIds.pricing}
       data-scroll-nudge="20"
       aria-labelledby={headingId}
-      className="section-inner py-section"
+      className="section-inner overflow-x-clip py-section"
     >
       <div
         className="relative isolate flex flex-wrap gap-[clamp(32px,5vw,72px)] overflow-hidden rounded-[clamp(24px,4vw,32px)] border border-[var(--glass-line)] p-[clamp(22px,5vw,64px)]"

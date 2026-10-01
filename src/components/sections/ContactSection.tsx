@@ -11,7 +11,7 @@ export function ContactSection() {
     <section
       id={sectionIds.contact}
       aria-labelledby={headingId}
-      className="section-inner relative isolate grid gap-10 py-section max-[829px]:grid-cols-1 min-[830px]:grid-cols-[minmax(320px,1fr)_minmax(440px,1.3fr)] min-[830px]:items-start min-[830px]:gap-20"
+      className="section-inner relative isolate overflow-x-clip grid gap-10 py-section max-[829px]:grid-cols-1 min-[830px]:grid-cols-[minmax(320px,1fr)_minmax(440px,1.3fr)] min-[830px]:items-start min-[830px]:gap-20"
     >
       <AmbientOrbs
         orbs={[

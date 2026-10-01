@@ -30,7 +30,11 @@ export function WhatIDo() {
   const headingId = `${sectionIds.what}-heading`;
 
   return (
-    <section id={sectionIds.what} aria-labelledby={headingId} className="relative isolate">
+    <section
+      id={sectionIds.what}
+      aria-labelledby={headingId}
+      className="relative isolate overflow-x-clip"
+    >
       <AmbientOrbs
         orbs={[
           {

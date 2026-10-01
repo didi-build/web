@@ -15,7 +15,7 @@ export function Hero() {
   const { hero, sectionIds } = siteContent;
 
   return (
-    <section className="relative isolate">
+    <section className="relative isolate overflow-x-clip">
       <AmbientOrbs
         orbs={[
           {

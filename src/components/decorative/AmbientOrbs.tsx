@@ -11,7 +11,7 @@ type AmbientOrbsProps = {
 
 export function AmbientOrbs({ orbs, clip = false }: AmbientOrbsProps) {
   return (
-    <div className={`ambient-layer ${clip ? "overflow-hidden" : ""}`} aria-hidden>
+    <div className={`ambient-layer ${clip ? "overflow-x-clip" : ""}`} aria-hidden>
       {orbs.map((orb, index) => (
         <div
           key={index}
