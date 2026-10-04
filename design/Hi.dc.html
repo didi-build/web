@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Hi, I'm Didi</title>
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/fonts.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/colors.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/typography.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/spacing.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/motion.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/tokens/base.css">
+<link rel="stylesheet" href="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/styles.css">
+<script src="_ds/didi-build-design-system-b51779c8-dac0-4a13-a587-18bef5d1ac59/_ds_bundle.js"></script>
+<style>
+html,body{margin:0;padding:0}
+a{color:var(--accent-text)}a:hover{color:var(--ink)}
+a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@keyframes hiCopied{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+</style>
+</helmet>
+<div data-theme="{{ theme }}" data-screen-label="Hi" style="position:relative;min-height:100svh;background:var(--bg);color:var(--ink);font-family:var(--font-sans);container-type:inline-size;overflow:hidden;isolation:isolate">
+  <div aria-hidden="true" style="position:absolute;z-index:-1;top:-200px;left:50%;transform:translateX(-50%);width:520px;height:420px;border-radius:50%;background:radial-gradient(closest-side,var(--accent-soft),transparent);pointer-events:none"></div>
+
+  <main style="max-width:420px;margin:0 auto;min-height:100svh;box-sizing:border-box;padding:16px 24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px">
+    <section aria-labelledby="hi-title" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:clamp(12px,4svh,48px)">
+      <div style="display:flex;align-items:center;gap:12px;text-align:left">
+        <img src="assets/didi.png" alt="Didi Shoukralla" width="64" height="64" style="display:block;flex:none;width:64px;height:64px;border-radius:50%"></img>
+        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
+          <p style="margin:0;font-weight:600;font-size:1.25rem;line-height:1.2;color:var(--accent-text);letter-spacing:-0.02em">I'm Didi</p>
+          <p style="margin:0;font-size:14px;line-height:1.45;color:var(--ink-muted);font-weight:500">AI Integrations Consultant and Engineer</p>
+        </div>
+      </div>
+      <h1 id="hi-title" style="margin:16px 0 0;flex:none;width:max-content;max-width:calc(100vw - 48px);font-weight:600;font-size:clamp(2.7rem,1.9rem + 4cqi,3.2rem);line-height:1.06;letter-spacing:-0.03em;text-wrap:balance">Nice to meet you!</h1>
+    </section>
+
+    <section aria-label="Exchange contacts" style="width:100%;margin-top:12px;display:flex;flex-direction:column;gap:12px">
+      <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="primary" size="lg" on-click="{{ saveContact }}" dc-props="{{ fullWidth }}" hint-size="100%,56px">Save my contact</x-import>
+      <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="secondary" size="lg" href="{{ mailto }}" dc-props="{{ fullWidth }}" hint-size="100%,56px">Connect</x-import>
+
+      <div style="margin-top:4px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px;font-size:var(--size-caption);line-height:1.4;color:var(--ink-muted)">
+          <span>To <span style="color:var(--ink);font-weight:600">{{ email }}</span></span>
+          <span>Subject <span style="color:var(--ink);font-weight:600">{{ subject }}</span></span>
+        </div>
+        <p style="margin:0;padding:12px 16px;font-size:15px;line-height:1.5;color:var(--ink);white-space:pre-line;text-wrap:pretty">{{ body }}</p>
+        <button type="button" onClick="{{ copyMessage }}" aria-live="polite" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:600 15px var(--font-sans);cursor:pointer;transition:background var(--dur-fast)" style-hover="background:var(--surface-2)">
+          <sc-if value="{{ copied }}" hint-placeholder-val="{{ false }}">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
+            <span style="animation:hiCopied .2s ease-out">Copied!</span>
+          </sc-if>
+          <sc-if value="{{ notCopied }}" hint-placeholder-val="{{ true }}">
+            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 012-2h10"></path></svg>
+            <span>Copy message</span>
+          </sc-if>
+        </button>
+      </div>
+
+      <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="align-self:center;display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px" style-hover="color:var(--ink)">or book a time directly</a>
+    </section>
+
+    <p style="margin:4px 0 0;font-size:18px;line-height:1.55;color:var(--ink);text-wrap:balance;max-width:30ch">I help businesses take AI from prototype to production.</p>
+
+    <nav aria-label="Elsewhere" style="margin-top:auto">
+      <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px">
+        <li><a href="https://didi.build" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:none" style-hover="color:var(--ink);background:var(--surface-2)">
+          <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.LeafMark" size="{{ 12 }}" hint-size="12px,12px"></x-import>didi.build</a></li>
+        <li><a href="https://www.linkedin.com/in/diadem-shoukralla/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:none" style-hover="color:var(--ink);background:var(--surface-2)">
+          <svg aria-hidden="true" width="15" height="15" viewBox="0 0 24 24" fill="currentColor"><path d="M20.45 20.45h-3.56v-5.57c0-1.33-.02-3.04-1.85-3.04-1.85 0-2.14 1.45-2.14 2.94v5.67H9.35V9h3.41v1.56h.05c.48-.88 1.64-1.8 3.37-1.8 3.6 0 4.27 2.37 4.27 5.46v6.23zM5.34 7.43a2.06 2.06 0 110-4.13 2.06 2.06 0 010 4.13zM7.12 20.45H3.56V9h3.56v11.45zM22.22 0H1.77C.79 0 0 .77 0 1.73v20.54C0 23.23.79 24 1.77 24h20.45c.98 0 1.78-.77 1.78-1.73V1.73C24 .77 23.2 0 22.22 0z"></path></svg>LinkedIn</a></li>
+        <li><a href="https://github.com/DiademShoukralla/" target="_blank" rel="noopener" style="display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 8px;border-radius:999px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:none" style-hover="color:var(--ink);background:var(--surface-2)">
+          <svg aria-hidden="true" width="16" height="16" viewBox="0 0 16 16" fill="currentColor"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>GitHub</a></li>
+        <li><button type="button" role="switch" aria-checked="{{ isDark }}" aria-label="Dark mode" onClick="{{ toggleTheme }}" style="display:flex;align-items:center;justify-content:center;width:52px;min-height:44px;padding:0;border:0;border-radius:999px;background:transparent;cursor:pointer">
+          <span aria-hidden="true" style="position:relative;display:block;width:44px;height:26px;border-radius:999px;background:var(--surface-2);box-shadow:inset 0 0 0 1px var(--line-strong);transition:background var(--dur-fast)">
+            <span style="position:absolute;top:3px;left:3px;width:20px;height:20px;border-radius:50%;background:var(--ink);color:var(--bg);display:flex;align-items:center;justify-content:center;transform:{{ knobX }};transition:transform var(--dur-base,.2s) ease">
+              <sc-if value="{{ darkOn }}" hint-placeholder-val="{{ false }}">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 14.5A8 8 0 019.5 4a8 8 0 1010.5 10.5z"></path></svg>
+              </sc-if>
+              <sc-if value="{{ lightOn }}" hint-placeholder-val="{{ true }}">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"></path></svg>
+              </sc-if>
+            </span>
+          </span>
+        </button></li>
+      </ul>
+    </nav>
+  </main>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;email&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@didi.build&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://didi.build/#contact&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+class Component extends DCLogic {
+  state = {
+    theme: (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light',
+    copied: false
+  };
+  componentDidMount() {
+    try { const t = localStorage.getItem('didi-hi-theme'); if (t === 'light' || t === 'dark') this.setState({ theme: t }); } catch (e) {}
+  }
+  componentWillUnmount() { clearTimeout(this._t); }
+  cfg() {
+    const p = this.props;
+    return {
+      email: p.email ?? 'hello@didi.build',
+      phone: p.phone ?? '',
+      bookingUrl: p.bookingUrl ?? 'https://didi.build/#contact',
+      subject: 'Nice meeting you',
+      body: "Hi Didi, great meeting you! I'm [your name] from [your business]. I'd love to chat about [what you're curious about]."
+    };
+  }
+  saveContact = () => {
+    const c = this.cfg();
+    const lines = ['BEGIN:VCARD', 'VERSION:3.0', 'N:Shoukralla;Diadem;;;', 'FN:Diadem (Didi) Shoukralla', 'NICKNAME:Didi', 'ORG:Didi Build', 'TITLE:AI Integrations Consultant and Engineer', 'EMAIL;TYPE=INTERNET,WORK:' + c.email];
+    if (c.phone) lines.push('TEL;TYPE=CELL:' + c.phone);
+    lines.push('URL:https://didi.build', 'URL;TYPE=LinkedIn:https://www.linkedin.com/in/diadem-shoukralla/', 'URL;TYPE=GitHub:https://github.com/DiademShoukralla/', 'NOTE:Met at an event. Free 30-min consult.', 'END:VCARD');
+    const blob = new Blob([lines.join('\r\n')], { type: 'text/vcard;charset=utf-8' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob); a.download = 'Didi-Shoukralla.vcf';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  };
+  copyMessage = async () => {
+    const c = this.cfg();
+    const text = 'To: ' + c.email + '\nSubject: ' + c.subject + '\n\n' + c.body;
+    let ok = false;
+    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
+      const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
+      document.body.appendChild(ta); ta.select(); try { ok = document.execCommand('copy'); } catch (e2) {} ta.remove();
+    }
+    if (!ok) return;
+    this.setState({ copied: true });
+    clearTimeout(this._t); this._t = setTimeout(() => this.setState({ copied: false }), 2000);
+  };
+  toggleTheme = () => {
+    const theme = this.state.theme === 'dark' ? 'light' : 'dark';
+    try { localStorage.setItem('didi-hi-theme', theme); } catch (e) {}
+    this.setState({ theme });
+  };
+  renderVals() {
+    const c = this.cfg();
+    return {
+      theme: this.state.theme,
+      toggleTheme: this.toggleTheme,
+      darkOn: this.state.theme === 'dark',
+      lightOn: this.state.theme !== 'dark',
+      isDark: this.state.theme === 'dark' ? 'true' : 'false',
+      knobX: this.state.theme === 'dark' ? 'translateX(18px)' : 'translateX(0)',
+      saveContact: this.saveContact,
+      copyMessage: this.copyMessage,
+      copied: this.state.copied,
+      notCopied: !this.state.copied,
+      email: c.email,
+      subject: c.subject,
+      body: c.body,
+      bookingUrl: c.bookingUrl,
+      mailto: 'mailto:' + c.email + '?subject=' + encodeURIComponent(c.subject) + '&body=' + encodeURIComponent(c.body),
+      fullWidth: { style: { width: '100%', justifyContent: 'center', boxSizing: 'border-box' } }
+    };
+  }
+}
+</script>
+</body>
+</html>

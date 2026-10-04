@@ -367,4 +367,37 @@ export const siteContent = {
   formIds: {
     contactName: "contact-form-name",
   },
+  hi: {
+    pageTitle: "Hi, I'm Didi",
+    headshotSrc: "/didi.png",
+    headshotAlt: "Didi Shoukralla",
+    greetingName: "I'm Didi",
+    title: "AI Integrations Consultant and Engineer",
+    heading: "Nice to meet you!",
+    saveContact: "Save my contact",
+    connect: "Connect",
+    copyMessage: "Copy message",
+    copied: "Copied!",
+    bookLink: "or book a time directly",
+    tagline: "I help businesses take AI from prototype to production.",
+    exchangeAriaLabel: "Exchange contacts",
+    vcardPath: "/hi/contact.vcf",
+    contact: {
+      name: {
+        full: "Diadem (Didi) Shoukralla",
+        family: "Shoukralla",
+        given: "Diadem",
+        nickname: "Didi",
+      },
+      org: "Didi Build",
+      title: "AI Integrations Consultant and Engineer",
+      email: "diadem@didi.build",
+      phone: "+1-647-716-7756",
+      bookingUrl: "https://diadem-shoukralla.moxieapp.com/public/free-30-min-consult",
+      mailSubject: "Hi, nice meeting you!",
+      mailBody:
+        "Hi Didi, great meeting you! I'm [your name] from [your business]. I'd love to chat about [what you're curious about].",
+      vcardNote: "Met at an event. Free 30-min consult.",
+    },
+  },
 } as const;
