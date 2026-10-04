@@ -7,8 +7,7 @@ export default defineConfig({
   },
   test: {
     environment: "node",
-    include: ["src/**/*.test.ts", "src/**/*.test.tsx"],
-    exclude: ["src/**/*.build.test.ts"],
+    include: ["src/**/*.build.test.ts"],
   },
   resolve: {
     alias: {

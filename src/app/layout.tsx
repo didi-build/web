@@ -3,6 +3,7 @@ import { Figtree } from "next/font/google";
 import { ThemeProvider } from "@/components/theme/ThemeProvider";
 import { JsonLd } from "@/components/seo/JsonLd";
 import { siteContent } from "@/content/site";
+import { baseOpenGraphFields, baseTwitterCardFields } from "@/lib/site-metadata";
 import { THEME_STORAGE_KEY } from "@/lib/theme-storage-key";
 import "./globals.css";
 
@@ -27,17 +28,13 @@ export const metadata: Metadata = {
     follow: true,
   },
   openGraph: {
+    ...baseOpenGraphFields(),
     title: meta.title,
-    description: meta.description,
     url: meta.siteUrl,
-    siteName: siteContent.brand,
-    locale: "en_CA",
-    type: "website",
   },
   twitter: {
-    card: "summary_large_image",
+    ...baseTwitterCardFields(),
     title: meta.title,
-    description: meta.description,
   },
 };
 
