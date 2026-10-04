@@ -1,8 +1,5 @@
 export function buildMailtoUrl(email: string, subject: string, body: string): string {
-  const params = new URLSearchParams();
-  params.set("subject", subject);
-  params.set("body", body);
-  return `mailto:${email}?${params.toString()}`;
+  return `mailto:${email}?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(body)}`;
 }
 
 export function formatEmailCopyText(email: string, subject: string, body: string): string {
