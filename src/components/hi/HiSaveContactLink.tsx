@@ -48,12 +48,13 @@ export function HiSaveContactLink({
       <a href={href} className={className} onClick={onSaveClick}>
         {label}
       </a>
-      <div aria-live="polite" className="sr-only" role="status">
+      <p
+        aria-live="polite"
+        role="status"
+        className="m-0 min-h-0 text-center text-sm leading-snug text-ink-muted empty:min-h-0"
+      >
         {showAndroidHint ? androidSaveHint : ""}
-      </div>
-      {showAndroidHint ? (
-        <p className="m-0 text-center text-sm leading-snug text-ink-muted">{androidSaveHint}</p>
-      ) : null}
+      </p>
     </div>
   );
 }

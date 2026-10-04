@@ -2,6 +2,7 @@ import type { ResolvingMetadata } from "next";
 import { describe, expect, it } from "vitest";
 import { siteContent } from "@/content/site";
 import { resolveHiPageMetadata } from "@/lib/hi/page-metadata";
+import { baseOpenGraphFields, baseTwitterCardFields } from "@/lib/site-metadata";
 
 describe("resolveHiPageMetadata", () => {
   it("inherits parent openGraph images while setting page title and URL", async () => {
@@ -25,7 +26,15 @@ describe("resolveHiPageMetadata", () => {
     expect(metadata.openGraph?.title).toBe(siteContent.hi.pageTitle);
     expect(metadata.openGraph?.url).toBe(`${siteContent.meta.siteUrl}/hi`);
     expect(metadata.openGraph?.images).toEqual(parentImages);
+    const sharedOg = baseOpenGraphFields();
+    const sharedTwitter = baseTwitterCardFields();
+    expect(metadata.openGraph?.siteName).toBe(sharedOg.siteName);
+    expect(metadata.openGraph?.locale).toBe(sharedOg.locale);
+    expect(metadata.openGraph?.description).toBe(sharedOg.description);
     expect(metadata.twitter?.title).toBe(siteContent.hi.pageTitle);
+    expect(metadata.twitter?.description).toBe(sharedTwitter.description);
+    expect(metadata.openGraph).toMatchObject({ type: "website" });
+    expect(metadata.twitter).toMatchObject({ card: "summary_large_image" });
     expect(metadata.robots).toEqual({ index: false, follow: true });
   });
 });

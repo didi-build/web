@@ -1,5 +1,6 @@
 import type { Metadata, ResolvingMetadata } from "next";
 import { siteContent } from "@/content/site";
+import { baseOpenGraphFields, baseTwitterCardFields } from "@/lib/site-metadata";
 
 const { hi, meta } = siteContent;
 
@@ -22,11 +23,13 @@ export async function resolveHiPageMetadata(parent: ResolvingMetadata): Promise<
       canonical: "/hi",
     },
     openGraph: {
+      ...baseOpenGraphFields(),
       title: hi.pageTitle,
       url: pageUrl,
       ...(inheritedImages ? { images: inheritedImages } : {}),
     },
     twitter: {
+      ...baseTwitterCardFields(),
       title: hi.pageTitle,
       ...(parentMetadata.twitter?.images ? { images: parentMetadata.twitter.images } : {}),
     },

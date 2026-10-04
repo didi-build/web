@@ -1,10 +1,9 @@
-const OG_IMAGE_RE = /property="og:image"\s+content="([^"]+)"/;
-const TWITTER_IMAGE_RE = /name="twitter:image"\s+content="([^"]+)"/;
+import { extractMetaName, extractOgProperty } from "@/lib/hi/extract-built-meta";
 
 export function extractOgImageUrl(html: string): string | undefined {
-  return html.match(OG_IMAGE_RE)?.[1];
+  return extractOgProperty(html, "og:image");
 }
 
 export function extractTwitterImageUrl(html: string): string | undefined {
-  return html.match(TWITTER_IMAGE_RE)?.[1];
+  return extractMetaName(html, "twitter:image");
 }
