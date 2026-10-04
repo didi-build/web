@@ -35,6 +35,7 @@ export function buildVCard(contact: HiContactConfig, siteUrl: string): string {
     `URL;TYPE=GitHub:${github}`,
     `NOTE:${escapeVCardValue(contact.vcardNote)}`,
     "END:VCARD",
+    "",
   ];
 
   return lines.join(CRLF);

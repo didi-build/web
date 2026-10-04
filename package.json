@@ -4,7 +4,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "tsx scripts/generate-og-image.tsx && next build",
+    "build": "tsx scripts/generate-og-image.tsx && next build && vitest run --config vitest.build.config.ts",
     "start": "next start",
     "lint": "eslint .",
     "format": "prettier --write .",

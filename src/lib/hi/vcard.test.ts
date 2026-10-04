@@ -16,7 +16,7 @@ describe("buildVCard", () => {
 
     expect(vcard).toContain("\r\n");
     expect(vcard.startsWith("BEGIN:VCARD\r\n")).toBe(true);
-    expect(vcard.endsWith("END:VCARD")).toBe(true);
+    expect(vcard.endsWith("END:VCARD\r\n")).toBe(true);
     expect(vcard).toContain("N:Shoukralla;Diadem;;;");
     expect(vcard).toContain("FN:Diadem (Didi) Shoukralla");
     expect(vcard).toContain("NICKNAME:Didi");

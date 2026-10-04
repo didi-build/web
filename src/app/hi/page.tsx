@@ -1,13 +1,17 @@
 import Image from "next/image";
 import { HiCopyMessageButton } from "@/components/hi/HiCopyMessageButton";
+import { HiSaveContactLink } from "@/components/hi/HiSaveContactLink";
 import { HiThemeSwitch } from "@/components/hi/HiThemeSwitch";
 import { SocialProfileIcon } from "@/components/SocialProfileIcon";
 import { getFounderLinkByIcon } from "@/content/profile-links";
 import { siteContent } from "@/content/site";
 import { buildMailtoUrl } from "@/lib/hi/mailto";
-import { hiPageMetadata } from "@/lib/hi/page-metadata";
+import type { Metadata, ResolvingMetadata } from "next";
+import { resolveHiPageMetadata } from "@/lib/hi/page-metadata";
 
-export const metadata = hiPageMetadata();
+export async function generateMetadata(_: unknown, parent: ResolvingMetadata): Promise<Metadata> {
+  return resolveHiPageMetadata(parent);
+}
 
 const buttonBase =
   "inline-flex w-full min-h-14 items-center justify-center gap-3 rounded-pill px-7 text-[15px] font-semibold transition-colors focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent";
@@ -16,7 +20,7 @@ const linkedIn = getFounderLinkByIcon("linkedin");
 const github = getFounderLinkByIcon("github");
 
 export default function HiPage() {
-  const { hi, a11y, meta, sectionIds } = siteContent;
+  const { hi, a11y, meta } = siteContent;
   const { contact } = hi;
   const mailto = buildMailtoUrl(contact.email, contact.mailSubject, contact.mailBody);
 
@@ -27,10 +31,7 @@ export default function HiPage() {
         className="pointer-events-none absolute -top-[200px] left-1/2 z-[-1] h-[420px] w-[520px] -translate-x-1/2 rounded-full bg-[radial-gradient(closest-side,var(--accent-soft),transparent)]"
       />
 
-      <main
-        className="mx-auto flex min-h-svh max-w-[420px] flex-col items-center gap-6 px-6 pb-5 pt-4 text-center [container-type:inline-size]"
-        id={sectionIds.contact}
-      >
+      <main className="mx-auto flex min-h-svh max-w-[420px] flex-col items-center gap-6 px-6 pb-5 pt-4 text-center [container-type:inline-size]">
         <section
           aria-labelledby="hi-title"
           className="flex flex-col items-center gap-2.5 pt-[clamp(12px,4svh,48px)]"
@@ -48,7 +49,7 @@ export default function HiPage() {
               <p className="m-0 text-xl font-semibold leading-tight tracking-tight text-accent-text">
                 {hi.greetingName}
               </p>
-              <p className="m-0 text-sm font-medium leading-snug text-ink-muted">{hi.title}</p>
+              <p className="m-0 text-sm font-medium leading-snug text-ink-muted">{contact.title}</p>
             </div>
           </div>
           <h1
@@ -60,12 +61,12 @@ export default function HiPage() {
         </section>
 
         <section aria-label={hi.exchangeAriaLabel} className="mt-3 flex w-full flex-col gap-3">
-          <a
+          <HiSaveContactLink
             href={hi.vcardPath}
             className={`${buttonBase} bg-accent text-accent-ink no-underline hover:bg-accent-hover`}
-          >
-            {hi.saveContact}
-          </a>
+            label={hi.saveContact}
+            androidSaveHint={hi.androidSaveHint}
+          />
           <a
             href={mailto}
             className={`${buttonBase} border-[1.5px] border-ink bg-transparent text-ink no-underline hover:bg-ink hover:text-bg`}

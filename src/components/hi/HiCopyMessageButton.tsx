@@ -62,10 +62,12 @@ export function HiCopyMessageButton({
         aria-hidden
         className="pointer-events-none fixed opacity-0"
       />
+      <div aria-live="polite" className="sr-only" role="status">
+        {copied ? copiedLabel : ""}
+      </div>
       <button
         type="button"
         onClick={copyMessage}
-        aria-live="polite"
         className="flex w-full min-h-12 items-center justify-center gap-2 border-0 border-t border-line bg-transparent px-4 text-[15px] font-semibold text-ink transition-colors hover:bg-surface-2 focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-[-3px] focus-visible:outline-accent"
       >
         {copied ? (
