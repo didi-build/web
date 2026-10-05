@@ -20,7 +20,7 @@ const linkedIn = getFounderLinkByIcon("linkedin");
 const github = getFounderLinkByIcon("github");
 
 export default function HiPage() {
-  const { hi, a11y, meta } = siteContent;
+  const { hi, a11y, meta, bookingPath } = siteContent;
   const { contact } = hi;
   const mailto = buildMailtoUrl(contact.email, contact.mailSubject, contact.mailBody);
 
@@ -96,7 +96,7 @@ export default function HiPage() {
           </div>
 
           <a
-            href={contact.bookingUrl}
+            href={bookingPath}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex min-h-11 items-center self-center px-2 text-[15px] font-medium text-ink-muted underline decoration-1 underline-offset-[3px] hover:text-ink"
