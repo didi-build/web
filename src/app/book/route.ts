@@ -1,5 +1,6 @@
-import { createBookRedirectResponse } from "@/lib/hi/book-redirect";
+import { createBookRedirectResponse } from "@/lib/book/book-redirect";
+import { resolveBookRedirectDestination } from "@/lib/book/read-booking-url";
 
 export function GET(): Response {
-  return createBookRedirectResponse();
+  return createBookRedirectResponse(resolveBookRedirectDestination());
 }

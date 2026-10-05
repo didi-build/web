@@ -21,4 +21,7 @@
     // see https://opennext.js.org/cloudflare/howtos/image
     "binding": "IMAGES",
   },
+  "vars": {
+    "BOOKING_URL": "https://diadem-shoukralla.moxieapp.com/public/diadem-shoukralla/free-30-min-consult",
+  },
 }
