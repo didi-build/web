@@ -1,5 +1,6 @@
 export const siteContent = {
   brand: "Didi Build",
+  bookingPath: "/book",
   meta: {
     title: "Base44 Developer & AI MVP Production Help | Didi Build Toronto",
     description:
@@ -328,6 +329,9 @@ export const siteContent = {
       "What you do, and what's taking up more time than it should. I'll reply within 2 business days to find a time to talk.",
     emailLabel: "Prefer email?",
     email: "hello@didi.build",
+    emailBookSeparator: ", or ",
+    bookDirectLinkLabel: "book a time directly",
+    emailPreferEnding: ".",
     fields: {
       name: "Your name",
       email: "Email",
@@ -393,7 +397,6 @@ export const siteContent = {
       title: "AI Integrations Consultant and Engineer",
       email: "diadem@didi.build",
       phone: "+1-647-716-7756",
-      bookingUrl: "https://diadem-shoukralla.moxieapp.com/public/free-30-min-consult",
       mailSubject: "Hi, nice meeting you!",
       mailBody:
         "Hi Didi, great meeting you! I'm [your name] from [your business]. I'd love to chat about [what you're curious about].",

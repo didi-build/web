@@ -4,7 +4,7 @@ import { siteContent } from "@/content/site";
 import { ContactForm } from "@/components/sections/ContactForm";
 
 export function ContactSection() {
-  const { contact, sectionIds } = siteContent;
+  const { contact, sectionIds, bookingPath } = siteContent;
   const headingId = `${sectionIds.contact}-heading`;
 
   return (
@@ -36,6 +36,14 @@ export function ContactSection() {
           >
             {contact.email}
           </a>
+          {contact.emailBookSeparator}
+          <a
+            href={bookingPath}
+            className="font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]"
+          >
+            {contact.bookDirectLinkLabel}
+          </a>
+          {contact.emailPreferEnding}
         </p>
       </div>
       <div className="min-w-0 min-[830px]:col-start-2 min-[830px]:row-span-2 min-[830px]:row-start-1">
