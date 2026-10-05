@@ -12,5 +12,5 @@ GMAIL_SENDER=diadem@didi.build
 LEAD_EMAIL_TO=hello@didi.build
 TURNSTILE_SECRET_KEY=
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=
-BOOKING_URL=https://diadem-shoukralla.moxieapp.com/public/diadem-shoukralla/free-30-min-consult
+BOOKING_URL=https://portal.didi.build/public/free-30-min-consult
 NEXTJS_ENV=development

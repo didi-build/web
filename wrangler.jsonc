@@ -22,6 +22,6 @@
     "binding": "IMAGES",
   },
   "vars": {
-    "BOOKING_URL": "https://diadem-shoukralla.moxieapp.com/public/diadem-shoukralla/free-30-min-consult",
+    "BOOKING_URL": "https://portal.didi.build/public/free-30-min-consult",
   },
 }
