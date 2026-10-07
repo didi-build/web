@@ -1,7 +1,6 @@
 import { readFileSync } from "node:fs";
 import { join } from "node:path";
 import { describe, expect, it, vi } from "vitest";
-import { formatLeadEmailSubject } from "../leads/format-lead-email";
 import { runDeterministicChecks } from "./checks";
 import { clearReportCache } from "./report-cache";
 import { generateVisibilityReport } from "./generate-visibility-report";
@@ -103,15 +102,8 @@ describe("generateVisibilityReport", () => {
     expect(result.ok).toBe(true);
     if (result.ok) {
       expect(result.report.score).toBeUndefined();
-      const subject = formatLeadEmailSubject(
-        {
-          name: "Test",
-          email: "test@example.com",
-          message: "Hi",
-        },
-        result.report,
-      );
-      expect(subject).not.toContain("visibility");
+      expect(result.report.summary).toBeDefined();
+      expect(result.report.findings.length).toBeGreaterThan(0);
     }
   });
 

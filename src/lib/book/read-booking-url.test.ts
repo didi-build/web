@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { siteContent } from "@/content/site";
 import {
-  contactSectionFallbackUrl,
+  bookingCtaFallbackUrl,
   readBookingUrl,
   resolveBookRedirectDestination,
 } from "@/lib/book/read-booking-url";
@@ -50,11 +50,11 @@ describe("resolveBookRedirectDestination (config + fallback)", () => {
     }
   });
 
-  it("uses the contact section when BOOKING_URL is invalid", () => {
+  it("uses the on-site booking path when BOOKING_URL is invalid", () => {
     process.env.BOOKING_URL = "http://example.com/book";
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
-    expect(resolveBookRedirectDestination()).toBe(contactSectionFallbackUrl());
+    expect(resolveBookRedirectDestination()).toBe(bookingCtaFallbackUrl());
     expect(errorSpy).toHaveBeenCalledWith(
       "book_redirect_config_error",
       "BOOKING_URL missing or invalid",
@@ -62,9 +62,9 @@ describe("resolveBookRedirectDestination (config + fallback)", () => {
   });
 });
 
-describe("contactSectionFallbackUrl", () => {
-  it("points at the site contact section anchor", () => {
+describe("bookingCtaFallbackUrl", () => {
+  it("points at the on-page booking CTA section", () => {
     const base = siteContent.meta.siteUrl.replace(/\/$/, "");
-    expect(contactSectionFallbackUrl()).toBe(`${base}/#${siteContent.sectionIds.contact}`);
+    expect(bookingCtaFallbackUrl()).toBe(`${base}/#${siteContent.sectionIds.contact}`);
   });
 });

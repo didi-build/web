@@ -1,5 +1,5 @@
 import { readEnv, requireEnv } from "@/lib/env";
-import { createTurnstileVerifier } from "../leads/turnstile";
+import { createTurnstileVerifier } from "../turnstile";
 import { ClaudeVisibilityExplainer } from "./claude-visibility-explainer";
 import { createSafeVisibilityFetcher } from "./fetcher";
 import type { GenerateVisibilityReportDeps } from "./generate-visibility-report";

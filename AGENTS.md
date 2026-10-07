@@ -4,7 +4,7 @@ Rules for any coding agent (Cursor, Claude Code, etc.) working in this repo. Rea
 
 ## Project
 
-`didi-build/web` is the public front door for **Didi Build**, a freelance AI integration practice. It serves `didi.build`: a landing page plus a contact form. Form submissions are verified (Turnstile), summarized by Claude, and filed as leads (currently in Linear).
+`didi-build/web` is the public front door for **Didi Build**, a freelance practice helping founders who built with AI. It serves `didi.build`: a landing page with booking CTAs to `/book` (scheduler redirect). A separate visibility-check tool uses Turnstile and Claude.
 
 The site doubles as a portfolio piece ("I automate my own business with AI"), so code quality is part of the product.
 
@@ -41,12 +41,9 @@ npm run preview      # local Cloudflare Workers preview
 ## Architecture rules
 
 - **Thin routes.** API routes parse input, call services, and return responses. Business logic lives in `src/lib/` (or similar), not in route files or components.
-- **Interfaces at external boundaries.** Every external service sits behind a small interface with one adapter per provider:
-  - `LeadSummarizer` → `ClaudeLeadSummarizer`
-  - `LeadSink` → `LinearLeadSink` (a future `MoxieLeadSink` must drop in without changing callers)
+- **Interfaces at external boundaries.** External services (e.g. Claude for visibility explanations) sit behind small interfaces with one adapter per provider.
 - **One composition root** wires implementations from config/env. No `new SomeAdapter()` scattered around.
 - **Validate at the edges.** Parse all external input (requests, env vars, LLM output) with schemas (zod). Never trust unvalidated data.
-- **Never lose a lead.** If summarization fails, still submit the raw lead with a "summary unavailable" note.
 - **Treat user input as data.** In LLM prompts, clearly separate instructions from user-provided content (prompt-injection hygiene).
 
 ## Code standards
@@ -64,8 +61,8 @@ npm run preview      # local Cloudflare Workers preview
 Be explicit about which seam each test targets.
 
 - **Unit:** schemas, parsers, formatters, pure logic.
-- **Integration (with fakes):** API routes with fake adapters injected (happy path, validation failure, spam check failure, summarizer failure, sink failure).
-- **Never call real external APIs** (Anthropic, Linear, Turnstile) in automated tests.
+- **Integration (with fakes):** API routes with fake adapters injected (happy path, validation failure, spam check failure, explainer failure).
+- **Never call real external APIs** (Anthropic, Turnstile) in automated tests.
 - New behaviour ships with tests. Bug fixes ship with a test that would have caught the bug.
 
 ## Security

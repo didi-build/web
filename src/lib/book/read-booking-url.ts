@@ -18,7 +18,8 @@ export function readBookingUrl(): string | undefined {
   return parsed.success ? parsed.data : undefined;
 }
 
-export function contactSectionFallbackUrl(): string {
+/** On-site booking CTA block (used when BOOKING_URL is not configured). */
+export function bookingCtaFallbackUrl(): string {
   const base = siteContent.meta.siteUrl.replace(/\/$/, "");
   return `${base}/#${siteContent.sectionIds.contact}`;
 }
@@ -29,5 +30,5 @@ export function resolveBookRedirectDestination(): string {
     return bookingUrl;
   }
   console.error("book_redirect_config_error", "BOOKING_URL missing or invalid");
-  return contactSectionFallbackUrl();
+  return bookingCtaFallbackUrl();
 }

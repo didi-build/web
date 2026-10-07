@@ -1,7 +1,7 @@
 import { AmbientOrbs } from "@/components/decorative/AmbientOrbs";
 import { VineStem } from "@/components/decorative/VineStem";
+import { ButtonLink } from "@/components/ui/Button";
 import { siteContent } from "@/content/site";
-import { ContactForm } from "@/components/sections/ContactForm";
 
 export function ContactSection() {
   const { contact, sectionIds, bookingPath } = siteContent;
@@ -11,7 +11,7 @@ export function ContactSection() {
     <section
       id={sectionIds.contact}
       aria-labelledby={headingId}
-      className="section-inner relative isolate overflow-x-clip grid gap-10 py-section max-[829px]:grid-cols-1 min-[830px]:grid-cols-[minmax(320px,1fr)_minmax(440px,1.3fr)] min-[830px]:items-start min-[830px]:gap-20"
+      className="section-inner relative isolate overflow-x-clip py-section"
     >
       <AmbientOrbs
         orbs={[
@@ -22,12 +22,20 @@ export function ContactSection() {
           },
         ]}
       />
-      <div className="flex min-w-0 flex-col gap-5 min-[830px]:col-start-1 min-[830px]:row-start-1">
+      <div className="relative flex max-w-[640px] flex-col gap-5">
         <p className="m-0 text-[15px] font-semibold text-accent-text">{contact.eyebrow}</p>
         <h2 id={headingId} className="m-0 text-balance text-h2 font-semibold tracking-tight">
           {contact.headline}
         </h2>
         <p className="m-0 max-w-[40ch] text-pretty text-ink-muted">{contact.intro}</p>
+        <div className="mt-1">
+          <ButtonLink
+            href={bookingPath}
+            className="min-h-14 w-full justify-center whitespace-nowrap text-[17px] sm:w-auto cta-primary-glow"
+          >
+            {contact.bookCta} <span aria-hidden>→</span>
+          </ButtonLink>
+        </div>
         <p className="m-0 text-ink-muted">
           {contact.emailLabel}{" "}
           <a
@@ -36,22 +44,11 @@ export function ContactSection() {
           >
             {contact.email}
           </a>
-          {contact.emailBookSeparator}
-          <a
-            href={bookingPath}
-            className="font-semibold text-accent-text underline decoration-[1.5px] underline-offset-[3px]"
-          >
-            {contact.bookDirectLinkLabel}
-          </a>
-          {contact.emailPreferEnding}
         </p>
-      </div>
-      <div className="min-w-0 min-[830px]:col-start-2 min-[830px]:row-span-2 min-[830px]:row-start-1">
-        <ContactForm />
       </div>
       <div
         aria-hidden
-        className="pointer-events-none mt-3 min-h-[120px] max-h-[220px] max-[829px]:hidden min-[830px]:col-start-1 min-[830px]:row-start-2 min-[830px]:min-h-[200px] min-[830px]:max-h-[420px]"
+        className="pointer-events-none mt-10 min-h-[120px] max-h-[220px] max-[829px]:block min-[830px]:absolute min-[830px]:right-[clamp(20px,5vw,48px)] min-[830px]:bottom-0 min-[830px]:mt-0 min-[830px]:h-[min(420px,55%)] min-[830px]:w-[min(400px,40%)] min-[830px]:max-h-none"
       >
         <VineStem
           viewBox={[0, 0, 400, 400]}
@@ -65,21 +62,6 @@ export function ContactSection() {
           leafSize={56}
           seed={3}
           preserveAspectRatio="xMinYMax meet"
-        />
-      </div>
-      <div aria-hidden className="pointer-events-none mt-2 h-[180px] min-[830px]:hidden">
-        <VineStem
-          viewBox={[0, 0, 400, 180]}
-          stem={[
-            [0, 150],
-            [120, 175],
-            [220, 40],
-            [390, 70],
-          ]}
-          leafCount={9}
-          leafSize={40}
-          seed={3}
-          preserveAspectRatio="xMinYMid meet"
         />
       </div>
     </section>

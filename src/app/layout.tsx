@@ -57,7 +57,7 @@ export default function RootLayout({
             href={`#${siteContent.sectionIds.contact}`}
             className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-pill focus:bg-accent focus:px-4 focus:py-2.5 focus:text-accent-ink"
           >
-            {siteContent.a11y.skipToContact}
+            {siteContent.a11y.skipToBooking}
           </a>
           {children}
         </ThemeProvider>

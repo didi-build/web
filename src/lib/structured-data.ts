@@ -16,13 +16,10 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
   const ogImage = absoluteUrl("/opengraph-image.png");
   const logo = absoluteUrl("/icon.png");
 
-  const serviceCatalog = [
-    ...whatIDo.founderCards.map((card) => ({ title: card.title, body: card.body })),
-    {
-      title: whatIDo.businessCard.title,
-      body: whatIDo.businessCard.bullets.join("; "),
-    },
-  ];
+  const serviceCatalog = whatIDo.founderCards.map((card) => ({
+    title: card.title,
+    body: card.body,
+  }));
   const serviceItems = serviceCatalog.map((example, index) => ({
     "@type": "Offer",
     "@id": `${siteUrl}/#service-${index + 1}`,
