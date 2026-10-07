@@ -48,7 +48,7 @@ export function buildStructuredDataGraph(): Record<string, unknown> {
         url: `${siteUrl}/`,
         logo,
         image: ogImage,
-        email: siteContent.contact.email,
+        email: siteContent.contactEmail,
         description: meta.businessDescription,
         areaServed: [
           { "@type": "City", name: "Toronto" },

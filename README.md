@@ -55,7 +55,7 @@ Put the site key in `.env.local` as `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for both `n
 
 **Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
 
-**`BOOKING_URL`:** Also set in `wrangler.jsonc` `vars` for production. If missing or invalid, `/book` falls back to the on-page booking CTA (`/#contact`).
+**`BOOKING_URL`:** Also set in `wrangler.jsonc` `vars` for production. If missing or invalid, `/book` falls back to the homepage.
 
 **`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables when you need the visibility tool in deployed builds.
 

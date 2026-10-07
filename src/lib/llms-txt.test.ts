@@ -7,7 +7,7 @@ describe("buildLlmsTxt", () => {
   it("includes booking URL, email, and profile links from config", () => {
     const text = buildLlmsTxt();
     expect(text).toContain(siteContent.bookingPath);
-    expect(text).toContain(siteContent.contact.email);
+    expect(text).toContain(siteContent.contactEmail);
     for (const link of [...businessLinks, ...founderLinks]) {
       expect(text).toContain(link.href);
     }

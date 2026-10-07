@@ -18,10 +18,10 @@ export function readBookingUrl(): string | undefined {
   return parsed.success ? parsed.data : undefined;
 }
 
-/** On-site booking CTA block (used when BOOKING_URL is not configured). */
+/** Homepage (used when BOOKING_URL is not configured). */
 export function bookingCtaFallbackUrl(): string {
   const base = siteContent.meta.siteUrl.replace(/\/$/, "");
-  return `${base}/#${siteContent.sectionIds.contact}`;
+  return `${base}/`;
 }
 
 export function resolveBookRedirectDestination(): string {

@@ -235,17 +235,8 @@ export const siteContent = {
       },
     ],
   },
-  contact: {
-    eyebrow: "Book a free 30-min chat",
-    headline: "Tell me what you're building.",
-    intro:
-      "Pick a time that works for you. When you book, you can share as much or as little as you like about your app.",
-    bookCta: "Book a free 30-min chat",
-    emailLabel: "Prefer email?",
-    email: "hello@didi.build",
-  },
+  contactEmail: "hello@didi.build",
   sectionIds: {
-    contact: "contact",
     how: "how-it-works",
     what: "what-i-do",
     pricing: "pricing",

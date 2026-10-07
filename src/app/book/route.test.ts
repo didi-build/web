@@ -21,7 +21,7 @@ describe("GET /book (route handler)", () => {
     expect(response.headers.get("location")).toBe("https://example.com/my-booking");
   });
 
-  it("returns 307 to the on-page booking CTA when BOOKING_URL is unset", async () => {
+  it("returns 307 to the homepage when BOOKING_URL is unset", async () => {
     delete process.env.BOOKING_URL;
     const { GET } = await import("@/app/book/route");
     const response = GET();

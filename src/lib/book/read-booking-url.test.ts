@@ -50,7 +50,7 @@ describe("resolveBookRedirectDestination (config + fallback)", () => {
     }
   });
 
-  it("uses the on-site booking path when BOOKING_URL is invalid", () => {
+  it("uses the homepage when BOOKING_URL is invalid", () => {
     process.env.BOOKING_URL = "http://example.com/book";
     const errorSpy = vi.spyOn(console, "error").mockImplementation(() => {});
 
@@ -63,8 +63,8 @@ describe("resolveBookRedirectDestination (config + fallback)", () => {
 });
 
 describe("bookingCtaFallbackUrl", () => {
-  it("points at the on-page booking CTA section", () => {
+  it("points at the site homepage", () => {
     const base = siteContent.meta.siteUrl.replace(/\/$/, "");
-    expect(bookingCtaFallbackUrl()).toBe(`${base}/#${siteContent.sectionIds.contact}`);
+    expect(bookingCtaFallbackUrl()).toBe(`${base}/`);
   });
 });
