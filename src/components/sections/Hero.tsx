@@ -15,7 +15,7 @@ export function Hero() {
   const { hero, bookingPath } = siteContent;
 
   return (
-    <section className="relative isolate overflow-x-clip">
+    <section className="section-ambient">
       <AmbientOrbs
         orbs={[
           {

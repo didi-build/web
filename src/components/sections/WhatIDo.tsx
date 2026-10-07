@@ -10,7 +10,7 @@ export function WhatIDo() {
     <section
       id={siteContent.sectionIds.what}
       aria-labelledby={headingId}
-      className="relative isolate overflow-x-clip"
+      className="section-ambient"
     >
       <AmbientOrbs
         orbs={[
@@ -41,11 +41,11 @@ export function WhatIDo() {
           {whatIDo.examplesLabel}
         </p>
 
-        <ul className="m-0 mt-3.5 grid list-none gap-4 p-0 sm:grid-cols-[repeat(auto-fit,minmax(min(100%,220px),1fr))]">
+        <ul className="m-0 mt-3.5 grid list-none grid-cols-1 gap-4 p-0 md:grid-cols-2 md:auto-rows-fr">
           {whatIDo.founderCards.map((card) => (
             <li
               key={card.title}
-              className="glass-card flex min-h-0 flex-col gap-3 rounded-lg p-[clamp(22px,5vw,28px)] transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklch,var(--accent)_50%,var(--line))] hover:shadow-[inset_0_1px_0_var(--hi),0_28px_60px_-30px_var(--cta-glow)] sm:min-h-[250px]"
+              className="glass-card flex h-full min-h-0 flex-col gap-3 rounded-lg p-[clamp(22px,5vw,28px)] transition-[border-color,box-shadow,transform] duration-300 hover:-translate-y-0.5 hover:border-[color-mix(in_oklch,var(--accent)_50%,var(--line))] hover:shadow-[inset_0_1px_0_var(--hi),0_28px_60px_-30px_var(--cta-glow)] sm:min-h-[250px]"
             >
               <h3 className="m-0 text-h3 font-semibold tracking-tight text-balance">
                 {card.title}

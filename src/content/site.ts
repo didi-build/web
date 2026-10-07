@@ -78,6 +78,10 @@ export const siteContent = {
         title: "An audit before you scale",
         body: "A clear look at what's solid, what's risky, and the path forward.",
       },
+      {
+        title: "Ready for investors",
+        body: "Investors will ask how your app is built and whether it can grow. As your technical advisor (think fractional CTO), I help you answer with confidence.",
+      },
     ],
     closingPrefix: "Have something else in mind?",
     closingLink: "Let's talk.",
@@ -112,68 +116,6 @@ export const siteContent = {
     questionsLabel: "questions",
     expandAll: "Expand all",
     collapseAll: "Collapse all",
-    groups: [
-      {
-        label: "For everyone",
-        items: [
-          {
-            question: "How much does it cost?",
-            answer:
-              "The first 30-minute chat is free. System audits start at $375 and builds start at $500. Advisory and ongoing support are hourly or monthly, quoted after the audit. My first 5 clients get 20% off everything for 12 months. You always get a written quote before any work starts.",
-          },
-          {
-            question: "Is my data safe?",
-            answer:
-              "You keep ownership of your accounts, code, and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
-          },
-          {
-            question: "How long does a project take?",
-            answer:
-              "It depends on scope. The written plan we agree on includes a realistic timeline, and I keep you updated along the way.",
-          },
-          {
-            question: "Do you only work in Toronto?",
-            answer:
-              "I'm based in Toronto and happy to meet locally. I also work with founders across Canada remotely.",
-          },
-          {
-            question: "What if I'm not the right fit?",
-            answer:
-              "I'll tell you in the free chat. I'd rather say so upfront than sell you something you don't need.",
-          },
-        ],
-      },
-      {
-        label: "For founders",
-        items: [
-          {
-            question: "Can you help me move my app off Base44?",
-            answer:
-              "Yes. Platforms like Base44 handle your hosting, database, and logins for you, so moving off means setting those up on infrastructure you own. I start with an audit to map what your app depends on, then give you a clear plan and a fixed price for the move.",
-          },
-          {
-            question: "I built my app with Lovable, Bolt, Replit, or Cursor. Can you help?",
-            answer:
-              "Yes. The approach is the same: understand what you've built, find what's solid and what's risky, and get it ready for real users.",
-          },
-          {
-            question: "Is my AI-built app secure?",
-            answer:
-              "That's one of the first things the audit checks. AI tools are great at getting something working, and things like access rules, protecting secret keys, and checking user input are easy to miss along the way. You'll get a clear picture of where you stand.",
-          },
-          {
-            question: "Do I own my code?",
-            answer:
-              "Yes. Everything lives in your own accounts, like GitHub and your hosting, so you're never locked in to me or a platform.",
-          },
-          {
-            question: "Do I need to understand the code?",
-            answer:
-              "No. I explain everything in plain English and hand off simple docs, so you know what you have and how it runs.",
-          },
-        ],
-      },
-    ],
     items: [
       {
         question: "How much does it cost?",
@@ -181,24 +123,9 @@ export const siteContent = {
           "The first 30-minute chat is free. System audits start at $375 and builds start at $500. Advisory and ongoing support are hourly or monthly, quoted after the audit. My first 5 clients get 20% off everything for 12 months. You always get a written quote before any work starts.",
       },
       {
-        question: "Is my data safe?",
+        question: "I'm an expert in my field, not in software. Is this for me?",
         answer:
-          "You keep ownership of your accounts, code, and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
-      },
-      {
-        question: "How long does a project take?",
-        answer:
-          "It depends on scope. The written plan we agree on includes a realistic timeline, and I keep you updated along the way.",
-      },
-      {
-        question: "Do you only work in Toronto?",
-        answer:
-          "I'm based in Toronto and happy to meet locally. I also work with founders across Canada remotely.",
-      },
-      {
-        question: "What if I'm not the right fit?",
-        answer:
-          "I'll tell you in the free chat. I'd rather say so upfront than sell you something you don't need.",
+          "Yes, that's exactly who I work with. Some founders come from business and know their market inside out. Others are deep experts in their field and built the tool they wished existed. Either way, you bring the vision. I bring the technical side: what your app needs underneath, and how software products usually run day to day, like hosting, subscriptions, and support. All in plain English.",
       },
       {
         question: "Can you help me move my app off Base44?",
@@ -224,6 +151,26 @@ export const siteContent = {
         question: "Do I need to understand the code?",
         answer:
           "No. I explain everything in plain English and hand off simple docs, so you know what you have and how it runs.",
+      },
+      {
+        question: "Is my data safe?",
+        answer:
+          "You keep ownership of your accounts, code, and API keys. I build on your systems where possible, and we agree in writing how data is handled before any work starts. I don't resell your data or train public models on it.",
+      },
+      {
+        question: "How long does a project take?",
+        answer:
+          "It depends on scope. The written plan we agree on includes a realistic timeline, and I keep you updated along the way.",
+      },
+      {
+        question: "Do you only work in Toronto?",
+        answer:
+          "I'm based in Toronto and happy to meet locally. I also work with founders across Canada remotely.",
+      },
+      {
+        question: "What if I'm not the right fit?",
+        answer:
+          "I'll tell you in the free chat. I'd rather say so upfront than sell you something you don't need.",
       },
     ],
   },
