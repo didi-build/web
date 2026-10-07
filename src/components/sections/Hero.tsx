@@ -12,10 +12,10 @@ const HERO_MOTES = [
 ];
 
 export function Hero() {
-  const { hero, sectionIds } = siteContent;
+  const { hero, bookingPath } = siteContent;
 
   return (
-    <section className="relative isolate overflow-x-clip">
+    <section className="section-ambient">
       <AmbientOrbs
         orbs={[
           {
@@ -83,13 +83,13 @@ export function Hero() {
         </div>
         <div className="relative mt-[clamp(32px,5vw,40px)] flex flex-col gap-3 sm:flex-row sm:flex-wrap sm:items-center">
           <ButtonLink
-            href={`#${sectionIds.contact}`}
+            href={bookingPath}
             className="min-h-14 w-full justify-center whitespace-nowrap text-[17px] sm:w-auto cta-primary-glow"
           >
             {hero.primaryCta} <span aria-hidden>→</span>
           </ButtonLink>
           <ButtonLink
-            href={`#${sectionIds.how}`}
+            href={`#${siteContent.sectionIds.how}`}
             variant="outline"
             className="min-h-[52px] w-full justify-center whitespace-nowrap bg-[var(--glass)] text-base sm:min-h-12 sm:w-auto"
           >

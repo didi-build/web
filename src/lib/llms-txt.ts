@@ -6,14 +6,10 @@ function formatLinkLines(links: readonly { label: string; href: string }[]): str
 }
 
 export function buildLlmsTxt(): string {
-  const { brand, meta, contact, whatIDo, founder, about, llms } = siteContent;
+  const { brand, meta, contactEmail, whatIDo, founder, about, llms } = siteContent;
   const siteUrl = meta.siteUrl.replace(/\/$/, "");
-  const contactUrl = `${siteUrl}/#${siteContent.sectionIds.contact}`;
-  const founderLines = whatIDo.founderCards.map((e) => `- ${e.title}: ${e.body}`).join("\n");
-  const businessLines = [
-    `- ${whatIDo.businessCard.title}: ${whatIDo.businessCard.bullets.join("; ")}`,
-  ].join("\n");
-  const serviceLines = `${founderLines}\n${businessLines}`;
+  const contactUrl = `${siteUrl}${siteContent.bookingPath}`;
+  const serviceLines = whatIDo.founderCards.map((e) => `- ${e.title}: ${e.body}`).join("\n");
 
   return `# ${brand}
 
@@ -38,7 +34,7 @@ ${founder.name}, ${founder.jobTitle}. ${about.followUp}
 ## Contact
 
 - Book a chat: ${contactUrl}
-- Email: ${contact.email}
+- Email: ${contactEmail}
 
 ## Business links
 

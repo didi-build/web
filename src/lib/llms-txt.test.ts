@@ -4,10 +4,10 @@ import { siteContent } from "@/content/site";
 import { buildLlmsTxt } from "./llms-txt";
 
 describe("buildLlmsTxt", () => {
-  it("includes contact URL, email, and profile links from config", () => {
+  it("includes booking URL, email, and profile links from config", () => {
     const text = buildLlmsTxt();
-    expect(text).toContain(`#${siteContent.sectionIds.contact}`);
-    expect(text).toContain(siteContent.contact.email);
+    expect(text).toContain(siteContent.bookingPath);
+    expect(text).toContain(siteContent.contactEmail);
     for (const link of [...businessLinks, ...founderLinks]) {
       expect(text).toContain(link.href);
     }
@@ -20,11 +20,10 @@ describe("buildLlmsTxt", () => {
     expect(text).toContain(siteContent.llms.serviceArea);
   });
 
-  it("lists each service example from What I do", () => {
+  it("lists each founder service example from What I do", () => {
     const text = buildLlmsTxt();
     for (const example of siteContent.whatIDo.founderCards) {
       expect(text).toContain(example.title);
     }
-    expect(text).toContain(siteContent.whatIDo.businessCard.title);
   });
 });

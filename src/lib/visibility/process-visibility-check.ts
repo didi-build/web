@@ -1,7 +1,7 @@
 import { generateVisibilityReport } from "./generate-visibility-report";
 import { parseVisibilityRequest, visibilityReportSchema } from "./schemas";
 import type { VisibilityChecker, VisibilityExplainer } from "./types";
-import type { TurnstileVerifier } from "../leads/turnstile";
+import type { TurnstileVerifier } from "../turnstile";
 
 export type VisibilityPipelineDeps = {
   verifyTurnstile: TurnstileVerifier;

@@ -10,7 +10,7 @@ export function HowItWorks() {
     <section
       id={sectionIds.how}
       aria-labelledby={headingId}
-      className="relative isolate overflow-x-clip bg-surface-2"
+      className="section-ambient section-surface-band"
     >
       <AmbientOrbs
         orbs={[

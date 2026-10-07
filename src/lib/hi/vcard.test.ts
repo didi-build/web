@@ -21,7 +21,7 @@ describe("buildVCard", () => {
     expect(vcard).toContain("FN:Diadem (Didi) Shoukralla");
     expect(vcard).toContain("NICKNAME:Didi");
     expect(vcard).toContain("ORG:Didi Build");
-    expect(vcard).toContain("TITLE:AI Integrations Consultant and Engineer");
+    expect(vcard).toContain("TITLE:Software Engineer and Technical Advisor");
     expect(vcard).toContain("EMAIL;TYPE=INTERNET,WORK:diadem@didi.build");
     expect(vcard).toContain("TEL;TYPE=CELL:+1-647-716-7756");
     expect(vcard).toContain(`URL:${siteContent.meta.siteUrl}`);

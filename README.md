@@ -1,6 +1,6 @@
 # didi-build/web
 
-Public site for [Didi Build](https://didi.build): a landing page and contact form. Submissions are verified with Cloudflare Turnstile, summarized with Claude, checked for website visibility when a URL is provided, and delivered as a Linear issue plus an email to the team inbox.
+Public site for [Didi Build](https://didi.build): a founders-focused landing page. Booking CTAs go to `/book`, which redirects to the configured scheduler URL.
 
 See [AGENTS.md](./AGENTS.md) for repo rules and architecture.
 
@@ -28,7 +28,7 @@ For the full Workers runtime locally (including secrets from `.dev.vars`):
 cp .dev.vars.example .dev.vars
 # fill in secrets
 cp .env.example .env.local
-# NEXT_PUBLIC_TURNSTILE_SITE_KEY is required here too (see below)
+# NEXT_PUBLIC_TURNSTILE_SITE_KEY is required for the visibility tool (see below)
 npm run preview
 ```
 
@@ -41,27 +41,23 @@ Cloudflare documents always-pass test keys for development:
 | Site   | `1x00000000000000000000AA`            |
 | Secret | `1x0000000000000000000000000000000AA` |
 
-Put the site key in `.env.local` as `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for both `npm run dev` and `npm run preview`. Preview runs a production build, so the site key must be present at build time, not only at dev-server runtime.
+Put the site key in `.env.local` as `NEXT_PUBLIC_TURNSTILE_SITE_KEY` for both `npm run dev` and `npm run preview` if you use the visibility checker. Preview runs a production build, so the site key must be present at build time when testing that page.
 
 ## Environment variables
 
-| Variable                         | Where       | Purpose                                                    |
-| -------------------------------- | ----------- | ---------------------------------------------------------- |
-| `ANTHROPIC_API_KEY`              | server      | Claude API key for lead summaries (Worker secret)          |
-| `ANTHROPIC_MODEL`                | server      | Model id (default in code if unset; Worker secret or var)  |
-| `LINEAR_API_KEY`                 | server      | Linear API key for `issueCreate` (Worker secret)           |
-| `LINEAR_TEAM_ID`                 | server      | Linear team id (Worker secret or var)                      |
-| `LINEAR_PROJECT_ID`              | server      | Linear project id (Worker secret or var)                   |
-| `LINEAR_LEAD_LABEL_ID`           | server      | Linear label id for leads (Worker secret or var)           |
-| `TURNSTILE_SECRET_KEY`           | server      | Turnstile secret for `/api/leads` (Worker secret)          |
-| `GMAIL_SERVICE_ACCOUNT_JSON`     | server      | Google service account key JSON for lead notification mail |
-| `GMAIL_SENDER`                   | server      | From address for Gmail API send (e.g. `diadem@didi.build`) |
-| `LEAD_EMAIL_TO`                  | server      | Inbox for new leads (e.g. `hello@didi.build`)              |
-| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | build + dev | Turnstile site key (inlined at **build time**; see Deploy) |
+| Variable                         | Where       | Purpose                                                   |
+| -------------------------------- | ----------- | --------------------------------------------------------- |
+| `ANTHROPIC_API_KEY`              | server      | Claude API key for visibility explanations                |
+| `ANTHROPIC_MODEL`                | server      | Model id (default in code if unset; Worker secret or var) |
+| `TURNSTILE_SECRET_KEY`           | server      | Turnstile secret for `/api/visibility-check`              |
+| `BOOKING_URL`                    | server      | HTTPS scheduler URL for `GET /book` redirect              |
+| `NEXT_PUBLIC_TURNSTILE_SITE_KEY` | build + dev | Turnstile site key for the visibility tool                |
 
-**Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear vars, Gmail vars, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
+**Server secrets** (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, etc.): Cloudflare **Worker secrets** in production; `.dev.vars` for `npm run preview` (gitignored).
 
-**`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables and in `.env.local` for `npm run dev` and `npm run preview`. Setting it only as a runtime Worker var will ship a build without the Turnstile widget.
+**`BOOKING_URL`:** Also set in `wrangler.jsonc` `vars` for production. If missing or invalid, `/book` falls back to the homepage.
+
+**`NEXT_PUBLIC_TURNSTILE_SITE_KEY`:** Next.js inlines this at **build time**, not at request time. Set it in Cloudflare **Workers Builds** environment variables when you need the visibility tool in deployed builds.
 
 Never commit real secrets.
 
@@ -83,15 +79,11 @@ Pre-commit and pre-push hooks (see Local development) run a subset of these auto
 
 UI is implemented from `design/web.dc.html` (single design export). Marketing copy lives in `src/content/site.ts`.
 
-## Lead pipeline
-
-`POST /api/leads` validates input, verifies Turnstile, summarizes via `ClaudeLeadSummarizer`, and submits through `LinearLeadSink`. If summarization fails, the raw lead is still submitted with a "summary unavailable" note.
-
 ## Website visibility checker
 
 `POST /api/visibility-check` accepts a public `http`/`https` URL plus a Turnstile token, runs deterministic fetch-only checks in `src/lib/visibility/`, and returns a JSON report (findings plus a Claude-written summary). If explanation fails, findings are still returned with a fallback summary.
 
-A functional preview page lives at `/tools/visibility-check` (not linked from the homepage, `noindex`, omitted from the sitemap). It uses the same Turnstile site key as the contact form.
+A functional preview page lives at `/tools/visibility-check` (not linked from the homepage, `noindex`, omitted from the sitemap).
 
 ## CI
 
@@ -103,6 +95,7 @@ Cloudflare deploys from `main` after the repo is connected in the dashboard. Use
 
 Before deploy:
 
-1. Set **build-time** env in Workers Builds: `NEXT_PUBLIC_TURNSTILE_SITE_KEY` (required for the form widget).
-2. Set **Worker secrets** for server-side keys (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, Linear IDs, Gmail service account JSON, etc.).
-3. Attach custom domains (`didi.build`, etc.) in the Cloudflare dashboard.
+1. Set **build-time** env in Workers Builds if you use the visibility tool: `NEXT_PUBLIC_TURNSTILE_SITE_KEY`.
+2. Set **Worker secrets** for server-side keys (`ANTHROPIC_API_KEY`, `TURNSTILE_SECRET_KEY`, etc.).
+3. Set `BOOKING_URL` (or use `wrangler.jsonc` vars).
+4. Attach custom domains (`didi.build`, etc.) in the Cloudflare dashboard.

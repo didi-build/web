@@ -1,7 +1,6 @@
 import { AboutSection } from "@/components/sections/AboutSection";
 import { FaqSection } from "@/components/sections/FaqSection";
 import { Header } from "@/components/layout/Header";
-import { ContactSection } from "@/components/sections/ContactSection";
 import { Footer } from "@/components/sections/Footer";
 import { Hero } from "@/components/sections/Hero";
 import { HowItWorks } from "@/components/sections/HowItWorks";
@@ -17,7 +16,6 @@ export default function Home() {
         <WhatIDo />
         <HowItWorks />
         <PricingSection />
-        <ContactSection />
         <FaqSection />
         <AboutSection />
       </main>

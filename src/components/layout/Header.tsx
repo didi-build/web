@@ -9,7 +9,7 @@ import { useEffect, useState } from "react";
 
 export function Header() {
   const { toggleTheme, themeAria } = useTheme();
-  const { brand, header, sectionIds, a11y } = siteContent;
+  const { brand, header, sectionIds, a11y, bookingPath } = siteContent;
   const [menuOpen, setMenuOpen] = useState(false);
   const [narrow, setNarrow] = useState(false);
 
@@ -46,8 +46,6 @@ export function Header() {
       setMenuOpen(false);
       window.setTimeout(() => scrollToSection(sectionId, focusId), wasOpen ? 30 : 0);
     };
-
-  const contactFocusId = siteContent.formIds.contactName;
 
   return (
     <header
@@ -100,8 +98,7 @@ export function Header() {
 
           {!narrow ? (
             <ButtonLink
-              href={`#${sectionIds.contact}`}
-              onClick={goTo(sectionIds.contact, contactFocusId)}
+              href={bookingPath}
               variant="outline"
               className="hidden min-h-11 text-[15px] px-[18px] min-[860px]:inline-flex"
             >
@@ -157,13 +154,13 @@ export function Header() {
               ))}
             </ul>
           </nav>
-          <a
-            href={`#${sectionIds.contact}`}
-            onClick={goTo(sectionIds.contact, contactFocusId)}
+          <Link
+            href={bookingPath}
+            onClick={() => setMenuOpen(false)}
             className="mt-5 flex min-h-14 items-center justify-center rounded-pill bg-accent text-[17px] font-semibold text-accent-ink no-underline hover:bg-accent-hover focus-visible:outline focus-visible:outline-3 focus-visible:outline-offset-3 focus-visible:outline-accent"
           >
             {header.mobileCta}
-          </a>
+          </Link>
         </div>
       ) : null}
     </header>

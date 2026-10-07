@@ -1,7 +1,4 @@
-import {
-  formatAnthropicHttpError,
-  isRetryableAnthropicError,
-} from "../leads/claude-lead-summarizer";
+import { formatAnthropicHttpError, isRetryableAnthropicError } from "../anthropic-http";
 import { parseExplainerOutputJson } from "./schemas";
 import type { ExplainerInput, ExplainerOutput, VisibilityExplainer } from "./types";
 
