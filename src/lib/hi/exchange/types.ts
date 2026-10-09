@@ -13,10 +13,7 @@ export type HiLeadDetails = {
 export interface HiLinearSink {
   createCardLead(lead: HiCardLead): Promise<{ issueId: string }>;
   appendDetails(issueId: string, details: HiLeadDetails): Promise<void>;
-}
-
-export interface HiVisitorEmailSink {
-  sendContactCard(lead: HiCardLead, firstName: string): Promise<void>;
+  addIssueComment(issueId: string, body: string): Promise<void>;
 }
 
 export type HiRateLimiter = {

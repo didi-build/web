@@ -73,6 +73,10 @@ export class LinearHiSink implements HiLinearSink {
   }
 
   async appendDetails(issueId: string, details: HiLeadDetails): Promise<void> {
+    await this.addIssueComment(issueId, formatHiCardLinearDetailsComment(details));
+  }
+
+  async addIssueComment(issueId: string, body: string): Promise<void> {
     const response = await fetch(LINEAR_API, {
       method: "POST",
       headers: {
@@ -84,7 +88,7 @@ export class LinearHiSink implements HiLinearSink {
         variables: {
           input: {
             issueId,
-            body: formatHiCardLinearDetailsComment(details),
+            body,
           },
         },
       }),

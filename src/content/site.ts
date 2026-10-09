@@ -296,22 +296,42 @@ export const siteContent = {
       pendingDetails: "Saving…",
       detailsSaved: "Saved. Talk soon!",
       turnstileRequired: "Please complete the spam check.",
+      exchangeNotSavedPrefix: "Your contact wasn't saved. Please email me at ",
+      exchangeNotSavedEmail: "diadem@didi.build",
+      exchangeNotSavedSuffix: " instead.",
       errors: {
         nameRequired: "Add your name so I know who you are.",
         emailRequired: "Add your email so I can reach you.",
         emailInvalid: "That email doesn't look quite right. Check for a typo?",
       },
-      serverError: "Something went wrong. Please try again, or email diadem@didi.build.",
     },
     followUpEmail: {
-      subjectTemplate: "Nice meeting you, {firstName}",
+      subjectTemplate: "Great connecting with you, {firstName}",
       greetingTemplate: "Hi {firstName},",
-      bodyParagraph:
-        "Great meeting you today. I've attached my contact card so you can save my details in one tap.",
-      bookingLine: "Book a free consult anytime: {bookingUrl}",
-      signOff: "Talk soon,",
-      senderName: "Didi Shoukralla",
-      senderOrg: "Didi Build",
+      bodyParagraphs: [
+        "Thanks for sharing your contact details with me.",
+        "If you're building something with AI, I'd love to hear what you're working on.",
+      ],
+      attachmentLine: "My contact card is attached so you can save my details in one tap.",
+      bookCtaLabel: "Book a time",
+      closingLine: "Looking forward to staying in touch.",
+      signaturePlain:
+        "Diadem (Didi) Shoukralla\nSoftware Engineer and Technical Advisor\nDidi Build · diadem@didi.build · didi.build",
+      signatureHtml: `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0;">
+  <tr>
+    <td style="vertical-align:top;padding-right:14px;">
+      <img src="https://didi.build/email-logo.png" width="48" height="48" alt="Didi Build" style="display:block;border-radius:12px;" />
+    </td>
+    <td style="vertical-align:top;font-size:14px;line-height:1.55;color:#1f3d2c;">
+      <strong style="color:#166534;">Diadem (Didi) Shoukralla</strong><br />
+      Software Engineer and Technical Advisor<br />
+      Didi Build · <a href="mailto:diadem@didi.build" style="color:#166534;text-decoration:underline;">diadem@didi.build</a> · <a href="https://didi.build" style="color:#166534;text-decoration:underline;">didi.build</a>
+    </td>
+  </tr>
+</table>`,
+      footerPlain: "You're getting this because you exchanged contact info at didi.build/hi.",
+      footerHtml:
+        'You\'re getting this because you exchanged contact info at <a href="https://didi.build/hi" style="color:#166534;text-decoration:underline;">didi.build/hi</a>.',
     },
     contact: {
       name: {

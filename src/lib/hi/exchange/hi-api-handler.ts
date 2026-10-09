@@ -48,7 +48,7 @@ export function createHiDetailsHandler(getDeps: () => HiDetailsDeps) {
       return NextResponse.json({ error: "Service temporarily unavailable." }, { status: 500 });
     }
 
-    const result: HiDetailsResult = await processHiDetails(body, deps);
+    const result: HiDetailsResult = await processHiDetails(body, request, deps);
 
     if (result.status === 200) {
       return NextResponse.json({ ok: true }, { status: 200 });

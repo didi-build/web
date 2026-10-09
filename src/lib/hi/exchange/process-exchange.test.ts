@@ -17,19 +17,20 @@ function fakeDeps(overrides?: Partial<HiExchangeDeps>): HiExchangeDeps {
       ({
         createCardLead: async () => ({ issueId: "issue-1" }),
         appendDetails: async () => {},
+        addIssueComment: async () => {},
       } satisfies HiExchangeDeps["linear"]),
-    visitorEmail:
-      overrides?.visitorEmail ??
+    followUpQueue:
+      overrides?.followUpQueue ??
       ({
-        sendContactCard: async () => {},
-      } satisfies HiExchangeDeps["visitorEmail"]),
+        enqueue: async () => {},
+      } satisfies HiExchangeDeps["followUpQueue"]),
     tokenSecret: overrides?.tokenSecret ?? "test-secret-key-at-least-16-chars",
     rateLimiter: overrides?.rateLimiter,
   };
 }
 
 describe("processHiExchange", () => {
-  it("returns a token after linear and email succeed", async () => {
+  it("returns a token after linear save and queue enqueue", async () => {
     const result = await processHiExchange(
       {
         name: "Sam Rivera",
@@ -77,7 +78,11 @@ describe("processHiExchange", () => {
   });
 
   it("short-circuits honeypot submissions with an empty token", async () => {
-    const linear = { createCardLead: vi.fn(), appendDetails: vi.fn() };
+    const linear = {
+      createCardLead: vi.fn(),
+      appendDetails: vi.fn(),
+      addIssueComment: vi.fn(),
+    };
     const result = await processHiExchange(
       {
         name: "Bot",
@@ -86,14 +91,35 @@ describe("processHiExchange", () => {
         website: "https://spam.example",
       },
       fakeRequest(),
-      fakeDeps({
-        linear: {
-          createCardLead: linear.createCardLead,
-          appendDetails: linear.appendDetails,
-        },
-      }),
+      fakeDeps({ linear }),
     );
     expect(result).toEqual({ status: 200, token: "" });
     expect(linear.createCardLead).not.toHaveBeenCalled();
+  });
+
+  it("comments on Linear and returns 500 when queue enqueue fails", async () => {
+    const addIssueComment = vi.fn();
+    const result = await processHiExchange(
+      {
+        name: "Sam",
+        email: "sam@example.com",
+        turnstileToken: "token",
+      },
+      fakeRequest(),
+      fakeDeps({
+        followUpQueue: {
+          enqueue: async () => {
+            throw new Error("queue_down");
+          },
+        },
+        linear: {
+          createCardLead: async () => ({ issueId: "issue-99" }),
+          appendDetails: async () => {},
+          addIssueComment,
+        },
+      }),
+    );
+    expect(result.status).toBe(500);
+    expect(addIssueComment).toHaveBeenCalledOnce();
   });
 });

@@ -1,14 +1,16 @@
 import type { TurnstileVerifier } from "@/lib/turnstile";
 import { DEFAULT_HI_COUNTRY_CODE, formatHiPhone } from "./country-codes";
+import type { HiFollowUpQueue } from "./follow-up-queue";
+import { HI_FOLLOWUP_QUEUE_FAILED_COMMENT } from "./linear-comments";
 import { parseHiExchangeRequest } from "./schemas";
 import { createHiLeadToken } from "./token";
-import type { HiCardLead, HiLinearSink, HiRateLimiter, HiVisitorEmailSink } from "./types";
+import type { HiCardLead, HiLinearSink, HiRateLimiter } from "./types";
 import { getRequestClientIp } from "./request-ip";
 
 export type HiExchangeDeps = {
   verifyTurnstile: TurnstileVerifier;
   linear: HiLinearSink;
-  visitorEmail: HiVisitorEmailSink;
+  followUpQueue: HiFollowUpQueue;
   tokenSecret: string;
   rateLimiter?: HiRateLimiter;
 };
@@ -20,13 +22,10 @@ export type HiExchangeResult =
   | { status: 429; message: string }
   | { status: 500; message: string };
 
-function firstNameFromName(name: string): string {
-  const trimmed = name.trim();
-  if (!trimmed) {
-    return "there";
-  }
-  return trimmed.split(/\s+/)[0] ?? "there";
-}
+const RATE_LIMIT_MESSAGE = "Too many requests. Please wait a minute and try again.";
+
+const GENERIC_FAILURE_MESSAGE =
+  "Something went wrong. Please try again, or email diadem@didi.build.";
 
 function toLeadRecord(input: {
   name: string;
@@ -61,10 +60,7 @@ export async function processHiExchange(
     const ip = getRequestClientIp(request);
     const { success } = await deps.rateLimiter.limit({ key: `hi-exchange:${ip}` });
     if (!success) {
-      return {
-        status: 429,
-        message: "Too many requests. Please wait a few minutes and try again.",
-      };
+      return { status: 429, message: RATE_LIMIT_MESSAGE };
     }
   }
 
@@ -84,7 +80,6 @@ export async function processHiExchange(
   }
 
   const lead = toLeadRecord(rest);
-  const firstName = firstNameFromName(lead.name);
 
   let issueId: string;
   try {
@@ -92,20 +87,26 @@ export async function processHiExchange(
     issueId = created.issueId;
   } catch (error) {
     console.error("hi_exchange_linear_failed", error instanceof Error ? error.message : "unknown");
-    return {
-      status: 500,
-      message: "Something went wrong. Please try again, or email diadem@didi.build.",
-    };
+    return { status: 500, message: GENERIC_FAILURE_MESSAGE };
   }
 
   try {
-    await deps.visitorEmail.sendContactCard(lead, firstName);
+    await deps.followUpQueue.enqueue({
+      issueId,
+      name: lead.name,
+      email: lead.email,
+    });
   } catch (error) {
-    console.error("hi_exchange_email_failed", error instanceof Error ? error.message : "unknown");
-    return {
-      status: 500,
-      message: "Something went wrong. Please try again, or email diadem@didi.build.",
-    };
+    console.error("hi_exchange_queue_failed", error instanceof Error ? error.message : "unknown");
+    try {
+      await deps.linear.addIssueComment(issueId, HI_FOLLOWUP_QUEUE_FAILED_COMMENT);
+    } catch (commentError) {
+      console.error(
+        "hi_exchange_queue_failed_comment",
+        commentError instanceof Error ? commentError.message : "unknown",
+      );
+    }
+    return { status: 500, message: GENERIC_FAILURE_MESSAGE };
   }
 
   try {
@@ -113,9 +114,6 @@ export async function processHiExchange(
     return { status: 200, token };
   } catch (error) {
     console.error("hi_exchange_token_failed", error instanceof Error ? error.message : "unknown");
-    return {
-      status: 500,
-      message: "Something went wrong. Please try again, or email diadem@didi.build.",
-    };
+    return { status: 500, message: GENERIC_FAILURE_MESSAGE };
   }
 }

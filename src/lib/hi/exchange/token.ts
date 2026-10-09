@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const TOKEN_VERSION = 1;
-const TOKEN_TTL_SECONDS = 7 * 24 * 60 * 60;
+const TOKEN_TTL_SECONDS = 2 * 60 * 60;
 
 const payloadSchema = z.object({
   v: z.literal(TOKEN_VERSION),

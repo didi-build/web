@@ -10,7 +10,7 @@ describe("hi lead token", () => {
     expect(payload).toEqual({
       v: 1,
       issueId: "linear-issue-id",
-      exp: 1_700_000_000 + 7 * 24 * 60 * 60,
+      exp: 1_700_000_000 + 2 * 60 * 60,
     });
   });
 

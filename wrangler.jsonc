@@ -34,4 +34,12 @@
       },
     },
   ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "HI_FOLLOWUP_EMAIL_QUEUE",
+        "queue": "hi-followup-email",
+      },
+    ],
+  },
 }

@@ -3,9 +3,12 @@
 import { Button } from "@/components/ui/Button";
 import { siteContent } from "@/content/site";
 import { DEFAULT_HI_COUNTRY_CODE, HI_COUNTRY_DIAL_CODES } from "@/lib/hi/exchange/country-codes";
+import { HI_FIELD_LIMITS } from "@/lib/hi/exchange/field-limits";
 import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
+import { HiExchangeFailureMessage } from "./HiExchangeFailureMessage";
 import { postHiDetails, postHiExchange } from "./hi-exchange-api";
+import { prefersReducedMotion, sheetCloseDurationMs } from "./hi-sheet-motion";
 import { useFocusTrap } from "./useFocusTrap";
 
 type SheetStep = "exchange" | "details";
@@ -29,6 +32,19 @@ function firstNameFromName(name: string): string {
     return "there";
   }
   return trimmed.split(/\s+/)[0] ?? "there";
+}
+
+function getExchangeErrors(name: string, email: string, copy: typeof siteContent.hi.exchangeSheet) {
+  const errors: Partial<Record<"name" | "email", string>> = {};
+  if (!name.trim()) {
+    errors.name = copy.errors.nameRequired;
+  }
+  if (!email.trim()) {
+    errors.email = copy.errors.emailRequired;
+  } else if (!emailPattern.test(email.trim())) {
+    errors.email = copy.errors.emailInvalid;
+  }
+  return errors;
 }
 
 function HiFloatingField({
@@ -85,6 +101,25 @@ function HiFloatingField({
 const fieldInputClass =
   "m-0 w-full min-w-0 border-0 bg-transparent p-0 text-[17px] leading-snug text-ink outline-none";
 
+function PendingSpinner() {
+  return (
+    <svg
+      aria-hidden
+      className="h-4 w-4 animate-spin"
+      viewBox="0 0 24 24"
+      fill="none"
+      xmlns="http://www.w3.org/2000/svg"
+    >
+      <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="3" />
+      <path
+        className="opacity-90"
+        fill="currentColor"
+        d="M12 2a10 10 0 0110 10h-3a7 7 0 00-7-7V2z"
+      />
+    </svg>
+  );
+}
+
 export function HiExchangeSheet({
   open,
   initialStep,
@@ -98,6 +133,7 @@ export function HiExchangeSheet({
   const dialogRef = useRef<HTMLDivElement>(null);
   const turnstileRef = useRef<TurnstileInstance>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
+  const awaitingTurnstileRef = useRef(false);
 
   const [step, setStep] = useState<SheetStep>(initialStep);
   const [closing, setClosing] = useState(false);
@@ -114,7 +150,8 @@ export function HiExchangeSheet({
   const [token, setToken] = useState(leadToken);
   const [exchangePending, setExchangePending] = useState(false);
   const [detailsPending, setDetailsPending] = useState(false);
-  const [serverError, setServerError] = useState<string | undefined>();
+  const [exchangeFailed, setExchangeFailed] = useState(false);
+  const [turnstileError, setTurnstileError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
   const [detailsSaved, setDetailsSaved] = useState(false);
   const dragRef = useRef<{
@@ -124,6 +161,7 @@ export function HiExchangeSheet({
     dy: number;
     h: number;
     active: boolean;
+    samples: Array<[number, number]>;
   } | null>(null);
 
   useFocusTrap(dialogRef, open && !closing);
@@ -132,11 +170,57 @@ export function HiExchangeSheet({
     if (open) {
       setStep(initialStep);
       setClosing(false);
-      setServerError(undefined);
+      setExchangeFailed(false);
+      setTurnstileError(undefined);
       setDetailsSaved(false);
       setToken(leadToken);
     }
   }, [open, initialStep, leadToken]);
+
+  const animateClose = useCallback(
+    (options?: { dy?: number; velocity?: number }) => {
+      if (closing) {
+        return;
+      }
+      const panel = dialogRef.current;
+      if (!panel) {
+        onClose();
+        return;
+      }
+      if (prefersReducedMotion()) {
+        onClose();
+        return;
+      }
+
+      setClosing(true);
+      const scrim = panel.parentElement?.querySelector("[data-hi-scrim]") as HTMLElement | null;
+      const h = panel.offsetHeight;
+      const dy = options?.dy ?? 0;
+      const velocity = options?.velocity ?? 1.4;
+      const dur = sheetCloseDurationMs(h, dy, velocity);
+
+      panel.style.animation = "none";
+      panel.style.transition = `transform ${dur}ms cubic-bezier(0.2, 0.6, 0.35, 1)`;
+      panel.style.transform = "translateY(100%)";
+      if (scrim) {
+        scrim.style.animation = "none";
+        scrim.style.transition = `opacity ${dur}ms ease-out`;
+        scrim.style.opacity = "0";
+      }
+
+      window.setTimeout(() => {
+        panel.style.transition = "";
+        panel.style.transform = "";
+        if (scrim) {
+          scrim.style.transition = "";
+          scrim.style.opacity = "";
+        }
+        setClosing(false);
+        onClose();
+      }, dur);
+    },
+    [closing, onClose],
+  );
 
   useEffect(() => {
     if (!open) {
@@ -145,12 +229,12 @@ export function HiExchangeSheet({
     const onKeyDown = (event: KeyboardEvent) => {
       if (event.key === "Escape") {
         event.preventDefault();
-        handleClose();
+        animateClose();
       }
     };
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  });
+  }, [open, animateClose]);
 
   useEffect(() => {
     document.body.style.overflow = open ? "hidden" : "";
@@ -159,32 +243,88 @@ export function HiExchangeSheet({
     };
   }, [open]);
 
-  const exchangeErrors = (() => {
-    if (!triedExchange) {
-      return {} as Partial<Record<"name" | "email", string>>;
-    }
-    const errors: Partial<Record<"name" | "email", string>> = {};
-    if (!name.trim()) {
-      errors.name = copy.errors.nameRequired;
-    }
-    if (!email.trim()) {
-      errors.email = copy.errors.emailRequired;
-    } else if (!emailPattern.test(email.trim())) {
-      errors.email = copy.errors.emailInvalid;
-    }
-    return errors;
-  })();
+  const exchangeErrors = triedExchange ? getExchangeErrors(name, email, copy) : {};
 
-  const handleClose = useCallback(() => {
-    if (closing) {
+  const runExchange = async (turnstile: string) => {
+    setExchangePending(true);
+    setExchangeFailed(false);
+    setTurnstileError(undefined);
+    const result = await postHiExchange({
+      name: name.trim(),
+      email: email.trim(),
+      phone: phone.trim() || undefined,
+      countryCode,
+      turnstileToken: turnstile,
+      website: honeypot,
+    });
+    setExchangePending(false);
+    awaitingTurnstileRef.current = false;
+    turnstileRef.current?.reset();
+    setTurnstileToken("");
+
+    if (!result.ok) {
+      setExchangeFailed(true);
       return;
     }
-    setClosing(true);
-    window.setTimeout(() => {
-      onClose();
-      setClosing(false);
-    }, 300);
-  }, [closing, onClose]);
+    if (!result.token) {
+      animateClose();
+      return;
+    }
+    const nextFirstName = firstNameFromName(name);
+    setToken(result.token);
+    onExchangeSuccess(nextFirstName, result.token);
+    setStep("details");
+  };
+
+  const onSubmitExchange = (event: React.FormEvent) => {
+    event.preventDefault();
+    setTriedExchange(true);
+    setExchangeFailed(false);
+    setTurnstileError(undefined);
+
+    const errors = getExchangeErrors(name, email, copy);
+    if (errors.name || errors.email) {
+      return;
+    }
+
+    setExchangePending(true);
+
+    if (!siteKey) {
+      setExchangePending(false);
+      setTurnstileError(siteContent.a11y.turnstileNotConfigured);
+      return;
+    }
+
+    if (!turnstileToken) {
+      setTurnstileError(copy.turnstileRequired);
+      awaitingTurnstileRef.current = true;
+      turnstileRef.current?.execute();
+      return;
+    }
+
+    void runExchange(turnstileToken);
+  };
+
+  const onSubmitDetails = async (event: React.FormEvent) => {
+    event.preventDefault();
+    if (!token) {
+      return;
+    }
+    setDetailsPending(true);
+    const result = await postHiDetails({
+      token,
+      jobTitle: jobTitle.trim() || undefined,
+      company: company.trim() || undefined,
+      note: note.trim() || undefined,
+    });
+    setDetailsPending(false);
+    if (!result.ok) {
+      setExchangeFailed(true);
+      return;
+    }
+    setDetailsSaved(true);
+    window.setTimeout(() => animateClose(), 900);
+  };
 
   const onDragStart = (event: React.PointerEvent<HTMLDivElement>) => {
     if (closing || !dialogRef.current) {
@@ -202,6 +342,7 @@ export function HiExchangeSheet({
       dy: 0,
       h: panel.offsetHeight,
       active: false,
+      samples: [[performance.now(), event.clientY]],
     };
     const onMove = (moveEvent: PointerEvent) => {
       const drag = dragRef.current;
@@ -223,6 +364,11 @@ export function HiExchangeSheet({
         dy = -Math.min(28, Math.pow(-dy, 0.65));
       }
       drag.dy = dy;
+      const now = performance.now();
+      drag.samples.push([now, moveEvent.clientY]);
+      while (drag.samples.length > 2 && now - drag.samples[0][0] > 90) {
+        drag.samples.shift();
+      }
       drag.panel.style.transform = `translateY(${dy}px)`;
       if (drag.scrim) {
         drag.scrim.style.opacity = String(Math.max(0, 1 - Math.max(0, dy) / drag.h));
@@ -238,12 +384,16 @@ export function HiExchangeSheet({
       if (!drag?.active) {
         return;
       }
-      if (drag.dy > drag.h * 0.32) {
-        drag.panel.style.transform = "translateY(100%)";
-        if (drag.scrim) {
-          drag.scrim.style.opacity = "0";
-        }
-        handleClose();
+      const now = performance.now();
+      const recent = drag.samples.filter((point) => now - point[0] <= 90);
+      let velocity = 0;
+      if (recent.length >= 2 && now - recent[recent.length - 1][0] <= 60) {
+        const start = recent[0];
+        const end = recent[recent.length - 1];
+        velocity = (end[1] - start[1]) / Math.max(1, end[0] - start[0]);
+      }
+      if (drag.dy > drag.h * 0.32 || (velocity > 0.45 && drag.dy > 16)) {
+        animateClose({ dy: drag.dy, velocity });
       } else {
         drag.panel.style.transition = "transform 0.42s cubic-bezier(0.2, 1.35, 0.4, 1)";
         drag.panel.style.transform = "translateY(0)";
@@ -264,78 +414,12 @@ export function HiExchangeSheet({
     window.addEventListener("pointercancel", onEnd);
   };
 
-  const runExchange = async (turnstile: string) => {
-    setExchangePending(true);
-    setServerError(undefined);
-    const result = await postHiExchange({
-      name: name.trim(),
-      email: email.trim(),
-      phone: phone.trim() || undefined,
-      countryCode,
-      turnstileToken: turnstile,
-      website: honeypot,
-    });
-    setExchangePending(false);
-    turnstileRef.current?.reset();
-
-    if (!result.ok) {
-      setServerError(result.message);
-      return;
-    }
-    if (!result.token) {
-      handleClose();
-      return;
-    }
-    const nextFirstName = firstNameFromName(name);
-    setToken(result.token);
-    onExchangeSuccess(nextFirstName, result.token);
-    setStep("details");
-  };
-
-  const onSubmitExchange = async (event: React.FormEvent) => {
-    event.preventDefault();
-    setTriedExchange(true);
-    if (exchangeErrors.name || exchangeErrors.email) {
-      return;
-    }
-    if (!siteKey) {
-      setServerError(siteContent.a11y.turnstileNotConfigured);
-      return;
-    }
-    if (!turnstileToken) {
-      turnstileRef.current?.execute();
-      return;
-    }
-    await runExchange(turnstileToken);
-  };
-
-  const onSubmitDetails = async (event: React.FormEvent) => {
-    event.preventDefault();
-    if (!token) {
-      return;
-    }
-    setDetailsPending(true);
-    setServerError(undefined);
-    const result = await postHiDetails({
-      token,
-      jobTitle: jobTitle.trim() || undefined,
-      company: company.trim() || undefined,
-      note: note.trim() || undefined,
-    });
-    setDetailsPending(false);
-    if (!result.ok) {
-      setServerError(result.message);
-      return;
-    }
-    setDetailsSaved(true);
-    window.setTimeout(() => handleClose(), 900);
-  };
-
   if (!open) {
     return null;
   }
 
   const detailsTitle = copy.detailsTitle.replace("{firstName}", firstName || "there");
+  const showSheetEnterAnimation = !closing;
 
   return (
     <div className="fixed inset-0 z-20 flex flex-col items-center justify-end pt-6">
@@ -343,15 +427,15 @@ export function HiExchangeSheet({
         type="button"
         aria-label={copy.closeLabel}
         data-hi-scrim
-        className={`absolute inset-0 border-0 bg-[oklch(0.12_0.02_150/0.6)] ${closing ? "animate-hi-scrim-out" : "animate-hi-scrim-in"}`}
-        onClick={handleClose}
+        className={`absolute inset-0 border-0 bg-[oklch(0.12_0.02_150/0.6)] ${showSheetEnterAnimation ? "animate-hi-scrim-in" : ""}`}
+        onClick={() => animateClose()}
       />
       <div
         ref={dialogRef}
         role="dialog"
         aria-modal="true"
         aria-labelledby="hi-sheet-title"
-        className={`relative box-border max-h-full w-full max-w-[520px] overflow-y-auto overscroll-contain rounded-t-3xl bg-bg text-ink ${closing ? "animate-hi-sheet-out" : "animate-hi-sheet-in"}`}
+        className={`relative box-border max-h-full w-full max-w-[520px] overflow-y-auto overscroll-contain rounded-t-3xl bg-bg text-ink ${showSheetEnterAnimation ? "animate-hi-sheet-in" : ""}`}
       >
         <div className="mx-auto flex max-w-[420px] flex-col gap-2 px-6 pb-7">
           <div
@@ -371,7 +455,7 @@ export function HiExchangeSheet({
               <button
                 type="button"
                 aria-label={copy.closeLabel}
-                onClick={handleClose}
+                onClick={() => animateClose()}
                 className="flex h-11 w-11 shrink-0 items-center justify-center rounded-pill border-0 bg-transparent text-ink hover:bg-surface-2"
               >
                 <svg
@@ -390,15 +474,12 @@ export function HiExchangeSheet({
             </div>
           </div>
 
-          <div aria-live="polite" className="sr-only">
-            {serverError}
+          <div aria-live="polite" className="min-h-0">
+            {exchangeFailed && <HiExchangeFailureMessage />}
+            {turnstileError && (
+              <p className="m-0 text-[15px] font-medium text-error">{turnstileError}</p>
+            )}
           </div>
-
-          {serverError && (
-            <p role="alert" className="m-0 text-[15px] font-medium text-error">
-              {serverError}
-            </p>
-          )}
 
           {step === "exchange" ? (
             <form
@@ -431,6 +512,7 @@ export function HiExchangeSheet({
                     id={`${formId}-name`}
                     className={fieldInputClass}
                     value={name}
+                    maxLength={HI_FIELD_LIMITS.name}
                     onChange={(event) => setName(event.target.value)}
                     onFocus={() => setFocusField("name")}
                     onBlur={() => setFocusField(null)}
@@ -455,6 +537,7 @@ export function HiExchangeSheet({
                     inputMode="email"
                     className={fieldInputClass}
                     value={email}
+                    maxLength={HI_FIELD_LIMITS.email}
                     onChange={(event) => setEmail(event.target.value)}
                     onFocus={() => setFocusField("email")}
                     onBlur={() => setFocusField(null)}
@@ -495,6 +578,7 @@ export function HiExchangeSheet({
                       autoComplete="tel-national"
                       className={fieldInputClass}
                       value={phone}
+                      maxLength={HI_FIELD_LIMITS.phone}
                       onChange={(event) => setPhone(event.target.value)}
                       onFocus={() => setFocusField("phone")}
                       onBlur={() => setFocusField(null)}
@@ -510,11 +594,19 @@ export function HiExchangeSheet({
                   siteKey={siteKey}
                   onSuccess={(value) => {
                     setTurnstileToken(value);
-                    if (triedExchange && !exchangeErrors.name && !exchangeErrors.email) {
+                    setTurnstileError(undefined);
+                    if (awaitingTurnstileRef.current) {
                       void runExchange(value);
                     }
                   }}
-                  onExpire={() => setTurnstileToken("")}
+                  onExpire={() => {
+                    setTurnstileToken("");
+                    if (exchangePending) {
+                      setTurnstileError(copy.turnstileRequired);
+                      setExchangePending(false);
+                      awaitingTurnstileRef.current = false;
+                    }
+                  }}
                   options={{ theme: "auto", size: "invisible" }}
                 />
               )}
@@ -523,8 +615,10 @@ export function HiExchangeSheet({
                 <Button
                   type="submit"
                   disabled={exchangePending}
-                  className={`min-h-14 w-full ${exchangePending ? "opacity-70" : ""}`}
+                  aria-busy={exchangePending}
+                  className={`min-h-14 w-full gap-2 ${exchangePending ? "opacity-80" : ""}`}
                 >
+                  {exchangePending && <PendingSpinner />}
                   {exchangePending ? copy.pendingExchange : copy.submitExchange}
                 </Button>
                 <p className="m-0 text-center text-sm leading-snug text-ink-muted">
@@ -557,6 +651,7 @@ export function HiExchangeSheet({
                     id={`${formId}-job`}
                     className={fieldInputClass}
                     value={jobTitle}
+                    maxLength={HI_FIELD_LIMITS.jobTitle}
                     onChange={(event) => setJobTitle(event.target.value)}
                     onFocus={() => setFocusField("jobTitle")}
                     onBlur={() => setFocusField(null)}
@@ -574,6 +669,7 @@ export function HiExchangeSheet({
                     id={`${formId}-company`}
                     className={fieldInputClass}
                     value={company}
+                    maxLength={HI_FIELD_LIMITS.company}
                     onChange={(event) => setCompany(event.target.value)}
                     onFocus={() => setFocusField("company")}
                     onBlur={() => setFocusField(null)}
@@ -593,6 +689,7 @@ export function HiExchangeSheet({
                     placeholder={copy.notePlaceholder}
                     className={`${fieldInputClass} resize-none`}
                     value={note}
+                    maxLength={HI_FIELD_LIMITS.note}
                     onChange={(event) => setNote(event.target.value)}
                     onFocus={() => setFocusField("note")}
                     onBlur={() => setFocusField(null)}
@@ -603,8 +700,10 @@ export function HiExchangeSheet({
               <Button
                 type="submit"
                 disabled={detailsPending}
-                className={`min-h-14 w-full ${detailsPending ? "opacity-70" : ""}`}
+                aria-busy={detailsPending}
+                className={`min-h-14 w-full gap-2 ${detailsPending ? "opacity-80" : ""}`}
               >
+                {detailsPending && <PendingSpinner />}
                 {detailsPending ? copy.pendingDetails : copy.submitDetails}
               </Button>
             </form>
