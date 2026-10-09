@@ -315,23 +315,6 @@ export const siteContent = {
       attachmentLine: "My contact card is attached so you can save my details in one tap.",
       bookCtaLabel: "Book a time",
       closingLine: "Looking forward to staying in touch.",
-      signaturePlain:
-        "Diadem (Didi) Shoukralla\nSoftware Engineer and Technical Advisor\nDidi Build · diadem@didi.build · didi.build",
-      signatureHtml: `<table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0;">
-  <tr>
-    <td style="vertical-align:top;padding-right:14px;">
-      <img src="https://didi.build/email-logo.png" width="48" height="48" alt="Didi Build" style="display:block;border-radius:12px;" />
-    </td>
-    <td style="vertical-align:top;font-size:14px;line-height:1.55;color:#1f3d2c;">
-      <strong style="color:#166534;">Diadem (Didi) Shoukralla</strong><br />
-      Software Engineer and Technical Advisor<br />
-      Didi Build · <a href="mailto:diadem@didi.build" style="color:#166534;text-decoration:underline;">diadem@didi.build</a> · <a href="https://didi.build" style="color:#166534;text-decoration:underline;">didi.build</a>
-    </td>
-  </tr>
-</table>`,
-      footerPlain: "You're getting this because you exchanged contact info at didi.build/hi.",
-      footerHtml:
-        'You\'re getting this because you exchanged contact info at <a href="https://didi.build/hi" style="color:#166534;text-decoration:underline;">didi.build/hi</a>.',
     },
     contact: {
       name: {

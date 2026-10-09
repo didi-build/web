@@ -1,9 +1,14 @@
 import { siteContent } from "@/content/site";
 import { sanitizeEmailHeaderValue } from "../gmail-auth";
-
-const BOOKING_URL = "https://didi.build/book";
-const HI_PAGE_URL = "https://didi.build/hi";
-const LOGO_URL = "https://didi.build/email-logo.png";
+import {
+  HI_FOLLOW_UP_BOOKING_URL,
+  HI_FOLLOW_UP_EMAIL_LOGO_URL,
+  HI_FOLLOW_UP_FOOTER_HTML,
+  HI_FOLLOW_UP_FOOTER_PLAIN,
+  HI_FOLLOW_UP_HI_PAGE_URL,
+  HI_FOLLOW_UP_SIGNATURE_HTML,
+  HI_FOLLOW_UP_SIGNATURE_PLAIN,
+} from "./hi-follow-up-signature-and-footer";
 
 export function firstNameForHiEmail(fullName: string): string {
   const trimmed = fullName.trim();
@@ -29,13 +34,13 @@ export function buildHiFollowUpEmailPlain(firstName: string): string {
     "",
     copy.attachmentLine,
     "",
-    `${copy.bookCtaLabel}: ${BOOKING_URL}`,
+    `${copy.bookCtaLabel}: ${HI_FOLLOW_UP_BOOKING_URL}`,
     "",
     copy.closingLine,
     "",
-    copy.signaturePlain,
+    HI_FOLLOW_UP_SIGNATURE_PLAIN,
     "",
-    copy.footerPlain,
+    HI_FOLLOW_UP_FOOTER_PLAIN,
   ];
   return lines.join("\n");
 }
@@ -46,8 +51,8 @@ export function buildHiFollowUpEmailHtml(firstName: string): string {
   const paragraphs = copy.bodyParagraphs.map((p) => escapeHtml(p)).join("<br><br>");
   const attachment = escapeHtml(copy.attachmentLine);
   const closing = escapeHtml(copy.closingLine);
-  const footer = copy.footerHtml;
-  const signature = copy.signatureHtml;
+  const footer = HI_FOLLOW_UP_FOOTER_HTML;
+  const signature = HI_FOLLOW_UP_SIGNATURE_HTML;
   const bookLabel = escapeHtml(copy.bookCtaLabel);
 
   return `<!DOCTYPE html>
@@ -63,7 +68,7 @@ export function buildHiFollowUpEmailHtml(firstName: string): string {
           <p style="margin:0 0 20px 0;">${attachment}</p>
           <table role="presentation" cellpadding="0" cellspacing="0" border="0" style="margin:0 0 20px 0;">
             <tr><td style="border-radius:999px;background:#166534;">
-              <a href="${BOOKING_URL}" style="display:inline-block;padding:14px 28px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">${bookLabel}</a>
+              <a href="${HI_FOLLOW_UP_BOOKING_URL}" style="display:inline-block;padding:14px 28px;font-size:16px;font-weight:600;color:#ffffff;text-decoration:none;">${bookLabel}</a>
             </td></tr>
           </table>
           <p style="margin:0 0 24px 0;">${closing}</p>
@@ -87,8 +92,11 @@ function escapeHtml(value: string): string {
 }
 
 export function buildHiFollowUpSignatureHtml(): string {
-  const copy = siteContent.hi.followUpEmail;
-  return copy.signatureHtml;
+  return HI_FOLLOW_UP_SIGNATURE_HTML;
 }
 
-export { BOOKING_URL, HI_PAGE_URL, LOGO_URL };
+export {
+  HI_FOLLOW_UP_BOOKING_URL as BOOKING_URL,
+  HI_FOLLOW_UP_HI_PAGE_URL as HI_PAGE_URL,
+  HI_FOLLOW_UP_EMAIL_LOGO_URL as LOGO_URL,
+};
