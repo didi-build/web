@@ -21,51 +21,59 @@
 <style>
 html,body{margin:0;padding:0}
 a{color:var(--accent-text)}a:hover{color:var(--ink)}
-a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
-@keyframes hiCopied{from{opacity:0;transform:translateY(2px)}to{opacity:1;transform:none}}
+a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(--accent);outline-offset:3px}
+@keyframes hiSheetIn{from{transform:translateY(100%)}to{transform:none}}
+@keyframes hiSheetOut{from{transform:none}to{transform:translateY(100%)}}
+@keyframes hiScrimIn{from{opacity:0}to{opacity:1}}
+@keyframes hiScrimOut{from{opacity:1}to{opacity:0}}
+@keyframes hiRise{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+@keyframes hiFadeOut{from{opacity:1;transform:none}to{opacity:0;transform:translateY(-8px)}}
+@keyframes hiFade{from{opacity:0;transform:translateY(4px)}to{opacity:1;transform:none}}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
 </style>
 </helmet>
-<div data-theme="{{ theme }}" data-screen-label="Hi" style="position:relative;min-height:100svh;background:var(--bg);color:var(--ink);font-family:var(--font-sans);container-type:inline-size;overflow:hidden;isolation:isolate">
+<div data-theme="{{ theme }}" data-screen-label="Hi" style="color-scheme:{{ theme }};position:relative;min-height:100svh;background:var(--bg);color:var(--ink);font-family:var(--font-sans);container-type:inline-size;overflow:hidden;isolation:isolate">
   <div aria-hidden="true" style="position:absolute;z-index:-1;top:-200px;left:50%;transform:translateX(-50%);width:520px;height:420px;border-radius:50%;background:radial-gradient(closest-side,var(--accent-soft),transparent);pointer-events:none"></div>
 
-  <main style="max-width:420px;margin:0 auto;min-height:100svh;box-sizing:border-box;padding:16px 24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:24px">
-    <section aria-labelledby="hi-title" style="display:flex;flex-direction:column;align-items:center;gap:10px;padding-top:clamp(12px,4svh,48px)">
-      <div style="display:flex;align-items:center;gap:12px;text-align:left">
-        <img src="assets/didi.png" alt="Didi Shoukralla" width="64" height="64" style="display:block;flex:none;width:64px;height:64px;border-radius:50%"></img>
-        <div style="display:flex;flex-direction:column;align-items:flex-start;gap:2px">
-          <p style="margin:0;font-weight:600;font-size:1.25rem;line-height:1.2;color:var(--accent-text);letter-spacing:-0.02em">I'm Didi</p>
-          <p style="margin:0;font-size:14px;line-height:1.45;color:var(--ink-muted);font-weight:500">AI Integrations Consultant and Engineer</p>
+  <main style="max-width:420px;margin:0 auto;min-height:100svh;box-sizing:border-box;padding:16px 24px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:48px">
+    <div style="width:100%;display:flex;flex-direction:column;align-items:center;gap:28px">
+      <section aria-label="Didi Shoukralla" style="display:flex;flex-direction:column;align-items:center;gap:14px;padding-top:clamp(16px,5svh,48px)">
+        <img src="assets/didi.png" alt="Didi Shoukralla" width="104" height="104" style="display:block;width:104px;height:104px;border-radius:50%"></img>
+        <div style="display:flex;flex-direction:column;align-items:center;gap:4px">
+          <p style="margin:0;font-weight:600;font-size:1.75rem;line-height:1.15;color:var(--accent-text);letter-spacing:-0.03em">I'm Didi</p>
+          <p style="margin:0;font-size:15px;line-height:1.45;color:var(--ink-muted);font-weight:500">Software Engineer and Technical Advisor</p>
         </div>
-      </div>
-      <h1 id="hi-title" style="margin:16px 0 0;flex:none;width:max-content;max-width:calc(100vw - 48px);font-weight:600;font-size:clamp(2.7rem,1.9rem + 4cqi,3.2rem);line-height:1.06;letter-spacing:-0.03em;text-wrap:balance">Nice to meet you!</h1>
-    </section>
-
-    <section aria-label="Exchange contacts" style="width:100%;margin-top:12px;display:flex;flex-direction:column;gap:12px">
-      <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="primary" size="lg" on-click="{{ saveContact }}" dc-props="{{ fullWidth }}" hint-size="100%,56px">Save my contact</x-import>
-      <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="secondary" size="lg" href="{{ mailto }}" dc-props="{{ fullWidth }}" hint-size="100%,56px">Connect</x-import>
-
-      <div style="margin-top:4px;border:1px solid var(--line);border-radius:14px;background:var(--surface);text-align:left;overflow:hidden">
-        <div style="padding:12px 16px;border-bottom:1px solid var(--line);display:flex;flex-direction:column;gap:2px;font-size:var(--size-caption);line-height:1.4;color:var(--ink-muted)">
-          <span>To <span style="color:var(--ink);font-weight:600">{{ email }}</span></span>
-          <span>Subject <span style="color:var(--ink);font-weight:600">{{ subject }}</span></span>
+      </section>
+      <section aria-label="Exchange contacts" style="width:100%;display:flex;flex-direction:column;gap:4px">
+        <x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="primary" size="lg" on-click="{{ openExchange }}" dc-props="{{ fullWidth }}" hint-size="100%,56px">Exchange contact</x-import>
+        <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="align-self:center;display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px" style-hover="color:var(--ink)">or book a time directly</a>
+        <sc-if value="{{ showThanks }}" hint-placeholder-val="{{ false }}">
+          <p role="status" style="margin:4px 0 0;font-size:15px;line-height:1.5;color:var(--accent-text);font-weight:500;text-align:center;animation:hiFade .25s ease-out">Thanks, {{ firstName }}. Talk soon.</p>
+        </sc-if>
+      </section>
+      <section aria-labelledby="about-title" style="width:100%;box-sizing:border-box;text-align:left;display:flex;flex-direction:column;gap:24px;padding:28px 24px;border-radius:24px;background:var(--surface);border:1px solid var(--line)">
+        <div style="display:flex;flex-direction:column;gap:14px">
+          <h2 id="about-title" style="margin:0;font-weight:600;font-size:1.375rem;line-height:1.15;letter-spacing:-0.02em">About me</h2>
+          <p style="margin:0;font-size:17px;line-height:1.6;color:var(--ink-muted);text-wrap:pretty">I'm a software engineer in Toronto. I help founders who built their app with AI get it ready for real users, paying customers, or investors.</p>
+          <sc-if value="{{ aboutOpen }}" hint-placeholder-val="{{ false }}">
+            <p style="margin:0;font-size:17px;line-height:1.6;color:var(--ink-muted);text-wrap:pretty;animation:hiFade .25s ease-out">I've shipped software at startups and on production teams, so I know what breaks once people actually show up.</p>
+            <p style="margin:0;font-size:17px;line-height:1.6;color:var(--ink-muted);text-wrap:pretty;animation:hiFade .25s ease-out">If you're building something, I'm happy to give you an honest, straight read during your <span style="color:var(--accent-text);font-weight:600">free consultation.</span></p>
+          </sc-if>
+          <sc-if value="{{ aboutClosed }}" hint-placeholder-val="{{ true }}"><button type="button" aria-expanded="{{ aboutOpenStr }}" onClick="{{ toggleAbout }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0 -8px;padding:0;border:0;background:transparent;color:var(--accent-text);font:600 15px var(--font-sans);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;cursor:pointer" style-hover="color:var(--ink)">Show more</button></sc-if>
+          <sc-if value="{{ aboutOpen }}" hint-placeholder-val="{{ false }}"><button type="button" aria-expanded="{{ aboutOpenStr }}" onClick="{{ toggleAbout }}" style="align-self:flex-start;display:inline-flex;align-items:center;gap:6px;min-height:44px;margin:-8px 0 -8px;padding:0;border:0;background:transparent;color:var(--accent-text);font:600 15px var(--font-sans);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px;cursor:pointer" style-hover="color:var(--ink)">Show less</button></sc-if>
         </div>
-        <p style="margin:0;padding:12px 16px;font-size:15px;line-height:1.5;color:var(--ink);white-space:pre-line;text-wrap:pretty">{{ body }}</p>
-        <button type="button" onClick="{{ copyMessage }}" aria-live="polite" style="width:100%;display:flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 16px;border:0;border-top:1px solid var(--line);background:transparent;color:var(--ink);font:600 15px var(--font-sans);cursor:pointer;transition:background var(--dur-fast)" style-hover="background:var(--surface-2)">
-          <sc-if value="{{ copied }}" hint-placeholder-val="{{ false }}">
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--accent)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12.5l4.5 4.5L19 7.5"></path></svg>
-            <span style="animation:hiCopied .2s ease-out">Copied!</span>
-          </sc-if>
-          <sc-if value="{{ notCopied }}" hint-placeholder-val="{{ true }}">
-            <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="9" y="9" width="12" height="12" rx="2"></rect><path d="M5 15V5a2 2 0 012-2h10"></path></svg>
-            <span>Copy message</span>
-          </sc-if>
-        </button>
-      </div>
-
-      <a href="{{ bookingUrl }}" target="_blank" rel="noopener" style="align-self:center;display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-size:15px;font-weight:500;color:var(--ink-muted);text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1px" style-hover="color:var(--ink)">or book a time directly</a>
-    </section>
-
-    <p style="margin:4px 0 0;font-size:18px;line-height:1.55;color:var(--ink);text-wrap:balance;max-width:30ch">I help businesses take AI from prototype to production.</p>
+        <div style="display:flex;flex-direction:column;gap:14px;padding-top:24px;border-top:1px solid var(--line)">
+          <h3 style="margin:0;font-weight:600;font-size:1.375rem;line-height:1.15;letter-spacing:-0.02em">What I do</h3>
+          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px">
+            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">System audit</x-import></li>
+            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Custom development</x-import></li>
+            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Technical advisory</x-import></li>
+            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Fractional CTO</x-import></li>
+            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">AI Integrations</x-import></li>
+          </ul>
+        </div>
+      </section>
+    </div>
 
     <nav aria-label="Elsewhere" style="margin-top:auto">
       <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;justify-content:center;align-items:center;gap:2px">
@@ -90,74 +98,268 @@ a:focus-visible,button:focus-visible{outline:3px solid var(--accent);outline-off
       </ul>
     </nav>
   </main>
+
+  <sc-if value="{{ sheetOpen }}" hint-placeholder-val="{{ false }}">
+    <div style="position:fixed;inset:0;z-index:20;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;padding-top:24px;box-sizing:border-box">
+      <div aria-hidden="true" onClick="{{ closeSheet }}" style="position:absolute;inset:0;background:oklch(0.12 0.02 150 / 0.6);animation:{{ scrimAnim }}"></div>
+      <div role="dialog" aria-modal="true" aria-labelledby="sheet-title" data-screen-label="{{ sheetLabel }}" style="position:relative;box-sizing:border-box;width:100%;max-width:520px;max-height:100%;border-radius:24px 24px 0 0;background:var(--bg);color:var(--ink);overflow-y:auto;overscroll-behavior:contain;will-change:transform;animation:{{ sheetAnim }}">
+        <div style="max-width:420px;margin:0 auto;box-sizing:border-box;padding:0 24px 28px;display:flex;flex-direction:column;gap:8px">
+          <div onPointerDown="{{ dragStart }}" style="position:sticky;top:0;z-index:2;display:flex;flex-direction:column;margin:0 -24px;padding:0 24px;background:var(--bg);touch-action:none;cursor:grab;user-select:none">
+            <div aria-hidden="true" style="display:flex;justify-content:center;padding-top:10px;padding-bottom:2px"><span style="display:block;width:40px;height:5px;border-radius:999px;background:var(--line-strong)"></span></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 10px">
+              <sc-if value="{{ isExchange }}" hint-placeholder-val="{{ true }}">
+                <h1 id="sheet-title" style="margin:0;font-weight:600;font-size:1.375rem;line-height:1.2;letter-spacing:-0.02em">Let's stay in touch</h1>
+              </sc-if>
+              <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
+                <h1 id="sheet-title" style="margin:0;min-width:0;font-weight:600;font-size:1.25rem;line-height:1.25;letter-spacing:-0.02em;text-wrap:balance">Nice to meet you, {{ firstName }}&nbsp;👋</h1>
+              </sc-if>
+              <button type="button" aria-label="Close" onClick="{{ closeSheet }}" style="flex:none;display:flex;align-items:center;justify-content:center;width:44px;height:44px;margin-right:-10px;padding:0;border:0;border-radius:999px;background:transparent;color:var(--ink);cursor:pointer;transition:background var(--dur-fast)" style-hover="background:var(--surface-2)"><svg aria-hidden="true" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18"></path></svg></button>
+            </div>
+          </div>
+
+          <sc-if value="{{ isExchange }}" hint-placeholder-val="{{ true }}">
+            <form onSubmit="{{ submitExchange }}" noValidate="{{ true }}" style="display:flex;flex-direction:column;gap:20px;animation:{{ exchangeAnim }}">
+              <div style="display:flex;flex-direction:column;gap:12px;animation:hiRise .45s cubic-bezier(.2,.7,.2,1) 200ms both">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="x-name" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.name }};box-shadow:{{ bs.name }};background:{{ bg.name }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.name }};transition:color var(--dur-fast)">Full name</span>
+                  <input id="x-name" type="text" inputMode="text" autoComplete="name" value="{{ name }}" onChange="{{ onName }}" onFocus="{{ fo.name }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans)"></input>
+                </label>
+                <sc-if value="{{ er.name }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:var(--size-label);font-weight:500;color:var(--error);display:flex;gap:6px"><span aria-hidden="true">!</span>{{ er.name }}</p></sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="x-email" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.email }};box-shadow:{{ bs.email }};background:{{ bg.email }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.email }};transition:color var(--dur-fast)">Email</span>
+                  <input id="x-email" type="email" inputMode="email" autoComplete="email" value="{{ visitorEmail }}" onChange="{{ onEmail }}" onFocus="{{ fo.email }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans)"></input>
+                </label>
+                <sc-if value="{{ er.email }}" hint-placeholder-val="{{ false }}"><p style="margin:0;font-size:var(--size-label);font-weight:500;color:var(--error);display:flex;gap:6px"><span aria-hidden="true">!</span>{{ er.email }}</p></sc-if>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="x-phone" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.phone }};box-shadow:{{ bs.phone }};background:{{ bg.phone }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.phone }};transition:color var(--dur-fast)">Phone<span style="font-weight:400;color:var(--ink-muted)">(optional)</span></span>
+                  <div style="display:flex;align-items:center;gap:10px">
+                    <select aria-label="Country code" value="{{ country }}" onChange="{{ onCountry }}" onFocus="{{ fo.phone }}" onBlur="{{ blurField }}" style="flex:none;margin:0;padding:0 4px 0 0;border:0;outline:none;background:transparent;color:var(--ink);font:500 17px/1.4 var(--font-sans);cursor:pointer">
+                      <sc-for list="{{ countries }}" as="c" hint-placeholder-count="1"><option value="{{ c.code }}" style="background:var(--surface);color:var(--ink)">{{ c.label }}</option></sc-for>
+                    </select>
+                    <input id="x-phone" type="tel" inputMode="tel" autoComplete="tel-national" value="{{ phoneNum }}" onChange="{{ onPhone }}" onFocus="{{ fo.phone }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans);flex:1"></input>
+                  </div>
+                </label>
+              </div>
+              </div>
+              <div style="animation:hiRise .45s cubic-bezier(.2,.7,.2,1) 260ms both"><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="primary" size="lg" type="submit" dc-props="{{ fullWidth }}" hint-size="100%,56px">Exchange contact</x-import></div>
+            </form>
+          </sc-if>
+
+          <sc-if value="{{ isDetails }}" hint-placeholder-val="{{ false }}">
+            <form onSubmit="{{ saveDetails }}" style="display:flex;flex-direction:column;gap:20px">
+              <p style="margin:0;font-size:17px;line-height:1.6;color:var(--ink-muted);text-wrap:pretty;animation:hiRise .45s cubic-bezier(.2,.7,.2,1) 0ms both">Add a few details to help me remember you.</p>
+              <div style="display:flex;flex-direction:column;gap:12px;animation:hiRise .45s cubic-bezier(.2,.7,.2,1) 70ms both">
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="d-job" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.jobTitle }};box-shadow:{{ bs.jobTitle }};background:{{ bg.jobTitle }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.jobTitle }};transition:color var(--dur-fast)">Job title</span>
+                  <input id="d-job" type="text" inputMode="text" autoComplete="organization-title" value="{{ jobTitle }}" onChange="{{ onJobTitle }}" onFocus="{{ fo.jobTitle }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans)"></input>
+                </label>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="d-company" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.company }};box-shadow:{{ bs.company }};background:{{ bg.company }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.company }};transition:color var(--dur-fast)">Company</span>
+                  <input id="d-company" type="text" inputMode="text" autoComplete="organization" value="{{ company }}" onChange="{{ onCompany }}" onFocus="{{ fo.company }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans)"></input>
+                </label>
+              </div>
+              <div style="display:flex;flex-direction:column;gap:6px">
+                <label for="d-note" style="display:flex;flex-direction:column;gap:2px;padding:10px 16px 11px;border-radius:var(--radius-field);border:{{ bb.note }};box-shadow:{{ bs.note }};background:{{ bg.note }};cursor:text;transition:border-color var(--dur-fast),box-shadow var(--dur-fast),background var(--dur-fast)">
+                  <span style="display:flex;gap:6px;align-items:baseline;font-size:13px;font-weight:500;line-height:1.3;color:{{ lc.note }};transition:color var(--dur-fast)">Note</span>
+                  <textarea id="d-note" rows="3" placeholder="Where we met, what you're working on" value="{{ note }}" onChange="{{ onNote }}" onFocus="{{ fo.note }}" onBlur="{{ blurField }}" style="display:block;width:100%;box-sizing:border-box;min-width:0;margin:0;padding:0;border:0;outline:none;background:transparent;color:var(--ink);font:400 17px/1.4 var(--font-sans);resize:none"></textarea>
+                </label>
+              </div>
+              </div>
+              <div style="animation:hiRise .45s cubic-bezier(.2,.7,.2,1) 140ms both"><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Button" variant="primary" size="lg" type="submit" dc-props="{{ fullWidth }}" hint-size="100%,56px">Save details</x-import></div>
+            </form>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+  </sc-if>
 </div>
 </x-dc>
-<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;email&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;hello@didi.build&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;phone&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;&quot;,&quot;tsType&quot;:&quot;string&quot;},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://didi.build/#contact&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
+<script type="text/x-dc" data-dc-script data-props="{&quot;$preview&quot;:{&quot;width&quot;:390,&quot;height&quot;:844},&quot;bookingUrl&quot;:{&quot;editor&quot;:&quot;text&quot;,&quot;default&quot;:&quot;https://didi.build/book&quot;,&quot;tsType&quot;:&quot;string&quot;}}">
 class Component extends DCLogic {
   state = {
     theme: (typeof window !== 'undefined' && window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) ? 'dark' : 'light',
-    copied: false
+    aboutOpen: false, focus: null,
+    screen: null, closing: false, dragClosed: false, swapping: false, tried: false, connected: false,
+    name: '', email: '', country: 'CA', phone: '',
+    jobTitle: '', company: '', note: ''
   };
+  countries = [
+    { code: 'CA', dial: '+1', label: 'CA +1' },
+    { code: 'US', dial: '+1', label: 'US +1' },
+    { code: 'GB', dial: '+44', label: 'UK +44' },
+    { code: 'AU', dial: '+61', label: 'AU +61' },
+    { code: 'IN', dial: '+91', label: 'IN +91' },
+    { code: 'EG', dial: '+20', label: 'EG +20' },
+    { code: 'FR', dial: '+33', label: 'FR +33' },
+    { code: 'DE', dial: '+49', label: 'DE +49' }
+  ];
+  fieldKeys = ['name', 'email', 'phone', 'jobTitle', 'company', 'note'];
   componentDidMount() {
     try { const t = localStorage.getItem('didi-hi-theme'); if (t === 'light' || t === 'dark') this.setState({ theme: t }); } catch (e) {}
   }
-  componentWillUnmount() { clearTimeout(this._t); }
-  cfg() {
-    const p = this.props;
-    return {
-      email: p.email ?? 'hello@didi.build',
-      phone: p.phone ?? '',
-      bookingUrl: p.bookingUrl ?? 'https://didi.build/#contact',
-      subject: 'Nice meeting you',
-      body: "Hi Didi, great meeting you! I'm [your name] from [your business]. I'd love to chat about [what you're curious about]."
-    };
+  componentDidUpdate() {
+    const s = this.state.screen;
+    if (this._lastScreen !== s) { this._lastScreen = s; document.body.style.overflow = s ? 'hidden' : ''; }
   }
-  saveContact = () => {
-    const c = this.cfg();
-    const lines = ['BEGIN:VCARD', 'VERSION:3.0', 'N:Shoukralla;Diadem;;;', 'FN:Diadem (Didi) Shoukralla', 'NICKNAME:Didi', 'ORG:Didi Build', 'TITLE:AI Integrations Consultant and Engineer', 'EMAIL;TYPE=INTERNET,WORK:' + c.email];
-    if (c.phone) lines.push('TEL;TYPE=CELL:' + c.phone);
-    lines.push('URL:https://didi.build', 'URL;TYPE=LinkedIn:https://www.linkedin.com/in/diadem-shoukralla/', 'URL;TYPE=GitHub:https://github.com/DiademShoukralla/', 'NOTE:Met at an event. Free 30-min consult.', 'END:VCARD');
-    const blob = new Blob([lines.join('\r\n')], { type: 'text/vcard;charset=utf-8' });
-    const a = document.createElement('a');
-    a.href = URL.createObjectURL(blob); a.download = 'Didi-Shoukralla.vcf';
-    document.body.appendChild(a); a.click(); a.remove();
-    setTimeout(() => URL.revokeObjectURL(a.href), 2000);
+  componentWillUnmount() { this.dragEnd(); document.body.style.overflow = ''; clearTimeout(this._ct); clearTimeout(this._st); }
+  errors() {
+    const s = this.state;
+    if (!s.tried) return {};
+    const e = {};
+    if (!s.name.trim()) e.name = 'Add your name so I know who you are.';
+    if (!s.email.trim()) e.email = 'Add your email so I can reach you.';
+    else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(s.email.trim())) e.email = "That email doesn't look quite right. Check for a typo?";
+    return e;
+  }
+  send(type, data) {
+    // Hook a backend here. Fires immediately on tap.
+    if (typeof this.props.onSubmit === 'function') this.props.onSubmit(type, data);
+    else console.log('[hi] ' + type, data);
+  }
+  openExchange = () => this.setState({ screen: this.state.connected ? 'details' : 'exchange' });
+  closeSheet = () => {
+    if (this.state.closing) return;
+    this.setState({ closing: true });
+    clearTimeout(this._ct);
+    this._ct = setTimeout(() => this.setState({ screen: null, closing: false, swapping: false }), 300);
   };
-  copyMessage = async () => {
-    const c = this.cfg();
-    const text = 'To: ' + c.email + '\nSubject: ' + c.subject + '\n\n' + c.body;
-    let ok = false;
-    try { await navigator.clipboard.writeText(text); ok = true; } catch (e) {
-      const ta = document.createElement('textarea'); ta.value = text; ta.setAttribute('readonly', ''); ta.style.position = 'fixed'; ta.style.opacity = '0';
-      document.body.appendChild(ta); ta.select(); try { ok = document.execCommand('copy'); } catch (e2) {} ta.remove();
-    }
-    if (!ok) return;
-    this.setState({ copied: true });
-    clearTimeout(this._t); this._t = setTimeout(() => this.setState({ copied: false }), 2000);
+  submitExchange = (ev) => {
+    ev.preventDefault();
+    this.setState({ tried: true }, () => {
+      const e = this.errors();
+      if (e.name || e.email) return;
+      const s = this.state, c = this.countries.find(x => x.code === s.country);
+      this.send('exchange', { name: s.name.trim(), email: s.email.trim(), phone: s.phone.trim() ? c.dial + ' ' + s.phone.trim() : '' });
+      this.setState({ connected: true, swapping: true });
+      clearTimeout(this._st);
+      this._st = setTimeout(() => this.setState({ screen: 'details', swapping: false }), 200);
+    });
   };
+  saveDetails = (ev) => {
+    ev.preventDefault();
+    const s = this.state;
+    this.send('details', { email: s.email.trim(), jobTitle: s.jobTitle.trim(), company: s.company.trim(), note: s.note.trim() });
+    this.closeSheet();
+  };
+  field = (k) => (ev) => this.setState({ [k]: ev.target.value });
+  onName = this.field('name'); onEmail = this.field('email'); onCountry = this.field('country'); onPhone = this.field('phone');
+  onJobTitle = this.field('jobTitle'); onCompany = this.field('company'); onNote = this.field('note');
+  focusFns = Object.fromEntries(this.fieldKeys.map(k => [k, () => this.setState({ focus: k })]));
+  blurField = () => this.setState({ focus: null });
   toggleTheme = () => {
     const theme = this.state.theme === 'dark' ? 'light' : 'dark';
     try { localStorage.setItem('didi-hi-theme', theme); } catch (e) {}
     this.setState({ theme });
   };
+  dragStart = (e) => {
+    if (this.state.closing || this._drag) return;
+    if ((e.button && e.button > 0) || e.target.closest('button')) return;
+    const panel = e.currentTarget.closest('[role="dialog"]');
+    this._drag = { panel, scrim: panel.previousElementSibling, y0: e.clientY, dy: 0, h: panel.offsetHeight, active: false, samples: [[performance.now(), e.clientY]] };
+    window.addEventListener('pointermove', this.dragMove);
+    window.addEventListener('pointerup', this.dragEnd);
+    window.addEventListener('pointercancel', this.dragEnd);
+  };
+  dragMove = (e) => {
+    const d = this._drag; if (!d) return;
+    let dy = e.clientY - d.y0;
+    if (!d.active) {
+      if (Math.abs(dy) < 3) return;
+      d.active = true;
+      for (const el of [d.panel, d.scrim]) { el.style.animation = 'none'; el.style.transition = 'none'; }
+    }
+    if (dy < 0) dy = -Math.min(28, Math.pow(-dy, 0.65));
+    d.dy = dy;
+    d.panel.style.transform = 'translateY(' + dy + 'px)';
+    d.scrim.style.opacity = String(Math.max(0, 1 - Math.max(0, dy) / d.h));
+    const now = performance.now();
+    d.samples.push([now, e.clientY]);
+    while (d.samples.length > 2 && now - d.samples[0][0] > 90) d.samples.shift();
+    e.preventDefault();
+  };
+  dragEnd = () => {
+    window.removeEventListener('pointermove', this.dragMove);
+    window.removeEventListener('pointerup', this.dragEnd);
+    window.removeEventListener('pointercancel', this.dragEnd);
+    const d = this._drag; this._drag = null;
+    if (!d || !d.active) return;
+    const now = performance.now();
+    const recent = d.samples.filter(p => now - p[0] <= 90);
+    let v = 0;
+    if (recent.length >= 2 && now - recent[recent.length - 1][0] <= 60) {
+      const a = recent[0], b = recent[recent.length - 1];
+      v = (b[1] - a[1]) / Math.max(1, b[0] - a[0]);
+    }
+    if (d.dy > d.h * 0.32 || (v > 0.45 && d.dy > 16)) {
+      const dur = Math.round(Math.max(150, Math.min(280, (d.h - d.dy) / Math.max(v, 1.4))));
+      d.panel.style.transition = 'transform ' + dur + 'ms cubic-bezier(.2,.6,.35,1)';
+      d.scrim.style.transition = 'opacity ' + dur + 'ms ease-out';
+      d.panel.style.transform = 'translateY(100%)';
+      d.scrim.style.opacity = '0';
+      this.setState({ closing: true, dragClosed: true });
+      clearTimeout(this._ct);
+      this._ct = setTimeout(() => this.setState({ screen: null, closing: false, swapping: false, dragClosed: false }), dur);
+    } else {
+      d.panel.style.transition = 'transform .42s cubic-bezier(.2,1.35,.4,1)';
+      d.scrim.style.transition = 'opacity .25s ease-out';
+      d.panel.style.transform = 'translateY(0)';
+      d.scrim.style.opacity = '1';
+    }
+  };
+  fieldVals(e) {
+    const bb = {}, bs = {}, bg = {}, lc = {};
+    for (const k of this.fieldKeys) {
+      const on = this.state.focus === k, bad = !!e[k];
+      bb[k] = '1px solid ' + (on ? 'var(--accent)' : bad ? 'var(--error)' : 'transparent');
+      bs[k] = on ? '0 0 0 1px var(--accent)' : 'none';
+      bg[k] = on ? 'var(--surface)' : 'var(--surface-2)';
+      lc[k] = on ? 'var(--accent-text)' : bad ? 'var(--error)' : 'var(--ink-muted)';
+    }
+    return { bb, bs, bg, lc };
+  }
   renderVals() {
-    const c = this.cfg();
+    const s = this.state, e = this.errors(), screen = s.screen;
+    const anim = s.dragClosed ? null : s.closing;
     return {
-      theme: this.state.theme,
+      theme: s.theme,
       toggleTheme: this.toggleTheme,
-      darkOn: this.state.theme === 'dark',
-      lightOn: this.state.theme !== 'dark',
-      isDark: this.state.theme === 'dark' ? 'true' : 'false',
-      knobX: this.state.theme === 'dark' ? 'translateX(18px)' : 'translateX(0)',
-      saveContact: this.saveContact,
-      copyMessage: this.copyMessage,
-      copied: this.state.copied,
-      notCopied: !this.state.copied,
-      email: c.email,
-      subject: c.subject,
-      body: c.body,
-      bookingUrl: c.bookingUrl,
-      mailto: 'mailto:' + c.email + '?subject=' + encodeURIComponent(c.subject) + '&body=' + encodeURIComponent(c.body),
+      darkOn: s.theme === 'dark',
+      lightOn: s.theme !== 'dark',
+      isDark: s.theme === 'dark' ? 'true' : 'false',
+      knobX: s.theme === 'dark' ? 'translateX(18px)' : 'translateX(0)',
+      bookingUrl: this.props.bookingUrl ?? 'https://didi.build/book',
+      openExchange: this.openExchange,
+      showThanks: s.connected && !screen,
+      firstName: s.name.trim().split(/\s+/)[0] || 'there',
+      aboutOpen: s.aboutOpen, aboutClosed: !s.aboutOpen, aboutOpenStr: s.aboutOpen ? 'true' : 'false',
+      toggleAbout: () => this.setState({ aboutOpen: !this.state.aboutOpen }),
+      sheetOpen: !!screen,
+      sheetLabel: screen === 'details' ? 'Add details' : 'Exchange form',
+      isExchange: screen === 'exchange',
+      isDetails: screen === 'details',
+      sheetAnim: anim === null ? 'none' : anim ? 'hiSheetOut .3s cubic-bezier(.4,0,1,1) forwards' : 'hiSheetIn .5s cubic-bezier(.32,.72,0,1) both',
+      scrimAnim: anim === null ? 'none' : anim ? 'hiScrimOut .3s ease-in forwards' : 'hiScrimIn .3s ease-out both',
+      exchangeAnim: s.swapping ? 'hiFadeOut .2s ease-in forwards' : 'none',
+      closeSheet: this.closeSheet,
+      dragStart: this.dragStart,
+      submitExchange: this.submitExchange,
+      saveDetails: this.saveDetails,
+      ...this.fieldVals(e),
+      fo: this.focusFns, blurField: this.blurField,
+      er: { name: e.name || '', email: e.email || '' },
+      name: s.name, visitorEmail: s.email, phoneNum: s.phone, country: s.country, countries: this.countries,
+      jobTitle: s.jobTitle, company: s.company, note: s.note,
+      onName: this.onName, onEmail: this.onEmail, onCountry: this.onCountry, onPhone: this.onPhone,
+      onJobTitle: this.onJobTitle, onCompany: this.onCompany, onNote: this.onNote,
+      chipSmall: { style: { padding: '4px 12px', fontSize: '14px', lineHeight: 1.5 } },
       fullWidth: { style: { width: '100%', justifyContent: 'center', boxSizing: 'border-box' } }
     };
   }
