@@ -8,11 +8,7 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { HiExchangeFailureMessage } from "./HiExchangeFailureMessage";
 import { postHiDetails, postHiExchange } from "./hi-exchange-api";
-import {
-  clearSheetMotionInlineStyles,
-  prefersReducedMotion,
-  runSheetCloseAnimation,
-} from "./hi-sheet-motion";
+import { prefersReducedMotion, runSheetCloseAnimation } from "./hi-sheet-motion";
 import { useFocusTrap } from "./useFocusTrap";
 
 type SheetStep = "exchange" | "details";
@@ -174,22 +170,16 @@ export function HiExchangeSheet({
 
   useEffect(() => {
     if (!open) {
+      setClosing(false);
+      closeAnimationCleanupRef.current?.();
+      closeAnimationCleanupRef.current = null;
       return;
     }
     setStep(initialStep);
-    setClosing(false);
     setExchangeFailed(false);
     setTurnstileError(undefined);
     setDetailsSaved(false);
     setToken(leadToken);
-    requestAnimationFrame(() => {
-      const panel = dialogRef.current;
-      if (!panel) {
-        return;
-      }
-      const scrim = panel.parentElement?.querySelector("[data-hi-scrim]") as HTMLElement | null;
-      clearSheetMotionInlineStyles(panel, scrim);
-    });
   }, [open, initialStep, leadToken]);
 
   useEffect(() => {
@@ -428,7 +418,6 @@ export function HiExchangeSheet({
   }
 
   const detailsTitle = copy.detailsTitle.replace("{firstName}", firstName || "there");
-  const showSheetEnterAnimation = !closing;
 
   return (
     <div className="fixed inset-0 z-20 flex flex-col items-center justify-end pt-6">
@@ -436,7 +425,7 @@ export function HiExchangeSheet({
         type="button"
         aria-label={copy.closeLabel}
         data-hi-scrim
-        className={`absolute inset-0 border-0 bg-[oklch(0.12_0.02_150/0.6)] ${showSheetEnterAnimation ? "animate-hi-scrim-in" : ""}`}
+        className="absolute inset-0 animate-hi-scrim-in border-0 bg-[oklch(0.12_0.02_150/0.6)]"
         onClick={() => animateClose()}
       />
       <div
@@ -444,7 +433,7 @@ export function HiExchangeSheet({
         role="dialog"
         aria-modal="true"
         aria-labelledby="hi-sheet-title"
-        className={`relative box-border max-h-full w-full max-w-[520px] overflow-y-auto overscroll-contain rounded-t-3xl bg-bg text-ink ${showSheetEnterAnimation ? "animate-hi-sheet-in" : ""}`}
+        className="relative box-border max-h-full w-full max-w-[520px] animate-hi-sheet-in overflow-y-auto overscroll-contain rounded-t-3xl bg-bg text-ink"
       >
         <div className="mx-auto flex max-w-[420px] flex-col gap-2 px-6 pb-7">
           <div
