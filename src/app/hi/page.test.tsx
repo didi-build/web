@@ -20,5 +20,7 @@ describe("HiPage booking link", () => {
     );
     expect(html).toContain(`href="${siteContent.bookingPath}"`);
     expect(html).toContain(siteContent.hi.bookLink);
+    expect(html).toContain(siteContent.hi.exchangeButton);
+    expect(html).toContain(siteContent.hi.about.title);
   });
 });

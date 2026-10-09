@@ -1,5 +1,5 @@
 import Link from "next/link";
-import type { ComponentProps } from "react";
+import { forwardRef, type ComponentProps, type Ref } from "react";
 
 type Variant = "primary" | "outline";
 
@@ -12,13 +12,17 @@ const variants: Record<Variant, string> = {
     "border-[1.5px] border-ink bg-transparent text-ink no-underline hover:bg-ink hover:text-bg",
 };
 
-export function Button({
-  variant = "primary",
-  className = "",
-  ...props
-}: ComponentProps<"button"> & { variant?: Variant }) {
-  return <button className={`${base} ${variants[variant]} ${className}`} {...props} />;
-}
+export const Button = forwardRef(function Button(
+  {
+    variant = "primary",
+    className = "",
+    ...props
+  }: ComponentProps<"button"> & { variant?: Variant },
+  ref: Ref<HTMLButtonElement>,
+) {
+  return <button ref={ref} className={`${base} ${variants[variant]} ${className}`} {...props} />;
+});
+Button.displayName = "Button";
 
 export function ButtonLink({
   href,

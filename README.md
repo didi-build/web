@@ -63,15 +63,16 @@ Never commit real secrets.
 
 ## Scripts
 
-| Script                                     | Description                            |
-| ------------------------------------------ | -------------------------------------- |
-| `npm run dev`                              | Next.js dev server                     |
-| `npm run build`                            | Production Next.js build               |
-| `npm run preview`                          | OpenNext build + local Workers preview |
-| `npm run deploy`                           | OpenNext build + deploy to Cloudflare  |
-| `npm run lint` / `format` / `format:check` | ESLint + Prettier                      |
-| `npm run typecheck`                        | `tsc --noEmit`                         |
-| `npm run test`                             | Vitest                                 |
+| Script                                     | Description                                |
+| ------------------------------------------ | ------------------------------------------ |
+| `npm run dev`                              | Next.js dev server                         |
+| `npm run build`                            | Production Next.js build                   |
+| `npm run preview`                          | OpenNext build + local Workers preview     |
+| `npm run deploy`                           | OpenNext build + deploy to Cloudflare      |
+| `npm run deploy:hi-consumer`               | Deploy `hi-followup-email-consumer` Worker |
+| `npm run lint` / `format` / `format:check` | ESLint + Prettier                          |
+| `npm run typecheck`                        | `tsc --noEmit`                             |
+| `npm run test`                             | Vitest                                     |
 
 Pre-commit and pre-push hooks (see Local development) run a subset of these automatically; CI still runs the full pipeline including `build`.
 

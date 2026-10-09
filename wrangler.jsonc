@@ -24,4 +24,22 @@
   "vars": {
     "BOOKING_URL": "https://portal.didi.build/public/free-30-min-consult",
   },
+  "ratelimits": [
+    {
+      "name": "HI_EXCHANGE_RATE_LIMITER",
+      "namespace_id": "1001",
+      "simple": {
+        "limit": 10,
+        "period": 60,
+      },
+    },
+  ],
+  "queues": {
+    "producers": [
+      {
+        "binding": "HI_FOLLOWUP_EMAIL_QUEUE",
+        "queue": "hi-followup-email",
+      },
+    ],
+  },
 }
