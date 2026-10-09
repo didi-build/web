@@ -8,7 +8,11 @@ import { Turnstile, type TurnstileInstance } from "@marsidev/react-turnstile";
 import { useCallback, useEffect, useId, useRef, useState } from "react";
 import { HiExchangeFailureMessage } from "./HiExchangeFailureMessage";
 import { postHiDetails, postHiExchange } from "./hi-exchange-api";
-import { prefersReducedMotion, sheetCloseDurationMs } from "./hi-sheet-motion";
+import {
+  clearSheetMotionInlineStyles,
+  prefersReducedMotion,
+  runSheetCloseAnimation,
+} from "./hi-sheet-motion";
 import { useFocusTrap } from "./useFocusTrap";
 
 type SheetStep = "exchange" | "details";
@@ -154,6 +158,8 @@ export function HiExchangeSheet({
   const [turnstileError, setTurnstileError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
   const [detailsSaved, setDetailsSaved] = useState(false);
+  const closeAnimationCleanupRef = useRef<(() => void) | null>(null);
+
   const dragRef = useRef<{
     panel: HTMLDivElement;
     scrim: HTMLElement | null;
@@ -167,15 +173,31 @@ export function HiExchangeSheet({
   useFocusTrap(dialogRef, open && !closing);
 
   useEffect(() => {
-    if (open) {
-      setStep(initialStep);
-      setClosing(false);
-      setExchangeFailed(false);
-      setTurnstileError(undefined);
-      setDetailsSaved(false);
-      setToken(leadToken);
+    if (!open) {
+      return;
     }
+    setStep(initialStep);
+    setClosing(false);
+    setExchangeFailed(false);
+    setTurnstileError(undefined);
+    setDetailsSaved(false);
+    setToken(leadToken);
+    requestAnimationFrame(() => {
+      const panel = dialogRef.current;
+      if (!panel) {
+        return;
+      }
+      const scrim = panel.parentElement?.querySelector("[data-hi-scrim]") as HTMLElement | null;
+      clearSheetMotionInlineStyles(panel, scrim);
+    });
   }, [open, initialStep, leadToken]);
+
+  useEffect(() => {
+    return () => {
+      closeAnimationCleanupRef.current?.();
+      closeAnimationCleanupRef.current = null;
+    };
+  }, []);
 
   const animateClose = useCallback(
     (options?: { dy?: number; velocity?: number }) => {
@@ -193,31 +215,18 @@ export function HiExchangeSheet({
       }
 
       setClosing(true);
+      closeAnimationCleanupRef.current?.();
       const scrim = panel.parentElement?.querySelector("[data-hi-scrim]") as HTMLElement | null;
-      const h = panel.offsetHeight;
-      const dy = options?.dy ?? 0;
-      const velocity = options?.velocity ?? 1.4;
-      const dur = sheetCloseDurationMs(h, dy, velocity);
-
-      panel.style.animation = "none";
-      panel.style.transition = `transform ${dur}ms cubic-bezier(0.2, 0.6, 0.35, 1)`;
-      panel.style.transform = "translateY(100%)";
-      if (scrim) {
-        scrim.style.animation = "none";
-        scrim.style.transition = `opacity ${dur}ms ease-out`;
-        scrim.style.opacity = "0";
-      }
-
-      window.setTimeout(() => {
-        panel.style.transition = "";
-        panel.style.transform = "";
-        if (scrim) {
-          scrim.style.transition = "";
-          scrim.style.opacity = "";
-        }
-        setClosing(false);
-        onClose();
-      }, dur);
+      closeAnimationCleanupRef.current = runSheetCloseAnimation({
+        panel,
+        scrim,
+        dy: options?.dy,
+        velocity: options?.velocity,
+        onComplete: () => {
+          closeAnimationCleanupRef.current = null;
+          onClose();
+        },
+      });
     },
     [closing, onClose],
   );
