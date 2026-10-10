@@ -295,7 +295,7 @@ export const siteContent = {
       pendingExchange: "Sending…",
       pendingDetails: "Saving…",
       detailsSaved: "Saved. Talk soon!",
-      turnstileRequired: "Please complete the spam check.",
+      networkErrorMessage: "Check your internet and try again in a few seconds.",
       exchangeNotSavedPrefix: "Your contact wasn't saved. Please email me at ",
       exchangeNotSavedEmail: "diadem@didi.build",
       exchangeNotSavedSuffix: " instead.",
