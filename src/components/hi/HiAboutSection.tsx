@@ -1,5 +1,6 @@
 "use client";
 
+import { HiWhatIDoChips } from "@/components/hi/HiWhatIDoChips";
 import { siteContent } from "@/content/site";
 import { useState } from "react";
 
@@ -57,15 +58,7 @@ export function HiAboutSection() {
         <h3 className="m-0 text-[1.375rem] font-semibold leading-tight tracking-tight">
           {about.whatIDoTitle}
         </h3>
-        <ul className="m-0 flex list-none flex-wrap gap-2 p-0">
-          {about.chips.map((chip) => (
-            <li key={chip}>
-              <span className="inline-flex rounded-pill bg-surface-2 px-3 py-1 text-sm leading-normal text-ink">
-                {chip}
-              </span>
-            </li>
-          ))}
-        </ul>
+        <HiWhatIDoChips chips={about.chips} />
       </div>
     </section>
   );
