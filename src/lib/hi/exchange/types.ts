@@ -10,10 +10,21 @@ export type HiLeadDetails = {
   note?: string;
 };
 
+export type HiLinearIssueRef = {
+  issueId: string;
+  identifier: string;
+  url: string;
+};
+
 export interface HiLinearSink {
-  createCardLead(lead: HiCardLead): Promise<{ issueId: string }>;
+  createCardLead(lead: HiCardLead): Promise<HiLinearIssueRef>;
   appendDetails(issueId: string, details: HiLeadDetails): Promise<void>;
   addIssueComment(issueId: string, body: string): Promise<void>;
+  getIssueLeadNotificationContext(issueId: string): Promise<{
+    identifier: string;
+    url: string;
+    leadName: string;
+  }>;
 }
 
 export type HiRateLimiter = {

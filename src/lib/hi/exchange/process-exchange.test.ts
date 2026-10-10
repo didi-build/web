@@ -1,4 +1,5 @@
 import { describe, expect, it, vi } from "vitest";
+import type { HiFollowupQueueMessageBody } from "./follow-up-queue";
 import { processHiExchange } from "./process-exchange";
 import type { HiExchangeDeps } from "./process-exchange";
 
@@ -15,7 +16,16 @@ function fakeDeps(overrides?: Partial<HiExchangeDeps>): HiExchangeDeps {
     linear:
       overrides?.linear ??
       ({
-        createCardLead: async () => ({ issueId: "issue-1" }),
+        createCardLead: async () => ({
+          issueId: "issue-1",
+          identifier: "DIDI-1",
+          url: "https://linear.app/didi/issue/DIDI-1",
+        }),
+        getIssueLeadNotificationContext: async () => ({
+          identifier: "DIDI-1",
+          url: "https://linear.app/didi/issue/DIDI-1",
+          leadName: "Sam",
+        }),
         appendDetails: async () => {},
         addIssueComment: async () => {},
       } satisfies HiExchangeDeps["linear"]),
@@ -23,6 +33,7 @@ function fakeDeps(overrides?: Partial<HiExchangeDeps>): HiExchangeDeps {
       overrides?.followUpQueue ??
       ({
         enqueue: async () => {},
+        enqueueRequired: async () => {},
       } satisfies HiExchangeDeps["followUpQueue"]),
     tokenSecret: overrides?.tokenSecret ?? "test-secret-key-at-least-16-chars",
     rateLimiter: overrides?.rateLimiter,
@@ -82,6 +93,7 @@ describe("processHiExchange", () => {
       createCardLead: vi.fn(),
       appendDetails: vi.fn(),
       addIssueComment: vi.fn(),
+      getIssueLeadNotificationContext: vi.fn(),
     };
     const result = await processHiExchange(
       {
@@ -97,6 +109,27 @@ describe("processHiExchange", () => {
     expect(linear.createCardLead).not.toHaveBeenCalled();
   });
 
+  it("enqueues visitor and owner lead messages", async () => {
+    const enqueueRequired = vi.fn(async (messages: HiFollowupQueueMessageBody[]) => {
+      void messages;
+    });
+    await processHiExchange(
+      {
+        name: "Sam",
+        email: "sam@example.com",
+        turnstileToken: "token",
+      },
+      fakeRequest(),
+      fakeDeps({ followUpQueue: { enqueue: async () => {}, enqueueRequired } }),
+    );
+    expect(enqueueRequired).toHaveBeenCalledOnce();
+    const messages = enqueueRequired.mock.calls[0]?.[0];
+    expect(messages).toBeDefined();
+    expect(messages).toHaveLength(2);
+    expect(messages?.[0]?.kind).toBe("visitor_followup");
+    expect(messages?.[1]?.kind).toBe("owner_lead");
+  });
+
   it("comments on Linear and returns 500 when queue enqueue fails", async () => {
     const addIssueComment = vi.fn();
     const result = await processHiExchange(
@@ -108,14 +141,24 @@ describe("processHiExchange", () => {
       fakeRequest(),
       fakeDeps({
         followUpQueue: {
-          enqueue: async () => {
+          enqueue: async () => {},
+          enqueueRequired: async () => {
             throw new Error("queue_down");
           },
         },
         linear: {
-          createCardLead: async () => ({ issueId: "issue-99" }),
+          createCardLead: async () => ({
+            issueId: "issue-99",
+            identifier: "DIDI-99",
+            url: "https://linear.app/didi/issue/DIDI-99",
+          }),
           appendDetails: async () => {},
           addIssueComment,
+          getIssueLeadNotificationContext: async () => ({
+            identifier: "DIDI-99",
+            url: "https://linear.app/didi/issue/DIDI-99",
+            leadName: "Sam",
+          }),
         },
       }),
     );

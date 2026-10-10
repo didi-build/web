@@ -1,3 +1,4 @@
+import type { HiFollowUpQueue } from "./follow-up-queue";
 import { parseHiDetailsRequest } from "./schemas";
 import { verifyHiLeadToken } from "./token";
 import type { HiLinearSink, HiRateLimiter } from "./types";
@@ -5,6 +6,7 @@ import { getRequestClientIp } from "./request-ip";
 
 export type HiDetailsDeps = {
   linear: HiLinearSink;
+  followUpQueue?: HiFollowUpQueue;
   tokenSecret: string;
   rateLimiter?: HiRateLimiter;
 };
@@ -56,6 +58,27 @@ export async function processHiDetails(
       status: 500,
       message: "Something went wrong. Please try again, or email diadem@didi.build.",
     };
+  }
+
+  if (deps.followUpQueue) {
+    try {
+      const context = await deps.linear.getIssueLeadNotificationContext(payload.issueId);
+      await deps.followUpQueue.enqueue({
+        kind: "owner_details",
+        issueId: payload.issueId,
+        name: context.leadName,
+        linearIdentifier: context.identifier,
+        linearUrl: context.url,
+        jobTitle: parsed.data.jobTitle,
+        company: parsed.data.company,
+        note: parsed.data.note,
+      });
+    } catch (error) {
+      console.error(
+        "hi_details_owner_notify_enqueue_failed",
+        error instanceof Error ? error.message : "unknown",
+      );
+    }
   }
 
   return { status: 200 };

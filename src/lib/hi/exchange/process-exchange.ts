@@ -82,20 +82,38 @@ export async function processHiExchange(
   const lead = toLeadRecord(rest);
 
   let issueId: string;
+  let linearIdentifier: string;
+  let linearUrl: string;
   try {
     const created = await deps.linear.createCardLead(lead);
     issueId = created.issueId;
+    linearIdentifier = created.identifier;
+    linearUrl = created.url;
   } catch (error) {
     console.error("hi_exchange_linear_failed", error instanceof Error ? error.message : "unknown");
     return { status: 500, message: GENERIC_FAILURE_MESSAGE };
   }
 
+  const receivedAtIso = new Date().toISOString();
   try {
-    await deps.followUpQueue.enqueue({
-      issueId,
-      name: lead.name,
-      email: lead.email,
-    });
+    await deps.followUpQueue.enqueueRequired([
+      {
+        kind: "visitor_followup",
+        issueId,
+        name: lead.name,
+        email: lead.email,
+      },
+      {
+        kind: "owner_lead",
+        issueId,
+        name: lead.name,
+        email: lead.email,
+        phone: lead.phone,
+        linearIdentifier,
+        linearUrl,
+        receivedAtIso,
+      },
+    ]);
   } catch (error) {
     console.error("hi_exchange_queue_failed", error instanceof Error ? error.message : "unknown");
     try {

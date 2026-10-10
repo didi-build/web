@@ -15,9 +15,18 @@ describe("processHiDetails", () => {
   it("returns 429 when rate limited", async () => {
     const result = await processHiDetails({ token: "bad" }, fakeRequest(), {
       linear: {
-        createCardLead: async () => ({ issueId: "x" }),
+        createCardLead: async () => ({
+          issueId: "x",
+          identifier: "DIDI-0",
+          url: "https://linear.app/didi/issue/DIDI-0",
+        }),
         appendDetails: async () => {},
         addIssueComment: async () => {},
+        getIssueLeadNotificationContext: async () => ({
+          identifier: "DIDI-0",
+          url: "https://linear.app/didi/issue/DIDI-0",
+          leadName: "Sam",
+        }),
       },
       tokenSecret: secret,
       rateLimiter: { limit: async () => ({ success: false }) },
@@ -31,13 +40,53 @@ describe("processHiDetails", () => {
     const token = await createHiLeadToken("issue-42", secret, now);
     const result = await processHiDetails({ token, jobTitle: "Founder" }, fakeRequest(), {
       linear: {
-        createCardLead: async () => ({ issueId: "issue-42" }),
+        createCardLead: async () => ({
+          issueId: "issue-42",
+          identifier: "DIDI-42",
+          url: "https://linear.app/didi/issue/DIDI-42",
+        }),
         appendDetails,
         addIssueComment: async () => {},
+        getIssueLeadNotificationContext: async () => ({
+          identifier: "DIDI-42",
+          url: "https://linear.app/didi/issue/DIDI-42",
+          leadName: "Sam",
+        }),
       },
       tokenSecret: secret,
     });
     expect(result).toEqual({ status: 200 });
     expect(appendDetails).toHaveBeenCalledWith("issue-42", { jobTitle: "Founder" });
+  });
+
+  it("returns 200 when owner notify enqueue fails after comment saved", async () => {
+    const appendDetails = vi.fn();
+    const now = Math.floor(Date.now() / 1000);
+    const token = await createHiLeadToken("issue-42", secret, now);
+    const result = await processHiDetails({ token, company: "Acme" }, fakeRequest(), {
+      linear: {
+        createCardLead: async () => ({
+          issueId: "issue-42",
+          identifier: "DIDI-42",
+          url: "https://linear.app/didi/issue/DIDI-42",
+        }),
+        appendDetails,
+        addIssueComment: async () => {},
+        getIssueLeadNotificationContext: async () => ({
+          identifier: "DIDI-42",
+          url: "https://linear.app/didi/issue/DIDI-42",
+          leadName: "Sam Rivera",
+        }),
+      },
+      followUpQueue: {
+        enqueue: async () => {
+          throw new Error("queue_down");
+        },
+        enqueueRequired: async () => {},
+      },
+      tokenSecret: secret,
+    });
+    expect(result).toEqual({ status: 200 });
+    expect(appendDetails).toHaveBeenCalledOnce();
   });
 });

@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import { siteContent } from "@/content/site";
-import { buildVCard, escapeVCardValue } from "@/lib/hi/vcard";
+import { HI_HEADSHOT_PNG_BASE64 } from "@/content/hi-headshot-base64";
+import { buildVCard, escapeVCardValue, foldVCardLine } from "@/lib/hi/vcard";
 
 describe("escapeVCardValue", () => {
   it("escapes vCard special characters", () => {
@@ -28,5 +29,30 @@ describe("buildVCard", () => {
     expect(vcard).toContain("URL;TYPE=LinkedIn:https://www.linkedin.com/in/diadem-shoukralla/");
     expect(vcard).toContain("URL;TYPE=GitHub:https://github.com/DiademShoukralla/");
     expect(vcard).toContain("NOTE:Met at an event. Free 30-min consult.");
+    expect(vcard).toContain("PHOTO;ENCODING=b;TYPE=PNG:");
+    expect(vcard).toContain(HI_HEADSHOT_PNG_BASE64.slice(0, 40));
+  });
+
+  it("folds long lines and keeps CRLF endings", () => {
+    const vcard = buildVCard(contact, siteContent.meta.siteUrl);
+    for (const line of vcard.split("\r\n")) {
+      if (line.startsWith(" ")) {
+        continue;
+      }
+      expect(line.length).toBeLessThanOrEqual(75);
+    }
+    const longLine = "A".repeat(120);
+    const folded = foldVCardLine(longLine);
+    expect(
+      folded
+        .split("\r\n")
+        .every((segment, index) => (index === 0 ? true : segment.startsWith(" "))),
+    ).toBe(true);
+    const photoLines = vcard
+      .split("\r\n")
+      .filter((line) => line.includes("PHOTO;ENCODING=b") || line.startsWith(" "));
+    const photoPayload = photoLines.map((line) => line.replace(/^\s/, "")).join("");
+    expect(photoPayload).toContain(HI_HEADSHOT_PNG_BASE64);
+    expect(() => atob(HI_HEADSHOT_PNG_BASE64)).not.toThrow();
   });
 });

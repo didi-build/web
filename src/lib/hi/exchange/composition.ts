@@ -59,8 +59,10 @@ export function createHiExchangeDepsFromEnv(): HiExchangeDeps {
 }
 
 export function createHiDetailsDepsFromEnv(): HiDetailsDeps {
+  const followUpQueue = readFollowUpQueueFromCloudflare();
   return {
     linear: createLinearSinkFromEnv("hi_details_config_error"),
+    followUpQueue,
     tokenSecret: requireEnv("HI_TOKEN_SECRET", "hi_details_config_error"),
     rateLimiter: readRateLimiterFromCloudflare(),
   };

@@ -11,6 +11,7 @@ const serviceAccountKeySchema = z.object({
 export type GmailServiceAccountConfig = {
   serviceAccountJson: string;
   senderEmail: string;
+  senderDisplayName?: string;
 };
 
 type TokenCache = {
@@ -169,6 +170,20 @@ export function sanitizeEmailHeaderValue(value: string): string {
   return withoutControls.replace(/\s+/g, " ").trim();
 }
 
+/** Build a RFC 5322 From header with optional display name (RFC 2047 when needed). */
+export function formatEmailFromHeader(email: string, displayName?: string): string {
+  const sanitizedEmail = sanitizeEmailHeaderValue(email);
+  const trimmedName = displayName?.trim();
+  if (!trimmedName) {
+    return sanitizedEmail;
+  }
+  const sanitizedName = sanitizeEmailHeaderValue(trimmedName);
+  const encodedName = isAsciiOnly(sanitizedName)
+    ? `"${sanitizedName}"`
+    : `"=?UTF-8?B?${base64EncodeUtf8(sanitizedName)}?="`;
+  return `${encodedName} <${sanitizedEmail}>`;
+}
+
 /** Encode Subject per RFC 2047 when non-ASCII characters are present. */
 export function encodeEmailSubject(subject: string): string {
   const sanitized = sanitizeEmailHeaderValue(subject);
@@ -201,13 +216,15 @@ function buildMultipartAlternative(boundary: string, textPlain: string, textHtml
 
 export function buildRawEmailMessage(options: {
   from: string;
+  fromDisplayName?: string;
   to: string;
   subject: string;
   textPlain: string;
   textHtml: string;
+  replyTo?: string;
   boundary?: string;
 }): string {
-  const from = sanitizeEmailHeaderValue(options.from);
+  const from = formatEmailFromHeader(options.from, options.fromDisplayName);
   const to = sanitizeEmailHeaderValue(options.to);
   const subject = encodeEmailSubject(options.subject);
   const boundary = options.boundary ?? createMimeBoundary();
@@ -217,6 +234,7 @@ export function buildRawEmailMessage(options: {
   const lines = [
     `From: ${from}`,
     `To: ${to}`,
+    ...(options.replyTo ? [`Reply-To: ${sanitizeEmailHeaderValue(options.replyTo)}`] : []),
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
     `Content-Type: multipart/alternative; boundary="${boundary}"`,
@@ -228,16 +246,18 @@ export function buildRawEmailMessage(options: {
 
 export function buildRawEmailWithVCardAttachment(options: {
   from: string;
+  fromDisplayName?: string;
   to: string;
   subject: string;
   textPlain: string;
   textHtml: string;
   vcardFilename: string;
   vcardBody: string;
+  replyTo?: string;
   boundary?: string;
   alternativeBoundary?: string;
 }): string {
-  const from = sanitizeEmailHeaderValue(options.from);
+  const from = formatEmailFromHeader(options.from, options.fromDisplayName);
   const to = sanitizeEmailHeaderValue(options.to);
   const subject = encodeEmailSubject(options.subject);
   const mixedBoundary = options.boundary ?? createMimeBoundary();
@@ -268,6 +288,7 @@ export function buildRawEmailWithVCardAttachment(options: {
   const lines = [
     `From: ${from}`,
     `To: ${to}`,
+    ...(options.replyTo ? [`Reply-To: ${sanitizeEmailHeaderValue(options.replyTo)}`] : []),
     `Subject: ${subject}`,
     "MIME-Version: 1.0",
     `Content-Type: multipart/mixed; boundary="${mixedBoundary}"`,

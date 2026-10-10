@@ -244,6 +244,7 @@ export const siteContent = {
     faq: "faq",
   },
   hi: {
+    emailFromName: "Diadem at Didi Build",
     pageTitle: "Hi, I'm Didi",
     headshotSrc: "/didi.png",
     headshotAlt: "Didi Shoukralla",

@@ -10,7 +10,7 @@ const hiFollowupEmailConsumer = {
       messages: Array<{
         id: string;
         attempts: number;
-        body: { issueId: string; name: string; email: string };
+        body: unknown;
         ack(): void;
         retry(options?: { delaySeconds?: number }): void;
       }>;
