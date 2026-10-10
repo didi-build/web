@@ -63,7 +63,7 @@ export async function postHiExchange(
 
 export async function postHiDetails(
   payload: HiDetailsPayload,
-): Promise<{ ok: true } | { ok: false; message: string }> {
+): Promise<{ ok: true } | { ok: false; kind: HiExchangeFailureKind; message?: string }> {
   const controller = new AbortController();
   const timeout = setTimeout(() => controller.abort(), HI_EXCHANGE_REQUEST_TIMEOUT_MS);
 
@@ -76,14 +76,18 @@ export async function postHiDetails(
     });
     const data = (await readJsonResponse(response)) as { ok?: boolean; error?: string } | null;
     if (!response.ok) {
-      return { ok: false, message: data?.error ?? "Something went wrong. Please try again." };
+      return {
+        ok: false,
+        kind: "server",
+        message: data?.error ?? "Something went wrong. Please try again.",
+      };
     }
     return { ok: true };
   } catch (error) {
     if (error instanceof DOMException && error.name === "AbortError") {
-      return { ok: false, message: "Request timed out. Please try again." };
+      return { ok: false, kind: "timeout" };
     }
-    return { ok: false, message: "Network error. Please try again." };
+    return { ok: false, kind: "network" };
   } finally {
     clearTimeout(timeout);
   }

@@ -25,6 +25,9 @@ type HiExchangeSheetProps = {
 };
 
 const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+const TURNSTILE_WAIT_TIMEOUT_MS = 10_000;
+
+type ExchangeFailureAlert = "network" | "server";
 
 function firstNameFromName(name: string): string {
   const trimmed = name.trim();
@@ -134,6 +137,7 @@ export function HiExchangeSheet({
   const turnstileRef = useRef<TurnstileInstance>(null);
   const siteKey = process.env.NEXT_PUBLIC_TURNSTILE_SITE_KEY ?? "";
   const awaitingTurnstileRef = useRef(false);
+  const turnstileWaitTimeoutRef = useRef<number | null>(null);
 
   const [step, setStep] = useState<SheetStep>(initialStep);
   const [closing, setClosing] = useState(false);
@@ -150,7 +154,10 @@ export function HiExchangeSheet({
   const [token, setToken] = useState(leadToken);
   const [exchangePending, setExchangePending] = useState(false);
   const [detailsPending, setDetailsPending] = useState(false);
-  const [exchangeFailed, setExchangeFailed] = useState(false);
+  const [exchangeFailureAlert, setExchangeFailureAlert] = useState<ExchangeFailureAlert | null>(
+    null,
+  );
+  const [detailsFailureMessage, setDetailsFailureMessage] = useState<string | undefined>();
   const [turnstileError, setTurnstileError] = useState<string | undefined>();
   const [turnstileToken, setTurnstileToken] = useState("");
   const [detailsSaved, setDetailsSaved] = useState(false);
@@ -176,7 +183,8 @@ export function HiExchangeSheet({
       return;
     }
     setStep(initialStep);
-    setExchangeFailed(false);
+    setExchangeFailureAlert(null);
+    setDetailsFailureMessage(undefined);
     setTurnstileError(undefined);
     setDetailsSaved(false);
     setToken(leadToken);
@@ -244,10 +252,42 @@ export function HiExchangeSheet({
 
   const exchangeErrors = triedExchange ? getExchangeErrors(name, email, copy) : {};
 
+  const clearTurnstileWaitTimeout = useCallback(() => {
+    if (turnstileWaitTimeoutRef.current !== null) {
+      window.clearTimeout(turnstileWaitTimeoutRef.current);
+      turnstileWaitTimeoutRef.current = null;
+    }
+  }, []);
+
+  const failTurnstileAsNetwork = useCallback(() => {
+    clearTurnstileWaitTimeout();
+    setExchangePending(false);
+    awaitingTurnstileRef.current = false;
+    setExchangeFailureAlert("network");
+    turnstileRef.current?.reset();
+    setTurnstileToken("");
+  }, [clearTurnstileWaitTimeout]);
+
+  useEffect(() => {
+    return () => {
+      clearTurnstileWaitTimeout();
+    };
+  }, [clearTurnstileWaitTimeout]);
+
   const runExchange = async (turnstile: string) => {
+    clearTurnstileWaitTimeout();
     setExchangePending(true);
-    setExchangeFailed(false);
+    setExchangeFailureAlert(null);
+    setDetailsFailureMessage(undefined);
     setTurnstileError(undefined);
+
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setExchangePending(false);
+      awaitingTurnstileRef.current = false;
+      setExchangeFailureAlert("network");
+      return;
+    }
+
     const result = await postHiExchange({
       name: name.trim(),
       email: email.trim(),
@@ -262,7 +302,7 @@ export function HiExchangeSheet({
     setTurnstileToken("");
 
     if (!result.ok) {
-      setExchangeFailed(true);
+      setExchangeFailureAlert(result.kind === "server" ? "server" : "network");
       return;
     }
     if (!result.token) {
@@ -278,7 +318,8 @@ export function HiExchangeSheet({
   const onSubmitExchange = (event: React.FormEvent) => {
     event.preventDefault();
     setTriedExchange(true);
-    setExchangeFailed(false);
+    setExchangeFailureAlert(null);
+    setDetailsFailureMessage(undefined);
     setTurnstileError(undefined);
 
     const errors = getExchangeErrors(name, email, copy);
@@ -295,8 +336,13 @@ export function HiExchangeSheet({
     }
 
     if (!turnstileToken) {
-      setTurnstileError(copy.turnstileRequired);
       awaitingTurnstileRef.current = true;
+      clearTurnstileWaitTimeout();
+      turnstileWaitTimeoutRef.current = window.setTimeout(() => {
+        if (awaitingTurnstileRef.current) {
+          failTurnstileAsNetwork();
+        }
+      }, TURNSTILE_WAIT_TIMEOUT_MS);
       turnstileRef.current?.execute();
       return;
     }
@@ -309,7 +355,16 @@ export function HiExchangeSheet({
     if (!token) {
       return;
     }
+    setExchangeFailureAlert(null);
+    setDetailsFailureMessage(undefined);
     setDetailsPending(true);
+
+    if (typeof navigator !== "undefined" && navigator.onLine === false) {
+      setDetailsPending(false);
+      setExchangeFailureAlert("network");
+      return;
+    }
+
     const result = await postHiDetails({
       token,
       jobTitle: jobTitle.trim() || undefined,
@@ -318,7 +373,11 @@ export function HiExchangeSheet({
     });
     setDetailsPending(false);
     if (!result.ok) {
-      setExchangeFailed(true);
+      if (result.kind === "server") {
+        setDetailsFailureMessage(result.message ?? "Something went wrong. Please try again.");
+      } else {
+        setExchangeFailureAlert("network");
+      }
       return;
     }
     setDetailsSaved(true);
@@ -473,7 +532,12 @@ export function HiExchangeSheet({
           </div>
 
           <div aria-live="polite" className="min-h-0">
-            {exchangeFailed && <HiExchangeFailureMessage />}
+            {exchangeFailureAlert && <HiExchangeFailureMessage variant={exchangeFailureAlert} />}
+            {detailsFailureMessage && (
+              <p role="alert" className="m-0 text-[15px] font-medium text-error">
+                {detailsFailureMessage}
+              </p>
+            )}
             {turnstileError && (
               <p className="m-0 text-[15px] font-medium text-error">{turnstileError}</p>
             )}
@@ -597,12 +661,15 @@ export function HiExchangeSheet({
                       void runExchange(value);
                     }
                   }}
+                  onError={() => {
+                    if (awaitingTurnstileRef.current || exchangePending) {
+                      failTurnstileAsNetwork();
+                    }
+                  }}
                   onExpire={() => {
                     setTurnstileToken("");
-                    if (exchangePending) {
-                      setTurnstileError(copy.turnstileRequired);
-                      setExchangePending(false);
-                      awaitingTurnstileRef.current = false;
+                    if (awaitingTurnstileRef.current) {
+                      failTurnstileAsNetwork();
                     }
                   }}
                   options={{ theme: "auto", size: "invisible" }}

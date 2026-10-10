@@ -1,7 +1,20 @@
 import { siteContent } from "@/content/site";
 
-export function HiExchangeFailureMessage() {
+type HiExchangeFailureMessageProps = {
+  variant?: "server" | "network";
+};
+
+export function HiExchangeFailureMessage({ variant = "server" }: HiExchangeFailureMessageProps) {
   const copy = siteContent.hi.exchangeSheet;
+
+  if (variant === "network") {
+    return (
+      <p role="alert" className="m-0 text-[15px] font-medium text-error">
+        {copy.networkErrorMessage}
+      </p>
+    );
+  }
+
   return (
     <p role="alert" className="m-0 text-[15px] font-medium text-error">
       {copy.exchangeNotSavedPrefix}

@@ -45,4 +45,20 @@ describe("postHiExchange", () => {
     });
     expect(result).toEqual({ ok: false, kind: "server", message: "nope" });
   });
+
+  it("returns network failure when fetch throws", async () => {
+    vi.stubGlobal(
+      "fetch",
+      vi.fn(async () => {
+        throw new Error("network down");
+      }),
+    );
+    const result = await postHiExchange({
+      name: "Sam",
+      email: "sam@example.com",
+      countryCode: "CA",
+      turnstileToken: "token",
+    });
+    expect(result).toEqual({ ok: false, kind: "network" });
+  });
 });
