@@ -64,13 +64,7 @@ a:focus-visible,button:focus-visible,select:focus-visible{outline:3px solid var(
         </div>
         <div style="display:flex;flex-direction:column;gap:14px;padding-top:24px;border-top:1px solid var(--line)">
           <h3 style="margin:0;font-weight:600;font-size:1.375rem;line-height:1.15;letter-spacing:-0.02em">What I do</h3>
-          <ul style="margin:0;padding:0;list-style:none;display:flex;flex-wrap:wrap;gap:8px">
-            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">System audit</x-import></li>
-            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Custom development</x-import></li>
-            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Technical advisory</x-import></li>
-            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">Fractional CTO</x-import></li>
-            <li><x-import component-from-global-scope="DidiBuildDesignSystem_b51779.Chip" dc-props="{{ chipSmall }}" hint-size="auto,30px">AI Integrations</x-import></li>
-          </ul>
+          <dc-import name="Service Chips" design="d" hint="spin" theme="{{ theme }}" persist="{{ true }}" hint-size="100%,132px"></dc-import>
         </div>
       </section>
     </div>
@@ -359,7 +353,6 @@ class Component extends DCLogic {
       jobTitle: s.jobTitle, company: s.company, note: s.note,
       onName: this.onName, onEmail: this.onEmail, onCountry: this.onCountry, onPhone: this.onPhone,
       onJobTitle: this.onJobTitle, onCompany: this.onCompany, onNote: this.onNote,
-      chipSmall: { style: { padding: '4px 12px', fontSize: '14px', lineHeight: 1.5 } },
       fullWidth: { style: { width: '100%', justifyContent: 'center', boxSizing: 'border-box' } }
     };
   }
