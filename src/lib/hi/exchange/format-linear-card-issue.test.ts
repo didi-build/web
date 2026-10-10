@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import {
   formatHiCardLinearIssueDescription,
   formatHiCardLinearIssueTitle,
+  parseLeadNameFromLinearIssueTitle,
 } from "./format-linear-card-issue";
 
 describe("formatHiCardLinearIssue", () => {
@@ -9,6 +10,11 @@ describe("formatHiCardLinearIssue", () => {
     expect(formatHiCardLinearIssueTitle({ name: "Sam", email: "sam@example.com" })).toBe(
       "Lead: Sam (card)",
     );
+  });
+
+  it("parses lead name from issue title", () => {
+    expect(parseLeadNameFromLinearIssueTitle("Lead: Sam Rivera (card)")).toBe("Sam Rivera");
+    expect(parseLeadNameFromLinearIssueTitle("Other title")).toBeNull();
   });
 
   it("includes contact fields in the description", () => {

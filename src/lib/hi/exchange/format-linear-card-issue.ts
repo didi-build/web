@@ -4,6 +4,11 @@ export function formatHiCardLinearIssueTitle(lead: HiCardLead): string {
   return `Lead: ${lead.name} (card)`;
 }
 
+export function parseLeadNameFromLinearIssueTitle(title: string): string | null {
+  const match = /^Lead:\s*(.+)\s+\(card\)\s*$/u.exec(title.trim());
+  return match?.[1]?.trim() ?? null;
+}
+
 export function formatHiCardLinearIssueDescription(lead: HiCardLead): string {
   const lines = [
     "## Contact",

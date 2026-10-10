@@ -11,6 +11,7 @@ import {
   formatHiFollowUpEmailSubject,
   firstNameForHiEmail,
 } from "./format-follow-up-email";
+import { readHiEmailFromName } from "./format-owner-notification-email";
 
 const GMAIL_SEND_URL = "https://gmail.googleapis.com/gmail/v1/users/me/messages/send";
 
@@ -28,6 +29,7 @@ export async function sendHiFollowUpEmail(
 
   const raw = buildRawEmailWithVCardAttachment({
     from: config.senderEmail,
+    fromDisplayName: config.senderDisplayName ?? readHiEmailFromName(),
     to: lead.email,
     subject,
     textPlain,
