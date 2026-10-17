@@ -5,5 +5,5 @@ ANTHROPIC_API_KEY=
 ANTHROPIC_MODEL=claude-sonnet-5
 TURNSTILE_SECRET_KEY=
 NEXT_PUBLIC_TURNSTILE_SITE_KEY=
-BOOKING_URL=https://portal.didi.build/public/free-30-min-consult
+BOOKING_URL=https://cal.com/didi-build/coffee-chat
 NEXTJS_ENV=development
